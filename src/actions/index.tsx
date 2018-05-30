@@ -1,23 +1,13 @@
 import * as constants from '../constants'
 
-export interface IIncrementEnthusiasm {
-	type: constants.INCREMENT_ENTHUSIASM;
+export interface IGetBricks {
+	type: constants.GET_BRICKS;
 }
 
-export interface IDecrementEnthusiasm {
-	type: constants.DECREMENT_ENTHUSIASM;
-}
+export type BrickAction = IGetBricks; // | ;
 
-export type EnthusiasmAction = IIncrementEnthusiasm | IDecrementEnthusiasm;
-
-export function incrementEnthusiasm(): IIncrementEnthusiasm {
+export function getBricks(): IGetBricks {
 	return {
-		type: constants.INCREMENT_ENTHUSIASM
-	}
-}
-
-export function decrementEnthusiasm(): IDecrementEnthusiasm {
-	return {
-		type: constants.DECREMENT_ENTHUSIASM
+		type: constants.GET_BRICKS
 	}
 }

@@ -1,6 +1,6 @@
 export interface IStoreState {
-	Bricks: IBrick[];
-	BrickCount: number;
+	bricks: IBrick[];
+	brickCount: number;
 }
 
 export interface IBrick {
@@ -11,7 +11,7 @@ export interface IBrick {
 	owner: IBuilder;
 	builders?: IBuilder[];
 	status: BrikStatus;
-	tags: string[];
+	tags?: string[];
 }
 
 export enum BrikStatus {

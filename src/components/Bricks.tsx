@@ -1,37 +1,27 @@
 import * as React from 'react';
+import { IBrick } from '../types';
 import './Bricks.css';
 
 export interface IProps {
-	name: string;
-	enthusiasmLevel?: number;
-	onIncrement?: () => void,
-	onDecrement?: () => void,
+	brickCount: number;
+	bricks?: IBrick[];
+	getBricks?: () => void,
 }
 
 export default class Bricks extends React.Component<IProps, object> {
 	public render() {
-		const { name, enthusiasmLevel = 1 } = this.props;
+		const { brickCount, bricks = 1 } = this.props;
 
-		if (enthusiasmLevel <= 0) {
-			throw new Error('You could be a little more enthusiastic. :D');
+		if (bricks <= 0) {
+			throw new Error('You are here too early. :D');
 		}
 
 		return (
 			<div className="hello">
 				<div className="greeting">
-					Hello {name + getExclamationMarks(enthusiasmLevel)}
-				</div>
-				<div>
-					<button onClick={this.props.onDecrement}>-</button>
-					<button onClick={this.props.onIncrement}>+</button>
+					Total {brickCount} bricks.
 				</div>
 			</div>
 		);
 	}
-}
-
-// helpers
-
-function getExclamationMarks(numChars: number) {
-	return Array(numChars + 1).join('!');
 }

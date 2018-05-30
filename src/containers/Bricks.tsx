@@ -3,17 +3,16 @@ import * as actions from '../actions/';
 import Bricks, { IProps } from '../components/Bricks';
 import { IStoreState } from '../types';
 
-export function mapStateToProps({ enthusiasmLevel, languageName }: IStoreState) {
+export function mapStateToProps({ brickCount, bricks }: IStoreState) {
 	return {
-		enthusiasmLevel,
-		name: languageName,
+		brickCount,
+		bricks,
 	}
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<actions.EnthusiasmAction>) {
+export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {
 	return {
-		onDecrement: () => dispatch(actions.decrementEnthusiasm()),
-		onIncrement: () => dispatch(actions.incrementEnthusiasm()),
+		getBricks: () => dispatch(actions.getBricks()),
 	}
 }
 

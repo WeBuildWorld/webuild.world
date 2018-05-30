@@ -6,13 +6,13 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { EnthusiasmAction } from './actions';
-import { enthusiasm } from './reducers';
+import { BrickAction } from './actions';
+import { bricks } from './reducers';
 import { IStoreState } from './types';
 
-const store = createStore<IStoreState, EnthusiasmAction, any, any>(enthusiasm, {
-	enthusiasmLevel: 1,
-	languageName: 'TypeScript',
+const store = createStore<IStoreState, BrickAction, any, any>(bricks, {
+	brickCount: 0,
+	bricks: [],
 });
 
 
