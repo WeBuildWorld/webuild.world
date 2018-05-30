@@ -1,13 +1,19 @@
-.hello {
+.bricks {
   text-align: center;
   margin: 20px;
   font-size: 48px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.hello button {
+.bricks .brick button {
   margin-left: 25px;
   margin-right: 25px;
   font-size: 40px;
   min-width: 50px;
+}
+
+.brick {
+	width: 60%;
+	min-width: 360px;
+	border: 1px solid gray;
 }
