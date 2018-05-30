@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './Hello.css';
+import './Bricks.css';
 
 export interface IProps {
 	name: string;
@@ -8,7 +8,7 @@ export interface IProps {
 	onDecrement?: () => void,
 }
 
-export default class Hello extends React.Component<IProps, object> {
+export default class Bricks extends React.Component<IProps, object> {
 	public render() {
 		const { name, enthusiasmLevel = 1 } = this.props;
 

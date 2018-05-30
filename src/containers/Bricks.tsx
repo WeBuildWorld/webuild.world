@@ -1,6 +1,6 @@
 import { connect, Dispatch } from 'react-redux';
 import * as actions from '../actions/';
-import Hello, { IProps } from '../components/Hello';
+import Bricks, { IProps } from '../components/Bricks';
 import { IStoreState } from '../types';
 
 export function mapStateToProps({ enthusiasmLevel, languageName }: IStoreState) {
@@ -17,4 +17,4 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.EnthusiasmAction>)
 	}
 }
 
-export default connect<IProps>(mapStateToProps, mapDispatchToProps)(Hello);
+export default connect<IProps>(mapStateToProps, mapDispatchToProps)(Bricks);
