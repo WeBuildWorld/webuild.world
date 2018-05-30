@@ -4,6 +4,8 @@ import './Hello.css';
 export interface IProps {
 	name: string;
 	enthusiasmLevel?: number;
+	onIncrement?: () => void,
+	onDecrement?: () => void,
 }
 
 export default class Hello extends React.Component<IProps, object> {
@@ -18,6 +20,10 @@ export default class Hello extends React.Component<IProps, object> {
 			<div className="hello">
 				<div className="greeting">
 					Hello {name + getExclamationMarks(enthusiasmLevel)}
+				</div>
+				<div>
+					<button onClick={this.props.onDecrement}>-</button>
+					<button onClick={this.props.onIncrement}>+</button>
 				</div>
 			</div>
 		);
