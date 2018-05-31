@@ -1,6 +1,6 @@
 import { Component } from "react";
 import React from "react";
-import { IBrick } from "../../../types";
+import { BrikStatus, IBrick } from "../../../types";
 
 export interface IProps {
 	brick: IBrick;
@@ -53,7 +53,7 @@ export default class Brick extends React.Component<IProps, object> {
 					<div className="column is-one-quarter marginLeft">
 						<div className="tags has-addons nowrap">
 							<span className="tag">STATUS</span>
-							<span className="tag is-info">{brick.status}</span>
+							<span className="tag is-info">{BrikStatus[brick.status]}</span>
 						</div>
 					</div>
 					<div className="column is-one-quarter">
