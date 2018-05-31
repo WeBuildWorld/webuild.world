@@ -3,11 +3,11 @@ import * as actions from '../actions/';
 import Bricks, { IProps } from '../components/Bricks';
 import { IStoreState } from '../types';
 
-export function mapStateToProps({ brickCount, bricks }: IStoreState) {
+export function mapStateToProps({ reducer }) {
 	return {
-		brickCount,
-		bricks,
-	}
+		brickCount: reducer.app.brickCount,
+		bricks: reducer.app.bricks,
+	};
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {

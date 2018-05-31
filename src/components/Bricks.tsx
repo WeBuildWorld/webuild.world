@@ -9,6 +9,7 @@ export interface IProps {
 	getBricks?: () => void,
 }
 
+
 export default class Bricks extends React.Component<IProps, object> {
 
 	public componentWillMount() {
@@ -28,7 +29,7 @@ export default class Bricks extends React.Component<IProps, object> {
 					Total {brickCount} bricks.
 				</div>
 
-				{bricks.length && bricks.map((brick => (<Brick brick={brick} />)))}
+				{bricks && bricks.length && bricks.map((brick => (<Brick brick={brick} />)))}
 			</div>
 		);
 	}
