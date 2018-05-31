@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import './App.css';
-import Nav from './components/_shared/Nav';
-import Bricks from './containers/Bricks';
+import Nav from './pages/_shared/Nav';
+import Bricks from './pages/Bricks';
 
 class App extends React.Component {
 	public render() {

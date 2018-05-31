@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { IBrick } from '../types';
+import { IBrick } from '../../types';
 import Brick from './_shared/Brick';
-import './Bricks.css';
+import './style.css';
 
 export interface IProps {
 	brickCount: number;

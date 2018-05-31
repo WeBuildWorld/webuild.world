@@ -1,7 +1,7 @@
 import { connect, Dispatch } from 'react-redux';
-import * as actions from '../actions/';
-import Bricks, { IProps } from '../components/Bricks';
-import { IStoreState } from '../types';
+import { IStoreState } from '../../types';
+import * as actions from './action';
+import Bricks, { IProps } from './component';
 
 export function mapStateToProps({ reducer }) {
 	return {

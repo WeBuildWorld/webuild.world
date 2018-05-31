@@ -1,6 +1,6 @@
 import { Component } from "react";
 import React from "react";
-import { IBrick } from "../../types";
+import { IBrick } from "../../../types";
 
 export interface IProps {
 	brick: IBrick;
