@@ -24,12 +24,10 @@ export default class Bricks extends React.Component<IProps, object> {
 		}
 
 		return (
-			<div className="hello">
-				<div className="greeting">
-					Total {brickCount} bricks.
+			<div className="columns bricks">
+				<div className="column">
+					{bricks && bricks.length && bricks.map((brick => (<Brick brick={brick} />)))}
 				</div>
-
-				{bricks && bricks.length && bricks.map((brick => (<Brick brick={brick} />)))}
 			</div>
 		);
 	}
@@ -41,5 +39,4 @@ export default class Bricks extends React.Component<IProps, object> {
 			</p>
 		);
 	}
-
 }

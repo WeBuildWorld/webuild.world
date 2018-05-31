@@ -1,19 +1,17 @@
-.bricks {
-  text-align: center;
-  margin: 20px;
-  font-size: 48px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+nav.navbar {
+	box-shadow: 0 .5px rgba(0,0,0,.5);
+	background: #24292e;
+	color: white;
 }
 
-.bricks .brick button {
-  margin-left: 25px;
-  margin-right: 25px;
-  font-size: 40px;
-  min-width: 50px;
+nav.navbar a:link{
+	color: white;
 }
 
-.brick {
-	width: 60%;
-	min-width: 360px;
-	border: 1px solid gray;
+.bricks{
+	margin-top: 1em;
+}
+
+h4.title{
+	font-size: 1.5em;
 }

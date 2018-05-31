@@ -8,7 +8,9 @@ class App extends React.Component {
 		return (
 			<div className="App">
 				<Nav />
-				<Bricks />
+				<div className="container">
+					<Bricks />
+				</div>
 			</div>
 		);
 	}

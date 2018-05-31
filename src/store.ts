@@ -1,4 +1,3 @@
-import { BrickAction } from './actions';
 import { IStoreState } from './types';
 
 import createHistory from 'history/createBrowserHistory';
