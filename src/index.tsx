@@ -1,3 +1,4 @@
+import 'bulma/css/bulma.min.css';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
