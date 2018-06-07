@@ -42,7 +42,7 @@ export default class Nav extends Component {
 								<p className="control">
 									<GitHubLogin oonSuccess={onSuccess}
 										clientId='36d1aa5652f688cde83b'
-										redirectUri="https://webuild.world"
+										redirectUri="http://localhost:3000"
 										scope="user.email"
 									/>
 								</p>
