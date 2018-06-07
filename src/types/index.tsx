@@ -1,6 +1,11 @@
 export interface IStoreState {
 	bricks: IBrick[];
 	brickCount: number;
+	user?: ICredential;
+}
+
+export interface ICredential {
+	githubId?: string;
 }
 
 export interface IBrick {
