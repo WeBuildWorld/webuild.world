@@ -39,6 +39,8 @@ export default class Nav extends Component {
 									</a>
 								</p>
 
+								{this.props.children}
+
 								<p className="control">
 									<GitHubLogin oonSuccess={onSuccess}
 										clientId='36d1aa5652f688cde83b'
