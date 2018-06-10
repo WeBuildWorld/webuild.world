@@ -1,7 +1,7 @@
 image: 'node:latest'
 
 before_script:
-  - npm i
+  - yarn install
 
 stages:
   - build
