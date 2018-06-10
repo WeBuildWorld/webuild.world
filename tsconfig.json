@@ -22,7 +22,8 @@
     "noUnusedLocals": true
   },
   "include": [
-    "./node_modules/web3-typescript-typings/index.d.ts"
+    "./node_modules/web3-typescript-typings/index.d.ts",
+    "src/**/*"
   ],
   "exclude": [
     // "node_modules",

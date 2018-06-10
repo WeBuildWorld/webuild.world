@@ -1,5 +1,4 @@
-import { Component } from "react";
-import React from "react";
+import * as React from "react";
 import { BrikStatus, IBrick } from "../../../types";
 
 export interface IProps {

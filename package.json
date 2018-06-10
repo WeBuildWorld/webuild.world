@@ -5,6 +5,9 @@
   "dependencies": {
     "@types/history": "^4.6.2",
     "@types/react-redux": "^6.0.0",
+    "@types/react-router-redux": "^5.0.15",
+    "@types/react-test-renderer": "^16.0.1",
+    "@types/redux-logger": "^3.0.6",
     "babel-polyfill": "^6.26.0",
     "bulma": "^0.7.1",
     "history": "^4.7.2",

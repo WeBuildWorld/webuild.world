@@ -1,9 +1,9 @@
 import { connect, Dispatch } from 'react-redux';
-import { IStoreState } from '../../types';
+import { IStoreState } from '../../types/';
 import * as actions from './action';
 import Bricks, { IProps } from './component';
 
-export function mapStateToProps({ reducer }) {
+export function mapStateToProps({ reducer }: { reducer: { app: IStoreState } }) {
 	return {
 		brickCount: reducer.app.brickCount,
 		bricks: reducer.app.bricks,

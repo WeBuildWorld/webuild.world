@@ -1,4 +1,3 @@
-import { BrickAction } from '../actions';
 import { GET_BRICKS } from '../constants';
 import { Bricks } from '../mock';
 import { IStoreState } from '../types/index';
@@ -8,8 +7,12 @@ const defaultState: IStoreState = {
 	bricks: [],
 };
 
-export default function (state: IStoreState = defaultState, action: BrickAction): IStoreState {
+export default function (state: IStoreState = defaultState, action: any): IStoreState {
 	switch (action.type) {
+		case 'REDUX_STORAGE_SAVE': {
+			// delete state.bricks;
+			break;
+		}
 		case GET_BRICKS:
 			return { ...state, brickCount: Bricks.length, bricks: Bricks };
 	}

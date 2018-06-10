@@ -1,12 +1,11 @@
-import { Component } from "react";
-import React from "react";
-import GitHubLogin from 'react-github-login';
+// import GitHubLogin from 'react-github-login';
+import * as React from 'react';
 import logo from '../../logo.svg';
 import './Nav.css';
 
 // tslint:disable-next-line:no-console
-const onSuccess = response => console.log(response);
-export default class Nav extends Component {
+// const onSuccess = (response) => console.log(response);
+export default class Nav extends React.Component {
 	public addBrick() {
 		//
 	}
@@ -42,11 +41,12 @@ export default class Nav extends Component {
 								{this.props.children}
 
 								<p className="control">
-									<GitHubLogin oonSuccess={onSuccess}
+									{/* <GitHubLogin oonSuccess={onSuccess}
+										visible={false}
 										clientId='36d1aa5652f688cde83b'
 										redirectUri="http://localhost:3000"
 										scope="user.email"
-									/>
+									/> */}
 								</p>
 							</div>
 						</div>

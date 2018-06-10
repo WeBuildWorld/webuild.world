@@ -13,7 +13,7 @@ export interface IProps {
 export default class Bricks extends React.Component<IProps, object> {
 
 	public componentWillMount() {
-		this.props.getBricks();
+		this.props.getBricks!();
 	}
 
 	public render() {
