@@ -1,0 +1,32 @@
+image: 'node:latest'
+
+before_script:
+  - npm i
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+build html:
+  stage: build
+  script:
+    - yarn build
+    
+deploy:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H '188.166.218.211' >> ~/.ssh/known_hosts
+  script:
+    - yarn build
+    - scp -r ./public/ root@188.166.218.211:/var/www/WeBuild/Portal/
+  only:
+    - develop
