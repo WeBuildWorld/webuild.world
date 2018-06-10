@@ -15,6 +15,9 @@ build html:
   stage: build
   script:
     - yarn build
+  artifacts:
+    paths:
+    - ./build    
     
 deploy:
   stage: deploy
