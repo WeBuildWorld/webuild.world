@@ -7,7 +7,7 @@ import './Nav.css';
 // const onSuccess = (response) => console.log(response);
 export default class Nav extends React.Component {
 	public addBrick() {
-		//
+		location.href = '/add-brick';
 	}
 
 	public render() {
@@ -33,7 +33,7 @@ export default class Nav extends React.Component {
 						<div className="navbar-item">
 							<div className="field is-grouped">
 								<p className="control">
-									<a className="bd-tw-button button is-info">
+									<a className="bd-tw-button button is-info" onClick={this.addBrick}>
 										<span>Add a Brick</span>
 									</a>
 								</p>
