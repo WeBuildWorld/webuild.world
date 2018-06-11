@@ -9,10 +9,10 @@ export function mapStateToProps({ reducer }: { reducer: { app: IStoreState } }) 
 	};
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {
+export function mapDispatchToProps(dispatch: Dispatch<actions.IAddBrick>) {
 	return {
-		addBrick: () => dispatch(actions.addBrick()),
-	}
+		addBrick: () => actions.addBrick()(dispatch),
+	};
 }
 
 export default connect<IProps>(mapStateToProps, mapDispatchToProps)(AddBrick);

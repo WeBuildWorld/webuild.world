@@ -11,3 +11,4 @@ export function getBricks(): IGetBricks {
 		type: constants.GET_BRICKS
 	}
 }
+
