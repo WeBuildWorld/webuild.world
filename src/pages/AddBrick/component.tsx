@@ -4,15 +4,10 @@ import './style.css';
 
 export interface IProps {
 	addBrick?: () => void,
+	getPageTitle?: (e: React.FocusEvent<HTMLInputElement>) => void,
 }
 
-
 export default class Bricks extends React.Component<IProps, object> {
-
-	public componentWillMount() {
-		//
-	}
-
 	public render() {
 		return (
 			<div className="columns add-brick">
@@ -20,7 +15,7 @@ export default class Bricks extends React.Component<IProps, object> {
 					<div className="field">
 						<label className="label">GitHub Issue Link</label>
 						<div className="control has-icons-left">
-							<input className="input" type="text" placeholder="GitHub Link" />
+							<input className="input" type="text" placeholder="GitHub Link" onBlur={this.props.getPageTitle} />
 							<span className="icon is-small is-left">
 								<i className="fas fa-link" />
 							</span>

@@ -12,9 +12,9 @@ export default class Nav extends React.Component {
 
 	public render() {
 		return (
-			<nav className="navbar is-fixed-top level">
+			<nav className="navbar is-fixed-top level" >
 				<div className="navbar-brand">
-					<a href="https://webuild.world/" className="navbar-item">
+					<a href="/" className="navbar-item">
 						<img src={logo} className="App-logo" alt="logo" />
 						<h1>WeBuild.World</h1>
 					</a>
@@ -52,7 +52,7 @@ export default class Nav extends React.Component {
 						</div>
 					</div>
 				</div>
-			</nav>
+			</nav >
 		);
 	}
 }
