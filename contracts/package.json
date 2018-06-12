@@ -1,6 +1,14 @@
 {
   "dependencies": {
-    "solc-js": "^0.4.20-browser.1",
+    "solc": "^0.4.23",
+    "solhint": "^1.2.1",
+    "zeppelin-solidity": "^1.10.0"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.1.0",
+    "run-with-testrpc": "^0.3.0",
+    "solc": "^0.4.24",
+    "solidity-coverage": "^0.5.0",
     "truffle": "^4.1.11"
   }
 }
