@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "solc-js": "^0.4.20-browser.1",
+    "truffle": "^4.1.11"
+  }
+}
