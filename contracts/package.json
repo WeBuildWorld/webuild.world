@@ -1,6 +1,14 @@
 {
+  "scripts": {
+    "build": "truffle compile  --network development",
+    "test": "run-with-testrpc --port 8545  --network development 'truffle test'",
+    "testCoverage": "run-with-testrpc --port 8545 'truffle test --network coverage' ",
+    "deploy": "run-with-testrpc --port 8545  --network development 'truffle migrate --reset' ",
+    "deploytestnet": "run-with-testrpc --port 8545 'truffle migrate --reset --network kovan' ",
+    "coverage": "solidity-coverage",
+    "ver": "truffle version"
+  },
   "dependencies": {
-    "solc": "^0.4.23",
     "solhint": "^1.2.1",
     "zeppelin-solidity": "^1.10.0"
   },

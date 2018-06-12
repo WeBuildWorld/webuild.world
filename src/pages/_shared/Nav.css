@@ -3,6 +3,7 @@ h1 {
 	font-weight: bold;
 }
 
-a:link, a:visited {
+.navbar a:link,
+.navbar a:visited {
 	color: white;
 }
