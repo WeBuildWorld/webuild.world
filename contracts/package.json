@@ -6,9 +6,11 @@
     "deploy": "run-with-testrpc --port 8545  --network development 'truffle migrate --reset' ",
     "deploytestnet": "run-with-testrpc --port 8545 'truffle migrate --reset --network kovan' ",
     "coverage": "solidity-coverage",
-    "ver": "truffle version"
+    "ver": "truffle version",
+    "build-contracts": "sol-merger \"./contracts/*.sol\" ./build"
   },
   "dependencies": {
+    "sol-merger": "^0.1.2",
     "solhint": "^1.2.1",
     "zeppelin-solidity": "^1.10.0"
   },

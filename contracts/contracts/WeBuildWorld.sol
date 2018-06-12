@@ -10,7 +10,7 @@ contract WeBuildWord is Manageable, Ownable {
 
     using SafeMath for uint256;	
 
-    enum BrickStatus { Inactive, Active, Completed }
+    enum BrickStatus { Inactive, Active, Completed, Cancelled }
 
     struct Builder {
         address builderAddress;
@@ -36,12 +36,14 @@ contract WeBuildWord is Manageable, Ownable {
 
     uint public brickId = 1000000;
     mapping (uint => Brick) public bricks;
+    string public constant VERSION = "0.1";
 
     function () public payable {
         revert();
     }
 
-    function addBrick(string _title, string _url, string _description) public payable
+    function addBrick(string _title, string _url, string _description) 
+        public payable
         returns (uint id)
     {
         // greater than 0.01 eth
@@ -80,19 +82,45 @@ contract WeBuildWord is Manageable, Ownable {
         return true;
     }
 
-    function accept(uint _brickId, address _builderAddress) public returns (bool success) {
+    // msg.value is tip.
+    function accept(uint _brickId, address _builderAddress) 
+        public onlyBrickOwner(_brickId) 
+        payable
+        returns (bool success) 
+    {
         require(bricks[_brickId].status == BrickStatus.Active);
         // disallow to take to your own.
         require(_builderAddress != msg.sender);
 
         bricks[_brickId].status = BrickStatus.Completed;
         bricks[_brickId].winner = _builderAddress;
+        // solhint-disable-next-line
+        bricks[_brickId].dateCompleted = now;
+
+        if (msg.value > 0) {
+            bricks[_brickId].value += msg.value;
+        }
 
         _builderAddress.transfer(bricks[_brickId].value);
         return true;
     }
 
-    function resetBrickIdTo(uint _start) public onlyOwner returns (uint) {
+    function cancel(uint _brickId) 
+        public onlyBrickOwner(_brickId) 
+        returns (bool success) 
+    {
+        require(bricks[_brickId].status != BrickStatus.Completed);
+        require(bricks[_brickId].status != BrickStatus.Cancelled);
+
+        bricks[_brickId].status = BrickStatus.Cancelled;
+        msg.sender.transfer(bricks[_brickId].value);
+
+        return true;
+    }
+
+    function resetBrickIdTo(uint _start) 
+        public onlyOwner returns (uint) 
+    {
         brickId = _start;
         return brickId;
     }      
