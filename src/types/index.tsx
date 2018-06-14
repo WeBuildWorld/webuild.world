@@ -1,32 +1,35 @@
 export interface IStoreState {
-	bricks: IBrick[];
-	brickCount: number;
-	user?: ICredential;
-	networkStatus?: any;
+  bricks: IBrick[];
+  brickCount: number;
+  user?: ICredential;
+  networkStatus?: any;
 }
 
 export interface ICredential {
-	githubId?: string;
+  githubId?: string;
 }
 
 export interface IBrick {
-	url: string;
-	title: string;
-	description?: string;
-	value: number;
-	owner: IBuilder;
-	builders?: IBuilder[];
-	status: BrikStatus;
-	tags?: string[];
+  url: string;
+  title: string;
+  description?: string;
+  value: number | string;
+  owner: IBuilder | string;
+  builders?: IBuilder[];
+  status: BrikStatus;
+  tags?: string[];
+  dateCreated?: Date | number;
+  dateCompleted?: Date | number;
+  winner?: string;
 }
 
 export enum BrikStatus {
-	Inactive,
-	Open,
-	Closed,
+  Inactive,
+  Open,
+  Closed
 }
 
 export interface IBuilder {
-	nickName: string;
-	walletAddress: string;
+  nickName: string;
+  walletAddress: string;
 }

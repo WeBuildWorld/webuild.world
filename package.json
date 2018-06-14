@@ -3,14 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/history": "^4.6.2",
-    "@types/react-redux": "^6.0.0",
-    "@types/react-router-redux": "^5.0.15",
-    "@types/react-test-renderer": "^16.0.1",
-    "@types/redux-logger": "^3.0.6",
+    "@types/lodash": "^4.14.109",
     "babel-polyfill": "^6.26.0",
+    "bignumber.js": "^7.2.1",
     "bulma": "^0.7.1",
     "history": "^4.7.2",
+    "lodash": "^4.17.10",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-github-login": "^1.0.3",
@@ -35,10 +33,18 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/bignumber.js": "^5.0.0",
+    "@types/bluebird": "^3.5.20",
+    "@types/history": "^4.6.2",
     "@types/jest": "^22.2.3",
     "@types/node": "^10.1.4",
     "@types/react": "^16.3.14",
     "@types/react-dom": "^16.0.5",
+    "@types/react-redux": "^6.0.0",
+    "@types/react-router-redux": "^5.0.15",
+    "@types/react-test-renderer": "^16.0.1",
+    "@types/redux-logger": "^3.0.6",
+    "@types/web3": "^1.0.0",
     "typescript": "^2.8.3",
     "web3-typescript-typings": "^0.10.2"
   }

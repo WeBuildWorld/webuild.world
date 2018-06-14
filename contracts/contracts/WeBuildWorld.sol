@@ -37,9 +37,14 @@ contract WeBuildWord is Manageable, Ownable {
     uint public brickId = 1000000;
     mapping (uint => Brick) public bricks;
     string public constant VERSION = "0.1";
+    uint[] public brickIds;
 
     function () public payable {
         revert();
+    }
+
+    function getBrickIds() external view returns(uint[]) {
+        return brickIds;
     }
 
     function addBrick(string _title, string _url, string _description) 
@@ -61,6 +66,7 @@ contract WeBuildWord is Manageable, Ownable {
             winner: address(0x0)
         });
         id = getBrickId();
+        brickIds.push(id);
         bricks[brickId] = brick;
     }
 
@@ -68,7 +74,7 @@ contract WeBuildWord is Manageable, Ownable {
         public onlyBrickOwner(_brickId) payable
         returns (bool success) 
     {
-        require(bricks[_brickId].status != BrickStatus.Completed);
+        require(bricks[_brickId].status == BrickStatus.Active);
 
         bricks[_brickId].title = _title;
         bricks[_brickId].url = _url;
