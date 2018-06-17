@@ -1,25 +1,26 @@
-import { Dispatch } from 'redux';
-import * as constants from '../../constants'
+import * as constants from "../../constants";
+import { addBrick } from "../../services/BrickService";
+import { IBrick } from "../../types";
 
 export interface IAddBrick {
-	type: constants.ADD_BRICK | constants.GET_PAGE_TITLE
+  type: constants.ADD_BRICK | constants.GET_PAGE_TITLE;
 }
 
 export type AddBrickAction = Promise<IAddBrick>; // | ;
 
-export function addBrick() {
-	alert('Now let\'s call smart contract.');
-	return async (dispatch: Dispatch<IAddBrick>) => {
-		dispatch({
-			type: constants.ADD_BRICK,
-		});
-	};
+export function postBrick(brick: IBrick) {
+  return async (dispatch: any): Promise<number> => {
+    const payload = await addBrick(brick);
+    return dispatch({
+      payload,
+      type: constants.ADD_BRICK
+    });
+  };
 }
 
 export function getPageTitle(url: string) {
-	alert('Hello')
-	return async (dispatch: any) => {
-		const body = await fetch(url, { mode: 'no-cors' });
-		return body;
-	};
+  return async (dispatch: any) => {
+    const body = await fetch(url, { mode: "no-cors" });
+    return body;
+  };
 }

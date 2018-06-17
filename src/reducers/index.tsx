@@ -1,4 +1,4 @@
-import { GET_BRICKS } from "../constants";
+import { ADD_BRICK, GET_BRICKS } from "../constants";
 import { IStoreState } from "../types/index";
 
 const defaultState: IStoreState = {
@@ -16,6 +16,8 @@ export default function(
       break;
     }
     case GET_BRICKS:
+      return { ...state, ...action.payload };
+    case ADD_BRICK:
       return { ...state, ...action.payload };
   }
 

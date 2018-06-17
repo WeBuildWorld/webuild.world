@@ -45,3 +45,22 @@ export const getBricks = async (start: number, length: number) => {
     )).map(toBrick)
   };
 };
+
+export const addBrick = async (brick: IBrick): Promise<number> => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  const options = { value: rpcService.rpc.toWei(brick.value, "ether") };
+  const newId = (await Promisify((cb: any) => {
+    return contract.addBrick(
+      brick.title,
+      brick.url || "",
+      brick.description || "",
+      options,
+      cb
+    );
+  })) as number;
+
+  return newId;
+};
