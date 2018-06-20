@@ -10,17 +10,10 @@ export type AddBrickAction = Promise<IAddBrick>; // | ;
 
 export function postBrick(brick: IBrick) {
   return async (dispatch: any): Promise<number> => {
-    const payload = await addBrick(brick);
+    const hash = await addBrick(brick);
     return dispatch({
-      payload,
+      payload: { hash },
       type: constants.ADD_BRICK
     });
-  };
-}
-
-export function getPageTitle(url: string) {
-  return async (dispatch: any) => {
-    const body = await fetch(url, { mode: "no-cors" });
-    return body;
   };
 }

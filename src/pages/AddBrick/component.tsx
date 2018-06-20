@@ -5,7 +5,7 @@ import "./style.css";
 
 export interface IProps {
   addBrick?: (brick: IBrick) => void;
-  getPageTitle?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  hash?: string;
 }
 
 interface IState {
@@ -14,14 +14,33 @@ interface IState {
 
 export default class Bricks extends React.Component<IProps, IState> {
   public state = {
-    brick: {
-      owner: "",
-      status: 0,
-      title: "",
-      url: "",
-      value: 0.011
-    }
+    brick: { owner: "", status: 0, title: "", url: "", value: 0.011 }
   };
+
+  public constructor(props: IProps) {
+    super(props);
+
+    this.setBrickState = this.setBrickState.bind(this);
+  }
+
+  public componentDidUpdate(prevProps: IProps) {
+    if (this.props.hash) {
+      alert("Brick is being mined.");
+      location.href = "/";
+    }
+  }
+
+  public setBrickState(
+    event:
+      | React.FormEvent<HTMLInputElement>
+      | React.FormEvent<HTMLTextAreaElement>
+  ) {
+    const field = event.currentTarget.name;
+    const value = event.currentTarget.value;
+    const currentState = this.state.brick;
+    currentState[field] = value;
+    return this.setState({ brick: currentState });
+  }
 
   public render() {
     return (
@@ -33,8 +52,9 @@ export default class Bricks extends React.Component<IProps, IState> {
               <input
                 className="input"
                 type="text"
+                name="url"
                 placeholder="GitHub Link"
-                onBlur={this.props.getPageTitle}
+                onChange={this.setBrickState}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-link" />
@@ -44,7 +64,13 @@ export default class Bricks extends React.Component<IProps, IState> {
           <div className="field">
             <label className="label level">Title</label>
             <div className="control has-icons-left">
-              <input className="input" type="text" placeholder="Title" />
+              <input
+                className="input"
+                type="text"
+                placeholder="Title"
+                name="title"
+                onChange={this.setBrickState}
+              />
               <span className="icon is-small is-left">
                 <i className="fa fa-user" />
               </span>
@@ -53,14 +79,25 @@ export default class Bricks extends React.Component<IProps, IState> {
           <div className="field">
             <label className="label level">Description</label>
             <div className="control has-icons-left">
-              <textarea className="textarea" placeholder="Brief Description" />
+              <textarea
+                className="textarea"
+                name="description"
+                placeholder="Brief Description"
+                onChange={this.setBrickState}
+              />
             </div>
           </div>
           <div className="level">
             <div className="field">
               <label className="label">ETH Value</label>
               <div className="control has-icons-left">
-                <input className="input" type="text" placeholder="ETH" />
+                <input
+                  className="input"
+                  type="text"
+                  placeholder="ETH"
+                  name="value"
+                  onChange={this.setBrickState}
+                />
                 <span className="icon is-small is-left">
                   <i className="fab fa-ethereum" />
                 </span>

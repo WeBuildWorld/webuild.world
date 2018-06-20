@@ -13,9 +13,7 @@ export function mapStateToProps({
 
 export function mapDispatchToProps(dispatch: Dispatch<actions.IAddBrick>) {
   return {
-    addBrick: (brick: IBrick) => actions.postBrick(brick)(dispatch),
-    getPageTitle: (e: React.FocusEvent<HTMLInputElement>) =>
-      actions.getPageTitle(e.target.value)(dispatch)
+    addBrick: (brick: IBrick) => actions.postBrick(brick)(dispatch)
   };
 }
 
