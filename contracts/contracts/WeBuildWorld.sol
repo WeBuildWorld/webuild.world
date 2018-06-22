@@ -2,17 +2,23 @@
 pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
+import "solidity-array-utils/contracts/AddressArrayUtils.sol";
+import "solidity-array-utils/contracts/UIntArrayUtils.sol";
 // import "zeppelin-solidity/contracts/token/ERC20/PausableToken.sol";
 import "./libs/Extendable.sol";
 import "./Provider.sol";
 
 
 contract WeBuildWord is Extendable {
+    using AddressArrayUtils for address[];
+    using UIntArrayUtils for uint[];
+    using SafeMath for uint256;	
+
     string public constant VERSION = "0.1";
     uint public constant DONAMITOR = 10000;
     
     modifier onlyBrickOwner(uint _brickId) {
-        require(getProvider().isBrickOwner(_brickId, msg.sender));
+        require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
         _;
     }
 
@@ -20,8 +26,18 @@ contract WeBuildWord is Extendable {
         revert();
     }
 
-    function getBrickIds() public view returns(uint[]) {
-        return getProvider().getBrickIds();
+    function getBrickIds() public view returns(uint[] brickIds) {
+        address[] memory providers = getAllProviders();
+        uint[] memory temp;
+        uint length = 0;
+        for (uint i = 0; i < providers.length; i++) {
+            Provider provider = Provider(providers[i]);
+            temp = provider.getBrickIds();
+            
+            for (uint j = 0; j < temp.length; j++) {
+                brickIds[length++] = temp[j];
+            }
+        }
     }
 
     function addBrick(string _title, string _url, string _description) 
@@ -29,14 +45,14 @@ contract WeBuildWord is Extendable {
         returns (uint id)
     {
         id = getId();
-        require(getProvider().addBrick(id, _title, _url, _description, msg.value));
+        require(getProvider(id).addBrick(id, _title, _url, _description, msg.value));
     }
 
     function changeBrick(uint _brickId, string _title, string _url, string _description) 
         public onlyBrickOwner(_brickId) payable
         returns (bool success) 
     {
-        return getProvider().changeBrick(_brickId, _title, _url, _description, msg.value);
+        return getProvider(_brickId).changeBrick(_brickId, _title, _url, _description, msg.value);
     }
 
     // msg.value is tip.
@@ -45,7 +61,7 @@ contract WeBuildWord is Extendable {
         payable
         returns (bool success) 
     {
-        uint total = getProvider().accept(_brickId, _winners, _weights, msg.value);
+        uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, msg.value);
         require(total > 0);
         for (uint i=0; i < _winners.length; i++) {
             _winners[i].transfer(total * _weights[i] / DONAMITOR);    
@@ -58,7 +74,7 @@ contract WeBuildWord is Extendable {
         public onlyBrickOwner(_brickId) 
         returns (bool success) 
     {
-        uint value = getProvider().cancel(_brickId);
+        uint value = getProvider(_brickId).cancel(_brickId);
         require(value > 0);
 
         msg.sender.transfer(value);  
@@ -68,11 +84,11 @@ contract WeBuildWord is Extendable {
     function startWork(uint _brickId, string _builderId, string _nickName) 
         public returns(bool success)
     {
-        return getProvider().startWork(_brickId, _builderId, _nickName);    
+        return getProvider(_brickId).startWork(_brickId, _builderId, _nickName);    
     }
 
-    function getProvider() private view returns (Provider) {
-        return Provider(getCurrentProvider());
+    function getProvider(uint _brickId) private view returns (Provider) {
+        return Provider(getProviderById(_brickId));
     }
 
     function getId() private returns (uint) {

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity 0.4.24;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
@@ -14,20 +14,23 @@ contract Extendable is Ownable {
     uint16 public currentVersion = 0;
     mapping (uint => ProviderItem) internal providers;
 
-    constructor() public {
-        providers[currentVersion].start = currentId;
-        providers[currentVersion].end = 10 ** 18;
-        providers[currentVersion].providerAddress = 0x0;
-    }
-
     function upgradeProvider(address _address) 
         public onlyOwner returns (bool) 
     {
         require(_address != 0x0);
+
+        // first time
+        if (providers[currentVersion].providerAddress == 0x0) {
+            providers[currentVersion].start = currentId;
+            providers[currentVersion].end = 10 ** 18;
+            providers[currentVersion].providerAddress = 0x0;
+            return true;            
+        }
+
         providers[currentVersion].end = currentId;
 
         ProviderItem memory newProvider = ProviderItem({
-            start: currentId ++,
+            start: currentId++,
             end: 10**18,
             providerAddress: _address
         });
@@ -43,9 +46,29 @@ contract Extendable is Ownable {
         return (provider.start, provider.end, provider.providerAddress);
     }
 
+    function getProviderById(uint _id) public view returns (address) {
+        for (uint i = currentVersion; i > 0; i--) {
+            ProviderItem memory item = providers[i];
+            if (item.start <= _id && item.end > _id) {
+                return item.providerAddress;
+            }
+        }
+
+        return getCurrentProvider();
+    }
+
     function getCurrentProvider() public view returns(address) {
         return providers[currentVersion].providerAddress;
     }   
+
+    function getAllProviders() public view returns (address[] memory addresses) {
+        addresses = new address[](currentVersion + 1);
+        for (uint i=0; i < currentVersion; i++) {
+            addresses[i] = providers[i].providerAddress;
+        }
+
+        return addresses;
+    }
 
     function getVersion() private returns (uint) {
         return currentVersion++;

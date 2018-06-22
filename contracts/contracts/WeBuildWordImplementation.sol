@@ -27,8 +27,8 @@ contract WeBuildWordImplementation is Ownable, Provider {
         uint dateCreated;
         uint dateCompleted;
         uint32 builders;
-        address[] winners;
         BrickStatus status;
+        address[] winners;
     }
 
     address public main = 0x0;
@@ -160,6 +160,33 @@ contract WeBuildWordImplementation is Ownable, Provider {
     function getBrickIds() external view returns(uint[]) {
         return brickIds;
     }    
+
+    function getBrick(uint _brickId) external view returns (
+        string title,
+        string url,
+        string description,
+        address owner,
+        uint value,
+        uint dateCreated,
+        uint dateCompleted,
+        uint32 builders,
+        uint32 status,
+        address[] winners        
+    ) {
+        Brick memory brick = bricks[_brickId];
+        return (
+            brick.title,
+            brick.url,
+            brick.description,
+            brick.owner,
+            brick.value,
+            brick.dateCreated,
+            brick.dateCompleted,
+            brick.builders,
+            uint32(brick.status),
+            brick.winners
+        );
+    }
 
     function setMain(address _address) public onlyOwner returns(bool) {
         main = _address;

@@ -9,4 +9,16 @@ interface Provider {
     function cancel(uint _brickId) external returns (uint value);
     function startWork(uint _brickId, string _builderId, string _nickName) external returns(bool success);
     function getBrickIds() external view returns(uint[]);
+    function getBrick(uint _brickId) external view returns(
+        string title,
+        string url,
+        string description,
+        address owner,
+        uint value,
+        uint dateCreated,
+        uint dateCompleted,
+        uint32 builders,
+        uint32 status,
+        address[] winners
+    );
 }
