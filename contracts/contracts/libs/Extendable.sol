@@ -63,7 +63,7 @@ contract Extendable is Ownable {
 
     function getAllProviders() public view returns (address[] memory addresses) {
         addresses = new address[](currentVersion + 1);
-        for (uint i=0; i < currentVersion; i++) {
+        for (uint i=0; i < currentVersion + 1; i++) {
             addresses[i] = providers[i].providerAddress;
         }
 
