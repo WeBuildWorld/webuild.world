@@ -2,12 +2,12 @@
 pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 // import "zeppelin-solidity/contracts/token/ERC20/PausableToken.sol";
-import "./libs/Extendable.sol";
 import "./Provider.sol";
 
 
-contract WeBuildWordImplementation is Extendable, Provider {
+contract WeBuildWordImplementation is Ownable, Provider {
     using SafeMath for uint256;	
 
     enum BrickStatus { Inactive, Active, Completed, Cancelled }
@@ -52,9 +52,9 @@ contract WeBuildWordImplementation is Extendable, Provider {
         return bricks[_brickId].owner == _address;
     }    
 
-    function addBrick(string _title, string _url, string _description, uint _value) 
+    function addBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
         external onlyMain
-        returns (uint id)
+        returns (bool success)
     {
         // greater than 0.01 eth
         require(_value > 10 ** 16);
@@ -72,9 +72,10 @@ contract WeBuildWordImplementation is Extendable, Provider {
             builders: 0,
             winners: new address[](0)
         });
-        id = getBrickId();
-        brickIds.push(id);
-        bricks[brickId] = brick;
+        brickIds.push(_brickId);
+        bricks[_brickId] = brick;
+
+        return true;
     }
 
     function changeBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
@@ -138,13 +139,6 @@ contract WeBuildWordImplementation is Extendable, Provider {
         return bricks[_brickId].value;
     }
 
-    function resetBrickIdTo(uint _start) 
-        external onlyOwner returns (uint) 
-    {
-        brickId = _start;
-        return brickId;
-    }      
-
     function startWork(uint _brickId, string _builderId, string _nickName) 
         external onlyMain returns(bool success)
     {
@@ -170,10 +164,5 @@ contract WeBuildWordImplementation is Extendable, Provider {
     function setMain(address _address) public onlyOwner returns(bool) {
         main = _address;
         return true;
-    }    
-
-    function getBrickId() private returns (uint) {
-        return brickId++;
-    }  
-    
+    }     
 }
