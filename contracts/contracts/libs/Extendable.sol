@@ -23,7 +23,7 @@ contract Extendable is Ownable {
         if (providers[currentVersion].providerAddress == 0x0) {
             providers[currentVersion].start = currentId;
             providers[currentVersion].end = 10 ** 18;
-            providers[currentVersion].providerAddress = 0x0;
+            providers[currentVersion].providerAddress = _address;
             return true;            
         }
 
