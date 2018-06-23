@@ -12,6 +12,7 @@
   "dependencies": {
     "sol-merger": "^0.1.2",
     "solhint": "^1.2.1",
+    "solidity-utils": "https://github.com/sagivo/solidity-utils.git",
     "zeppelin-solidity": "^1.10.0"
   },
   "devDependencies": {

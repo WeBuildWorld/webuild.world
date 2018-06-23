@@ -16,7 +16,7 @@ export function mapStateToProps({
 
 export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {
   return {
-    getBricks: (start: number = 0, length: number = 10) =>
+    getBricks: (start: number = 0, length: number = 100) =>
       actions.retrieveBricks(start, length)(dispatch)
   };
 }

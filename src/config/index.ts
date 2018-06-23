@@ -1,13 +1,78 @@
 export default {
   CONTRACT_ABI: [
     {
+      constant: false,
+      inputs: [
+        {
+          name: "_address",
+          type: "address"
+        }
+      ],
+      name: "upgradeProvider",
+      outputs: [
+        {
+          name: "",
+          type: "bool"
+        }
+      ],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "_version",
+          type: "uint256"
+        }
+      ],
+      name: "getProviderDetails",
+      outputs: [
+        {
+          name: "_start",
+          type: "uint256"
+        },
+        {
+          name: "_end",
+          type: "uint256"
+        },
+        {
+          name: "_address",
+          type: "address"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "_id",
+          type: "uint256"
+        }
+      ],
+      name: "getProviderById",
+      outputs: [
+        {
+          name: "",
+          type: "address"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+    },
+    {
       constant: true,
       inputs: [],
-      name: "brickId",
+      name: "getAllProviders",
       outputs: [
         {
-          name: "",
-          type: "uint256"
+          name: "addresses",
+          type: "address[]"
         }
       ],
       payable: false,
@@ -16,68 +81,12 @@ export default {
     },
     {
       constant: true,
-      inputs: [
-        {
-          name: "",
-          type: "uint256"
-        }
-      ],
-      name: "bricks",
-      outputs: [
-        {
-          name: "title",
-          type: "string"
-        },
-        {
-          name: "url",
-          type: "string"
-        },
-        {
-          name: "description",
-          type: "string"
-        },
-        {
-          name: "owner",
-          type: "address"
-        },
-        {
-          name: "status",
-          type: "uint8"
-        },
-        {
-          name: "value",
-          type: "uint256"
-        },
-        {
-          name: "dateCreated",
-          type: "uint256"
-        },
-        {
-          name: "dateCompleted",
-          type: "uint256"
-        },
-        {
-          name: "winner",
-          type: "address"
-        }
-      ],
-      payable: false,
-      stateMutability: "view",
-      type: "function"
-    },
-    {
-      constant: true,
-      inputs: [
-        {
-          name: "",
-          type: "uint256"
-        }
-      ],
-      name: "brickIds",
+      inputs: [],
+      name: "getCurrentProvider",
       outputs: [
         {
           name: "",
-          type: "uint256"
+          type: "address"
         }
       ],
       payable: false,
@@ -96,6 +105,20 @@ export default {
     {
       constant: true,
       inputs: [],
+      name: "DONAMITOR",
+      outputs: [
+        {
+          name: "",
+          type: "uint256"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+    },
+    {
+      constant: true,
+      inputs: [],
       name: "owner",
       outputs: [
         {
@@ -109,17 +132,26 @@ export default {
     },
     {
       constant: true,
-      inputs: [
-        {
-          name: "",
-          type: "uint8"
-        }
-      ],
-      name: "subContracts",
+      inputs: [],
+      name: "currentVersion",
       outputs: [
         {
           name: "",
-          type: "address"
+          type: "uint16"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: "currentId",
+      outputs: [
+        {
+          name: "",
+          type: "uint256"
         }
       ],
       payable: false,
@@ -136,29 +168,6 @@ export default {
       ],
       name: "transferOwnership",
       outputs: [],
-      payable: false,
-      stateMutability: "nonpayable",
-      type: "function"
-    },
-    {
-      constant: false,
-      inputs: [
-        {
-          name: "_id",
-          type: "uint8"
-        },
-        {
-          name: "_providerAddress",
-          type: "address"
-        }
-      ],
-      name: "setProvider",
-      outputs: [
-        {
-          name: "success",
-          type: "bool"
-        }
-      ],
       payable: false,
       stateMutability: "nonpayable",
       type: "function"
@@ -212,29 +221,21 @@ export default {
       type: "event"
     },
     {
-      anonymous: false,
+      constant: true,
       inputs: [
         {
-          indexed: false,
-          name: "name",
-          type: "uint8"
+          name: "_skip",
+          type: "uint256"
         },
         {
-          indexed: false,
-          name: "hash",
-          type: "address"
+          name: "_take",
+          type: "uint256"
         }
       ],
-      name: "ProviderUpdated",
-      type: "event"
-    },
-    {
-      constant: true,
-      inputs: [],
       name: "getBrickIds",
       outputs: [
         {
-          name: "",
+          name: "brickIds",
           type: "uint256[]"
         }
       ],
@@ -308,8 +309,12 @@ export default {
           type: "uint256"
         },
         {
-          name: "_builderAddress",
-          type: "address"
+          name: "_winners",
+          type: "address[]"
+        },
+        {
+          name: "_weights",
+          type: "uint256[]"
         }
       ],
       name: "accept",
@@ -346,21 +351,84 @@ export default {
       constant: false,
       inputs: [
         {
-          name: "_start",
+          name: "_brickId",
           type: "uint256"
+        },
+        {
+          name: "_builderId",
+          type: "string"
+        },
+        {
+          name: "_nickName",
+          type: "string"
         }
       ],
-      name: "resetBrickIdTo",
+      name: "startWork",
       outputs: [
         {
-          name: "",
-          type: "uint256"
+          name: "success",
+          type: "bool"
         }
       ],
       payable: false,
       stateMutability: "nonpayable",
       type: "function"
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        }
+      ],
+      name: "getBrick",
+      outputs: [
+        {
+          name: "title",
+          type: "string"
+        },
+        {
+          name: "url",
+          type: "string"
+        },
+        {
+          name: "description",
+          type: "string"
+        },
+        {
+          name: "owner",
+          type: "address"
+        },
+        {
+          name: "value",
+          type: "uint256"
+        },
+        {
+          name: "dateCreated",
+          type: "uint256"
+        },
+        {
+          name: "dateCompleted",
+          type: "uint256"
+        },
+        {
+          name: "builders",
+          type: "uint32"
+        },
+        {
+          name: "status",
+          type: "uint32"
+        },
+        {
+          name: "winners",
+          type: "address[]"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     }
   ],
-  CONTRACT_ADDRESS: "0xacDf12f5d2399aAc089981DE900588aC8465DF2C"
+  CONTRACT_ADDRESS: "0x6b47a963dDc5801312f64a92C2e9ae1Df6f68aC1"
 };

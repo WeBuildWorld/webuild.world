@@ -6,18 +6,16 @@ import rpcService from "./RpcService";
 
 export const toBrick = (arr: any[]): IBrick => {
   const brick = {
-    dateCompleted: rpcService.rpc.toBigNumber(arr[7]).toNumber(),
-    dateCreated: rpcService.rpc.toBigNumber(arr[6]).toNumber(),
+    builders: arr[7].toNumber(),
+    dateCompleted: arr[6].toNumber(),
+    dateCreated: arr[5].toNumber(),
     description: arr[2],
     owner: rpcService.rpc.toHex(arr[3]),
-    status: rpcService.rpc.toBigNumber(arr[4]).toNumber(),
+    status: arr[8].toNumber(),
     title: arr[0],
     url: arr[1],
-    value: rpcService.rpc.fromWei(
-      rpcService.rpc.toBigNumber(arr[5]).toString(),
-      "ether"
-    ),
-    winner: rpcService.rpc.toHex(arr[8])
+    value: rpcService.rpc.fromWei(arr[4].toString(), "ether"),
+    winner: rpcService.rpc.toHex(arr[9])
   } as IBrick;
 
   // tslint:disable-next-line
@@ -30,10 +28,11 @@ export const getBricks = async (start: number, length: number) => {
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS
   );
-  let ids: number[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIds(cb)
+  let ids: any[] = await Promisify<number[]>((cb: any) =>
+    contract.getBrickIds(start, length, cb)
   );
   ids = _(ids)
+    .filter(id => id.toNumber() !== 0)
     .drop(start)
     .take(length)
     .value();
@@ -41,7 +40,9 @@ export const getBricks = async (start: number, length: number) => {
   return {
     brickCount: ids.length,
     bricks: (await Promise.all(
-      ids.map(async id => await Promisify((cb: any) => contract.bricks(id, cb)))
+      ids.map(
+        async id => await Promisify((cb: any) => contract.getBrick(id, cb))
+      )
     )).map(toBrick)
   };
 };
