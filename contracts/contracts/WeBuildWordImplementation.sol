@@ -3,12 +3,13 @@ pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-// import "zeppelin-solidity/contracts/token/ERC20/PausableToken.sol";
+import "solidity-utils/contracts/lib/Dictionary.sol";
 import "./Provider.sol";
 
 
 contract WeBuildWordImplementation is Ownable, Provider {
     using SafeMath for uint256;	
+    using Dictionary for Dictionary.Data;
 
     enum BrickStatus { Inactive, Active, Completed, Cancelled }
 
@@ -37,7 +38,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
     mapping(uint => mapping(address => Builder)) public brickBuilders;
 
     string public constant VERSION = "0.1";
-    uint[] public brickIds;
+    Dictionary.Data public brickIds;
 
     modifier onlyMain() {
         require(msg.sender == main);
@@ -58,6 +59,9 @@ contract WeBuildWordImplementation is Ownable, Provider {
     {
         // greater than 0.01 eth
         require(_value > 10 ** 16);
+        // solhint-disable-next-line
+        require(bricks[_brickId].owner == 0x0 || bricks[_brickId].owner == tx.origin);
+
         Brick memory brick = Brick({
             title: _title,
             url: _url,
@@ -72,7 +76,11 @@ contract WeBuildWordImplementation is Ownable, Provider {
             builders: 0,
             winners: new address[](0)
         });
-        brickIds.push(_brickId);
+
+        // only add when it's new
+        if (bricks[_brickId].owner == 0x0) {
+            brickIds.insertBeginning(_brickId, "");
+        }
         bricks[_brickId] = brick;
 
         return true;
@@ -158,7 +166,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
     }
 
     function getBrickIds() external view returns(uint[]) {
-        return brickIds;
+        return brickIds.keys();
     }    
 
     function getBrick(uint _brickId) external view returns (

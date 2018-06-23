@@ -27,10 +27,10 @@ contract Extendable is Ownable {
             return true;            
         }
 
-        providers[currentVersion].end = currentId;
+        providers[currentVersion].end = currentId - 1;
 
         ProviderItem memory newProvider = ProviderItem({
-            start: currentId++,
+            start: currentId,
             end: 10**18,
             providerAddress: _address
         });

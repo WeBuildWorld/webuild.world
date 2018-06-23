@@ -2,16 +2,11 @@
 pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
-import "solidity-array-utils/contracts/AddressArrayUtils.sol";
-import "solidity-array-utils/contracts/UIntArrayUtils.sol";
-// import "zeppelin-solidity/contracts/token/ERC20/PausableToken.sol";
 import "./libs/Extendable.sol";
 import "./Provider.sol";
 
 
 contract WeBuildWord is Extendable {
-    using AddressArrayUtils for address[];
-    using UIntArrayUtils for uint[];
     using SafeMath for uint256;	
 
     string public constant VERSION = "0.1";
@@ -26,18 +21,29 @@ contract WeBuildWord is Extendable {
         revert();
     }
 
-    function getBrickIds() public view returns(uint[] brickIds) {
+    function getBrickIds(uint _skip, uint _take) public view returns(uint[] brickIds) {
         address[] memory providers = getAllProviders();
         uint[] memory temp;
-        uint length = 0;
+        brickIds = new uint[](_take);
+        uint length = 0; 
+        uint count = 0;
+
         for (uint i = 0; i < providers.length; i++) {
             Provider provider = Provider(providers[i]);
             temp = provider.getBrickIds();
             
             for (uint j = 0; j < temp.length; j++) {
-                brickIds[length++] = temp[j];
+                if (count >= _take) {
+                    break;
+                }
+                if (length >= _skip && count <= _take) {
+                    brickIds[length++] = temp[j];
+                    count++;
+                }
             }
         }
+
+        return brickIds;
     }
 
     function addBrick(string _title, string _url, string _description) 
@@ -85,6 +91,21 @@ contract WeBuildWord is Extendable {
         public returns(bool success)
     {
         return getProvider(_brickId).startWork(_brickId, _builderId, _nickName);    
+    }
+
+    function getBrick(uint _brickId) public view returns (
+        string title,
+        string url,
+        string description,
+        address owner,
+        uint value,
+        uint dateCreated,
+        uint dateCompleted,
+        uint32 builders,
+        uint32 status,
+        address[] winners        
+    ) {
+        return getProvider(_brickId).getBrick(_brickId);
     }
 
     function getProvider(uint _brickId) private view returns (Provider) {
