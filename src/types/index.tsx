@@ -10,6 +10,7 @@ export interface ICredential {
 }
 
 export interface IBrick {
+  id?: any;
   url: string;
   title: string;
   description?: string;

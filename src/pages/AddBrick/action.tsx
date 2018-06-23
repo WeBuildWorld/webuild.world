@@ -3,7 +3,7 @@ import { addBrick } from "../../services/BrickService";
 import { IBrick } from "../../types";
 
 export interface IAddBrick {
-  type: constants.ADD_BRICK | constants.GET_PAGE_TITLE;
+  type: constants.ADD_BRICK;
 }
 
 export type AddBrickAction = Promise<IAddBrick>; // | ;

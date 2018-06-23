@@ -10,6 +10,7 @@ export const toBrick = (arr: any[]): IBrick => {
     dateCompleted: arr[6].toNumber(),
     dateCreated: arr[5].toNumber(),
     description: arr[2],
+    id: (arr as any).id.toNumber(),
     owner: rpcService.rpc.toHex(arr[3]),
     status: arr[8].toNumber(),
     title: arr[0],
@@ -40,9 +41,14 @@ export const getBricks = async (start: number, length: number) => {
   return {
     brickCount: ids.length,
     bricks: (await Promise.all(
-      ids.map(
-        async id => await Promisify((cb: any) => contract.getBrick(id, cb))
-      )
+      ids.map(async id => {
+        const result: any = await Promisify((cb: any) =>
+          contract.getBrick(id, cb)
+        );
+        result.id = id;
+
+        return result;
+      })
     )).map(toBrick)
   };
 };
@@ -64,4 +70,21 @@ export const addBrick = async (brick: IBrick): Promise<number> => {
   })) as number;
 
   return newId;
+};
+
+export const startWork = async (
+  brickId: number,
+  builderId: string,
+  builderName: string
+): Promise<any> => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  const options = {};
+  const result = await Promisify((cb: any) => {
+    return contract.startWork(brickId, builderId, builderName, options, cb);
+  });
+
+  return result;
 };

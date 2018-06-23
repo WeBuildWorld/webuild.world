@@ -3,9 +3,19 @@ import { BrikStatus, IBrick } from "../../../types";
 
 export interface IProps {
   brick: IBrick;
+  startWork: (brickId: number) => Promise<void>;
 }
 
 export default class Brick extends React.Component<IProps, object> {
+  public constructor(props: IProps) {
+    super(props);
+    this.startWork = this.startWork.bind(this);
+  }
+
+  public startWork() {
+    this.props.startWork(this.props.brick.id);
+  }
+
   public render() {
     const { brick } = this.props;
 
@@ -49,7 +59,7 @@ export default class Brick extends React.Component<IProps, object> {
               </div>
               <br />
               <div className="level-item">
-                <a className="button is-info is-small">
+                <a className="button is-info is-small" onClick={this.startWork}>
                   <i className="fas fa-code-branch" />&nbsp;&nbsp;Start&nbsp;
                   Work&nbsp;&nbsp;
                 </a>
@@ -67,7 +77,11 @@ export default class Brick extends React.Component<IProps, object> {
           <div className="column is-one-quarter">
             <div className="tags has-addons">
               {brick.tags &&
-                brick.tags.map((tag) => (<span className="tag">{tag}</span>))}
+                brick.tags.map(tag => (
+                  <span key={tag} className="tag">
+                    {tag}
+                  </span>
+                ))}
             </div>
           </div>
         </div>
