@@ -49,7 +49,7 @@ contract Extendable is Ownable {
     function getProviderById(uint _id) public view returns (address) {
         for (uint i = currentVersion; i >= 0; i--) {
             ProviderItem memory item = providers[i];
-            if (item.start <= _id && item.end > _id) {
+            if (item.start <= _id && item.end >= _id) {
                 return item.providerAddress;
             }
         }

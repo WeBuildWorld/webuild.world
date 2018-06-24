@@ -461,5 +461,5 @@ export default {
       type: "function"
     }
   ],
-  CONTRACT_ADDRESS: "0xa45fA8Dc6dE28E974BCF66acf353a6738b4c190B"
+  CONTRACT_ADDRESS: "0x8831E9467a6DA1b49A9AaB772956132a855197b5"
 };
