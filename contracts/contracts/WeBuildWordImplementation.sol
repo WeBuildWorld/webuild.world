@@ -14,7 +14,8 @@ contract WeBuildWordImplementation is Ownable, Provider {
     enum BrickStatus { Inactive, Active, Completed, Cancelled }
 
     struct Builder {
-        bool joined;
+        address addr;
+        uint dateAdded;
         string key;
         string nickName;
     }
@@ -27,15 +28,15 @@ contract WeBuildWordImplementation is Ownable, Provider {
         uint value;
         uint dateCreated;
         uint dateCompleted;
-        uint32 builders;
+        uint32 numBuilders;
         BrickStatus status;
         address[] winners;
+        mapping (uint => Builder) builders;
     }
 
     address public main = 0x0;
     uint public brickId = 1000000;
     mapping (uint => Brick) public bricks;
-    mapping(uint => mapping(address => Builder)) public brickBuilders;
 
     string public constant VERSION = "0.1";
     Dictionary.Data public brickIds;
@@ -73,7 +74,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
             // solhint-disable-next-line 
             dateCreated: now,
             dateCompleted: 0,
-            builders: 0,
+            numBuilders: 0,
             winners: new address[](0)
         });
 
@@ -114,10 +115,17 @@ contract WeBuildWordImplementation is Ownable, Provider {
         // disallow to take to your own.
 
         uint total = 0;
+        bool included = false;
         for (uint i = 0; i < _winners.length; i++) {
             // solhint-disable-next-line
             require(_winners[i] != tx.origin);
-            require(brickBuilders[_brickId][_winners[i]].joined);
+            for (uint j =0; j < bricks[brickId].numBuilders; j++) {
+                if (bricks[_brickId].builders[j].addr == _winners[i]) {
+                    included = true;
+                    break;
+                }
+                require(included);
+            }
             total += _weights[i];
         }
 
@@ -147,20 +155,22 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return bricks[_brickId].value;
     }
 
-    function startWork(uint _brickId, string _builderId, string _nickName) 
+    function startWork(uint _brickId, string _builderId, string _nickName, address _builderAddress) 
         external onlyMain returns(bool success)
     {
-
+        require(_builderAddress != 0x0);
         require(bricks[_brickId].status == BrickStatus.Active);
         require(_brickId >= 0);
 
         // bricks[_brickId]
         Builder memory builder = Builder({
+            addr: _builderAddress,
             key: _builderId,
             nickName: _nickName,
-            joined: true
+            // solhint-disable-next-line
+            dateAdded: now
         });
-        brickBuilders[_brickId][msg.sender] = builder;
+        bricks[_brickId].builders[bricks[_brickId].numBuilders++] = builder;
 
         return true;
     }
@@ -190,11 +200,32 @@ contract WeBuildWordImplementation is Ownable, Provider {
             brick.value,
             brick.dateCreated,
             brick.dateCompleted,
-            brick.builders,
+            brick.numBuilders,
             uint32(brick.status),
             brick.winners
         );
     }
+
+    function getBrickBuilders(uint _brickId) external view returns (
+        address[] addresses,
+        uint[] dates,
+        bytes32[] keys,
+        bytes32[] names
+    )
+    {
+        // Brick memory brick = bricks[_brickId];
+        addresses = new address[](bricks[_brickId].numBuilders);
+        dates = new uint[](bricks[_brickId].numBuilders);
+        keys = new bytes32[](bricks[_brickId].numBuilders);
+        names = new bytes32[](bricks[_brickId].numBuilders);
+
+        for (uint i = 0; i < bricks[_brickId].numBuilders; i++) {
+            addresses[i] = bricks[_brickId].builders[i].addr;
+            dates[i] = bricks[_brickId].builders[i].dateAdded;
+            keys[i] = keccak256(abi.encodePacked(bricks[_brickId].builders[i].key));
+            names[i] = keccak256(abi.encodePacked(bricks[_brickId].builders[i].nickName));
+        }
+    }    
 
     function setMain(address _address) public onlyOwner returns(bool) {
         main = _address;

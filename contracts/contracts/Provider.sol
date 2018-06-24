@@ -7,7 +7,7 @@ interface Provider {
     function changeBrick(uint _brickId, string _title, string _url, string _description, uint _value) external returns (bool success);
     function accept(uint _brickId, address[] _builderAddresses, uint[] percentages, uint _additionalValue) external returns (uint total);
     function cancel(uint _brickId) external returns (uint value);
-    function startWork(uint _brickId, string _builderId, string _nickName) external returns(bool success);
+    function startWork(uint _brickId, string _builderId, string _nickName, address _builderAddress) external returns(bool success);
     function getBrickIds() external view returns(uint[]);
     function getBrick(uint _brickId) external view returns(
         string title,
@@ -20,5 +20,11 @@ interface Provider {
         uint32 builders,
         uint32 status,
         address[] winners
+    );
+    function getBrickBuilders(uint _brickId) external view returns (
+        address[] addresses,
+        uint[] dates,
+        bytes32[] keys,
+        bytes32[] names
     );
 }

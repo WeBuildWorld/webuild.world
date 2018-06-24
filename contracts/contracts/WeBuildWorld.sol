@@ -90,7 +90,7 @@ contract WeBuildWord is Extendable {
     function startWork(uint _brickId, string _builderId, string _nickName) 
         public returns(bool success)
     {
-        return getProvider(_brickId).startWork(_brickId, _builderId, _nickName);    
+        return getProvider(_brickId).startWork(_brickId, _builderId, _nickName, msg.sender);    
     }
 
     function getBrick(uint _brickId) public view returns (
@@ -106,6 +106,16 @@ contract WeBuildWord is Extendable {
         address[] winners        
     ) {
         return getProvider(_brickId).getBrick(_brickId);
+    }
+
+    function getBrickBuilders(uint _brickId) public view returns (
+        address[] addresses,
+        uint[] dates,
+        bytes32[] keys,
+        bytes32[] names
+    )
+    {
+        return getProvider(_brickId).getBrickBuilders(_brickId);
     }
 
     function getProvider(uint _brickId) private view returns (Provider) {
