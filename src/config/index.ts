@@ -428,7 +428,38 @@ export default {
       payable: false,
       stateMutability: "view",
       type: "function"
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        }
+      ],
+      name: "getBrickBuilders",
+      outputs: [
+        {
+          name: "addresses",
+          type: "address[]"
+        },
+        {
+          name: "dates",
+          type: "uint256[]"
+        },
+        {
+          name: "keys",
+          type: "bytes32[]"
+        },
+        {
+          name: "names",
+          type: "bytes32[]"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     }
   ],
-  CONTRACT_ADDRESS: "0x6b47a963dDc5801312f64a92C2e9ae1Df6f68aC1"
+  CONTRACT_ADDRESS: "0xa45fA8Dc6dE28E974BCF66acf353a6738b4c190B"
 };

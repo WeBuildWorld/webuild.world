@@ -52,9 +52,8 @@ export default class Brick extends React.Component<IProps, object> {
             <div className="level-right">
               <div className="level-item">
                 <div className="has-text-info is-inverted is-small">
-                  <i className="fas fa-wrench" />&nbsp;&nbsp;{
-                    (brick.builders || []).length
-                  }&nbsp; Builders&nbsp;&nbsp;
+                  <i className="fas fa-wrench" />&nbsp;&nbsp;{brick.builders}&nbsp;
+                  Builders&nbsp;&nbsp;
                 </div>
               </div>
               <br />
