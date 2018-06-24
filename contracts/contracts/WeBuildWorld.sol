@@ -25,21 +25,26 @@ contract WeBuildWord is Extendable {
         address[] memory providers = getAllProviders();
         uint[] memory temp;
         brickIds = new uint[](_take);
-        uint length = 0; 
-        uint count = 0;
+        uint counter = 0; 
+        uint taken = 0;
 
-        for (uint i = 0; i < providers.length; i++) {
-            Provider provider = Provider(providers[i]);
+        for (uint i = providers.length; i > 0; i--) {
+            if (taken >= _take) {
+                break;
+            }
+
+            Provider provider = Provider(providers[i-1]);
             temp = provider.getBrickIds();
             
             for (uint j = 0; j < temp.length; j++) {
-                if (count >= _take) {
+                if (taken >= _take) {
                     break;
                 }
-                if (length >= _skip && count <= _take) {
-                    brickIds[length++] = temp[j];
-                    count++;
+                if (counter >= _skip) {
+                    brickIds[taken] = temp[j];
+                    taken++;
                 }
+                counter++;
             }
         }
 
