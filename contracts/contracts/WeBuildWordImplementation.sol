@@ -35,7 +35,6 @@ contract WeBuildWordImplementation is Ownable, Provider {
     }
 
     address public main = 0x0;
-    uint public brickId = 1000000;
     mapping (uint => Brick) public bricks;
 
     string public constant VERSION = "0.1";
@@ -119,7 +118,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         for (uint i = 0; i < _winners.length; i++) {
             // solhint-disable-next-line
             require(_winners[i] != tx.origin);
-            for (uint j =0; j < bricks[brickId].numBuilders; j++) {
+            for (uint j =0; j < bricks[_brickId].numBuilders; j++) {
                 if (bricks[_brickId].builders[j].addr == _winners[i]) {
                     included = true;
                     break;
@@ -161,6 +160,16 @@ contract WeBuildWordImplementation is Ownable, Provider {
         require(_builderAddress != 0x0);
         require(bricks[_brickId].status == BrickStatus.Active);
         require(_brickId >= 0);
+
+        bool included = false;
+
+        for (uint i = 0; i < bricks[_brickId].numBuilders; i++) {
+            if (bricks[_brickId].builders[i].addr == _builderAddress) {
+                included = true;
+                break;
+            }
+        }
+        require(!included);
 
         // bricks[_brickId]
         Builder memory builder = Builder({

@@ -35,7 +35,7 @@ contract Extendable is Ownable {
             providerAddress: _address
         });
 
-        providers[getVersion()] = newProvider;
+        providers[++currentVersion] = newProvider;
 
         return true;
     }
@@ -47,7 +47,7 @@ contract Extendable is Ownable {
     }
 
     function getProviderById(uint _id) public view returns (address) {
-        for (uint i = currentVersion; i > 0; i--) {
+        for (uint i = currentVersion; i >= 0; i--) {
             ProviderItem memory item = providers[i];
             if (item.start <= _id && item.end > _id) {
                 return item.providerAddress;
@@ -63,14 +63,15 @@ contract Extendable is Ownable {
 
     function getAllProviders() public view returns (address[] memory addresses) {
         addresses = new address[](currentVersion + 1);
-        for (uint i=0; i < currentVersion + 1; i++) {
+        for (uint i=0; i <= currentVersion; i++) {
             addresses[i] = providers[i].providerAddress;
         }
 
         return addresses;
     }
 
-    function getVersion() private returns (uint) {
-        return currentVersion++;
+    function resetCurrentIdTo(uint _newId) public onlyOwner returns (bool success) {
+        currentId = _newId;
+        return true;
     }
 }
