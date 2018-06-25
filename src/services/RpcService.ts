@@ -1,4 +1,5 @@
 import * as Web3 from "web3";
+import config from "../config";
 
 let rpcConnection: Web3;
 
@@ -7,7 +8,9 @@ class RpcService {
 
   public constructor() {
     if (!rpcConnection) {
-      rpcConnection = (window as any).web3;
+      rpcConnection =
+        (window as any).web3 ||
+        new Web3(new Web3.providers.HttpProvider(config.network.kovan));
     }
     this.web3 = rpcConnection;
   }

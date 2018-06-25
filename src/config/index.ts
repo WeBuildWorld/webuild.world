@@ -1,3 +1,8 @@
+const MAINET_RPC_URL = "https://mainnet.infura.io/aJZ5aKsYEChL8ve7kFzC";
+const ROPSTEN_RPC_URL = "https://ropsten.infura.io/aJZ5aKsYEChL8ve7kFzC";
+const KOVAN_RPC_URL = "https://kovan.infura.io/aJZ5aKsYEChL8ve7kFzC";
+const RINKEBY_RPC_URL = "https://rinkeby.infura.io/aJZ5aKsYEChL8ve7kFzC";
+
 export default {
   CONTRACT_ABI: [
     {
@@ -461,5 +466,11 @@ export default {
       type: "function"
     }
   ],
-  CONTRACT_ADDRESS: "0x892C8bb526b0DA74FD5D27f6EF21aaFd76c80323"
+  CONTRACT_ADDRESS: "0x892C8bb526b0DA74FD5D27f6EF21aaFd76c80323",
+  network: {
+    kovan: KOVAN_RPC_URL,
+    mainnet: MAINET_RPC_URL,
+    rinkeby: RINKEBY_RPC_URL,
+    ropsten: ROPSTEN_RPC_URL
+  }
 };
