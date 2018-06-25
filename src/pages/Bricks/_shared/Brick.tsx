@@ -33,7 +33,7 @@ export default class Brick extends React.Component<IProps, object> {
         <div className="card-content">
           <div className="level">
             <div className="level-left">
-              <h4 className="title level-item">
+              <h4 className="title level-item is-5">
                 <a
                   href={brick.url}
                   target="_blank"
@@ -45,7 +45,7 @@ export default class Brick extends React.Component<IProps, object> {
             </div>
             <div className="level-right ethValue">
               <div className="tags has-addons nowrap level-item">
-                <span className="tag is-info">
+                <span className="tag is-grey">
                   <i className="fab fa-ethereum" />&nbsp;{brick.value} ETH
                 </span>
               </div>
@@ -57,7 +57,7 @@ export default class Brick extends React.Component<IProps, object> {
               <div className="level-item">
                 <div className="tags has-addons nowrap">
                   <span className="tag">STATUS</span>
-                  <span className="tag is-dark">
+                  <span className="tag is-info">
                     {BrikStatus[brick.status]}
                   </span>
                 </div>
@@ -71,10 +71,7 @@ export default class Brick extends React.Component<IProps, object> {
               </div>
               <br />
               <div className="level-item">
-                <a
-                  className="button is-button is-small"
-                  onClick={this.startWork}
-                >
+                <a className="button is-dark is-small" onClick={this.startWork}>
                   <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
                   Work&nbsp;&nbsp;
                 </a>
