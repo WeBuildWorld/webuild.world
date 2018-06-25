@@ -54,6 +54,8 @@ export const getBricks = async (start: number, length: number) => {
 };
 
 export const addBrick = async (brick: IBrick): Promise<number> => {
+  if (!rpcService.mainAccount) { throw new Error("Metamask required"); }
+
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS

@@ -20,6 +20,14 @@ class RpcService {
     return this.web3;
   }
 
+  public get mainAccount(): string | undefined {
+    return this.rpc.eth.defaultAccount;
+  }
+
+  public hasMainAccount(): boolean {
+    return !!this.mainAccount;
+  }
+
   public contract(abi: any, address: string): any {
     return this.rpc.eth.contract(abi).at(address);
   }

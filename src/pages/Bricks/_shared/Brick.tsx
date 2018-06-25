@@ -1,4 +1,5 @@
 import * as React from "react";
+import RpcService from "../../../services/RpcService";
 import { BrikStatus, IBrick } from "../../../types";
 
 export interface IProps {
@@ -12,7 +13,11 @@ export default class Brick extends React.Component<IProps, object> {
     this.startWork = this.startWork.bind(this);
   }
 
-  public startWork() {
+  public startWork(e: React.SyntheticEvent<HTMLAnchorElement>) {
+    if (!RpcService.hasMainAccount()) {
+      e.currentTarget.text = "Metamask needed.";
+      return;
+    }
     this.props.startWork(this.props.brick.id);
   }
 
