@@ -105,7 +105,7 @@ export default class Bricks extends React.Component<IProps, IState> {
             </div>
           </div>
           <button
-            className="button is-info"
+            className="button is-dark"
             onClick={
               // tslint:disable-next-line:jsx-no-lambda
               () => this.addBrick()
