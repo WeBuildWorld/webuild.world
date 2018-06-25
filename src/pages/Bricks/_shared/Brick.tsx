@@ -37,7 +37,7 @@ export default class Brick extends React.Component<IProps, object> {
                 <a
                   href={brick.url}
                   target="_blank"
-                  className="is-info is-small"
+                  className="is-link is-small"
                 >
                   {brick.title}
                 </a>
@@ -45,26 +45,37 @@ export default class Brick extends React.Component<IProps, object> {
             </div>
             <div className="level-right ethValue">
               <div className="tags has-addons nowrap level-item">
-                <span className="tag">
-                  <i className="fab fa-ethereum">&nbsp;{brick.value} ETH</i>
+                <span className="tag is-info">
+                  <i className="fab fa-ethereum" />&nbsp;{brick.value} ETH
                 </span>
               </div>
             </div>
           </div>
           <div className="level">{brick.description || ""}</div>
           <div className="level">
-            <div className="level-left" />
+            <div className="level-left">
+              <div className="level-item">
+                <div className="tags has-addons nowrap">
+                  <span className="tag">STATUS</span>
+                  <span className="tag is-dark">
+                    {BrikStatus[brick.status]}
+                  </span>
+                </div>
+              </div>
+            </div>
             <div className="level-right">
               <div className="level-item">
-                <div className="has-text-info is-inverted is-small">
-                  <i className="fas fa-wrench" />&nbsp;&nbsp;{brick.builders}&nbsp;
-                  Builders&nbsp;&nbsp;
+                <div className="is-info is-inverted is-small">
+                  &nbsp;&nbsp;{brick.builders}&nbsp; Builders&nbsp;&nbsp;
                 </div>
               </div>
               <br />
               <div className="level-item">
-                <a className="button is-info is-small" onClick={this.startWork}>
-                  <i className="fas fa-code-branch" />&nbsp;&nbsp;Start&nbsp;
+                <a
+                  className="button is-button is-small"
+                  onClick={this.startWork}
+                >
+                  <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
                   Work&nbsp;&nbsp;
                 </a>
               </div>
@@ -72,12 +83,6 @@ export default class Brick extends React.Component<IProps, object> {
           </div>
         </div>
         <div className="columns">
-          <div className="column is-one-quarter marginLeft">
-            <div className="tags has-addons nowrap">
-              <span className="tag">STATUS</span>
-              <span className="tag is-info">{BrikStatus[brick.status]}</span>
-            </div>
-          </div>
           <div className="column is-one-quarter">
             <div className="tags has-addons">
               {brick.tags &&

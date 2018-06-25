@@ -1,9 +1,9 @@
 h1 {
-	font-size: 2rem;
-	font-weight: bold;
+  font-size: 1.76rem;
+  font-weight: bold;
 }
 
 .navbar a:link,
 .navbar a:visited {
-	color: white;
+  color: white;
 }

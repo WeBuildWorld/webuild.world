@@ -44,7 +44,7 @@ export default class Nav extends React.Component {
               <div className="field is-grouped">
                 <p className="control">
                   <a
-                    className="bd-tw-button button is-info"
+                    className="bd-tw-button button is-primary"
                     onClick={this.addBrick}
                   >
                     <span>Add a Brick</span>
