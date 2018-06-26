@@ -17,17 +17,17 @@ export interface IBrick {
   value: number | string;
   owner: IBuilder | string;
   builders?: IBuilder[];
-  status: BrikStatus;
+  status: BrickStatus;
   tags?: string[];
   dateCreated?: Date | number;
   dateCompleted?: Date | number;
   winner?: string;
 }
 
-export enum BrikStatus {
+export enum BrickStatus {
   Inactive,
   Open,
-  Closed
+  Completed
 }
 
 export interface IBuilder {
