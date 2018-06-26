@@ -3,6 +3,7 @@ export interface IStoreState {
   brickCount: number;
   user?: ICredential;
   networkStatus?: any;
+  hash?: string;
 }
 
 export interface ICredential {

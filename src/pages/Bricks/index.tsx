@@ -10,7 +10,7 @@ export function mapStateToProps({
 }) {
   return {
     brickCount: reducer.app.brickCount,
-    bricks: reducer.app.bricks
+    bricks: reducer.app.bricks,
   };
 }
 

@@ -1,25 +1,41 @@
 // import GitHubLogin from 'react-github-login';
+import { History } from "history";
 import * as React from "react";
 import logo from "../../logo.svg";
 import RpcService from "../../services/RpcService";
 import "./Nav.css";
 
+interface IProps {
+  history?: History | undefined;
+}
+
 // tslint:disable-next-line:no-console
 // const onSuccess = (response) => console.log(response);
-export default class Nav extends React.Component {
+export default class Nav extends React.Component<IProps, object> {
+  constructor(props: IProps) {
+    super(props);
+
+    this.addBrick = this.addBrick.bind(this);
+    this.home = this.home.bind(this);
+  }
+
   public addBrick(e: React.SyntheticEvent<HTMLAnchorElement>) {
     if (!RpcService.hasMainAccount()) {
       e.currentTarget.text = "Metamask needed.";
       return;
     }
-    location.href = "/add-brick";
+    this.props.history!.push("/add-brick");
+  }
+
+  public home() {
+    this.props.history!.push("/");
   }
 
   public render() {
     return (
       <nav className="navbar is-fixed-top level">
         <div className="navbar-brand">
-          <a href="/" className="navbar-item">
+          <a href="javascript:;" onClick={this.home} className="navbar-item">
             <img src={logo} className="App-logo" alt="logo" />
             <h1>WeBuild.World</h1>
           </a>

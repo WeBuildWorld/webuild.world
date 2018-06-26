@@ -25,8 +25,8 @@ export default class Bricks extends React.Component<IProps, IState> {
 
   public componentDidUpdate(prevProps: IProps) {
     if (this.props.hash) {
-      alert("Brick is being mined.");
-      location.href = "/";
+      const url = "/hash/" + this.props.hash;
+      (this.props as any).history.push(url);
     }
   }
 

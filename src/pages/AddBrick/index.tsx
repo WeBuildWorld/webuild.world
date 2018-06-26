@@ -8,7 +8,7 @@ export function mapStateToProps({
 }: {
   reducer: { app: IStoreState };
 }) {
-  return {};
+  return { hash: reducer.app.hash };
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<actions.IAddBrick>) {

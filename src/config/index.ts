@@ -472,5 +472,8 @@ export default {
     mainnet: MAINET_RPC_URL,
     rinkeby: RINKEBY_RPC_URL,
     ropsten: ROPSTEN_RPC_URL
-  }
+  },
+  networkName: "kovan",
+  // tslint:disable-next-line:object-literal-sort-keys
+  chainId: 42
 };

@@ -15,10 +15,12 @@ export default function(
       // delete state.bricks;
       break;
     }
-    case GET_BRICKS:
+    case GET_BRICKS: {
       return { ...state, ...action.payload };
-    case ADD_BRICK:
+    }
+    case ADD_BRICK: {
       return { ...state, ...action.payload };
+    }
   }
 
   return state;
