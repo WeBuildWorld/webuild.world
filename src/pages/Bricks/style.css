@@ -1,17 +1,21 @@
 nav.navbar {
-	box-shadow: 0 .5px rgba(0,0,0,.5);
-	background: #24292e;
-	color: white;
+  box-shadow: 0 0.5px rgba(0, 0, 0, 0.5);
+  background: #24292e;
+  color: white;
 }
 
-nav.navbar a:link{
-	color: white;
+nav.navbar a:link {
+  color: white;
 }
 
-.bricks{
-	margin-top: 1em;
+.bricks {
+  margin-top: 1em;
 }
 
-h4.title{
-	font-size: 1.5em;
+h4.title {
+  font-size: 1.5em;
+}
+
+.greeting {
+  margin-top: 2rem;
 }

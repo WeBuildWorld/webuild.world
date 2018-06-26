@@ -123,12 +123,12 @@ contract WeBuildWordImplementation is Ownable, Provider {
                     included = true;
                     break;
                 }
-                require(included);
             }
             total += _weights[i];
         }
 
-        require(total <= 100);
+        require(included);
+        require(total == 100);
 
         bricks[_brickId].status = BrickStatus.Completed;
         bricks[_brickId].winners = _winners;

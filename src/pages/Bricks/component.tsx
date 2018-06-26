@@ -28,8 +28,11 @@ export default class Bricks extends React.Component<IProps, object> {
           {bricks &&
             bricks.length &&
             bricks.map(brick => (
-              // tslint:disable-next-line:jsx-no-lambda
-              <Brick brick={brick} startWork={id => this.props.startWork!(id)} />
+              <Brick
+                brick={brick}
+                // tslint:disable-next-line:jsx-no-lambda
+                startWork={id => this.props.startWork!(id)}
+              />
             ))}
         </div>
       </div>
@@ -37,6 +40,10 @@ export default class Bricks extends React.Component<IProps, object> {
   }
 
   private renderNothing() {
-    return <p className="greeting">You are here too early. :D</p>;
+    return (
+      <p className="greeting">
+        Not bricks has been added yet or it's being loaded.
+      </p>
+    );
   }
 }
