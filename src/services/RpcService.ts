@@ -10,7 +10,7 @@ class RpcService {
     if (!rpcConnection) {
       rpcConnection =
         (window as any).web3 ||
-        new Web3(new Web3.providers.HttpProvider(config[config.networkName]));
+        new Web3(new Web3.providers.HttpProvider(config.network[config.networkName]));
     }
     this.web3 = rpcConnection;
   }
