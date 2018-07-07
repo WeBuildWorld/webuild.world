@@ -66,7 +66,7 @@ const toBuilders = (items: any) => {
     builders.push({
       dateStarted: items[1][i].toNumber(),
       key: items[3][i],
-      nickName: items[2][i],
+      nickName: rpcService.rpc.toAscii(items[2][i]),
       walletAddress: items[0][i]
     } as IBuilder);
   }
@@ -125,4 +125,20 @@ export const getBrickBuilders = async (brickId: number): Promise<any> => {
   });
 
   return toBuilders(result);
+};
+
+export const acceptWork = async (
+  brickId: number,
+  winnerWalletAddress: string
+): Promise<any> => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  const options = {};
+  const result = await Promisify((cb: any) => {
+    return contract.accept(brickId, [winnerWalletAddress], [100], options, cb);
+  });
+
+  return result;
 };

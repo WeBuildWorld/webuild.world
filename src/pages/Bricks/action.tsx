@@ -1,5 +1,5 @@
 import * as constants from "../../constants";
-import { getBricks, startWork } from "../../services/BrickService";
+import { acceptWork, getBricks, startWork } from "../../services/BrickService";
 import { IBrick } from "../../types";
 
 export interface IGetBricks {
@@ -32,6 +32,19 @@ export function startWorkForBrick(
     return dispatch({
       payload: { result },
       type: constants.START_WORK
+    });
+  };
+}
+
+export function acceptWorkForBrick(
+  brickId: number,
+  winnerWalletAddress: string
+) {
+  return async (dispatch: any): Promise<void> => {
+    const result = await acceptWork(brickId, winnerWalletAddress);
+    return dispatch({
+      payload: { result },
+      type: constants.ACCEPT_WORK
     });
   };
 }

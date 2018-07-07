@@ -10,12 +10,14 @@ export function mapStateToProps({
 }) {
   return {
     brickCount: reducer.app.brickCount,
-    bricks: reducer.app.bricks,
+    bricks: reducer.app.bricks
   };
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {
   return {
+    acceptWork: (brickId: number, winnerAddress: string) =>
+      actions.acceptWorkForBrick(brickId, winnerAddress)(dispatch),
     getBricks: (start: number = 0, length: number = 100) =>
       actions.retrieveBricks(start, length)(dispatch),
     startWork: (brickId: number) =>

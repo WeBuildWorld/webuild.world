@@ -1,0 +1,26 @@
+.Modal {
+  /* position: absolute; */
+  top: 12rem;
+  border: 1px solid rgb(204, 204, 204);
+  background: rgb(255, 255, 255);
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+  width: 400px;
+  height: 400px;
+  margin: 6rem auto;
+}
+
+h2 {
+  background: black;
+  color: white;
+  padding: 0.68rem;
+  font-weight: bold;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.content {
+  padding: 1rem;
+}
