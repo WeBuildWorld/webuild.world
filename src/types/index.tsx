@@ -17,6 +17,7 @@ export interface IBrick {
   description?: string;
   value: number | string;
   owner: IBuilder | string;
+  numOfBuilders?: number;
   builders?: IBuilder[];
   status: BrickStatus;
   tags?: string[];
@@ -34,4 +35,6 @@ export enum BrickStatus {
 export interface IBuilder {
   nickName: string;
   walletAddress: string;
+  dateStarted?: number;
+  key?: string;
 }

@@ -1,16 +1,17 @@
 import * as _ from "lodash";
 import Config from "../config";
 import Promisify from "../helpers/Promisify";
-import { IBrick } from "../types";
+import { IBrick, IBuilder } from "../types";
 import rpcService from "./RpcService";
 
 export const toBrick = (arr: any[]): IBrick => {
   const brick = {
-    builders: arr[7].toNumber(),
+    builders: (arr as any).builders,
     dateCompleted: arr[6].toNumber(),
     dateCreated: arr[5].toNumber(),
     description: arr[2],
     id: (arr as any).id.toNumber(),
+    numOfBuilders: arr[7].toNumber(),
     owner: rpcService.rpc.toHex(arr[3]),
     status: arr[8].toNumber(),
     title: arr[0],
@@ -46,6 +47,7 @@ export const getBricks = async (start: number, length: number) => {
           contract.getBrick(id, cb)
         );
         result.id = id;
+        result.builders = await getBrickBuilders(id);
 
         return result;
       })
@@ -53,8 +55,29 @@ export const getBricks = async (start: number, length: number) => {
   };
 };
 
+const toBuilders = (items: any) => {
+  const len = items[0].length;
+  if (!len) {
+    return [];
+  }
+
+  const builders = [] as IBuilder[];
+  for (let i = 0; i < len; i++) {
+    builders.push({
+      dateStarted: items[1][i].toNumber(),
+      key: items[3][i],
+      nickName: items[2][i],
+      walletAddress: items[0][i]
+    } as IBuilder);
+  }
+
+  return builders;
+};
+
 export const addBrick = async (brick: IBrick): Promise<number> => {
-  if (!rpcService.mainAccount) { throw new Error("Metamask required"); }
+  if (!rpcService.mainAccount) {
+    throw new Error("Metamask required");
+  }
 
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
@@ -89,4 +112,17 @@ export const startWork = async (
   });
 
   return result;
+};
+
+export const getBrickBuilders = async (brickId: number): Promise<any> => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  const options = {};
+  const result = await Promisify((cb: any) => {
+    return contract.getBrickBuilders(brickId, options, cb);
+  });
+
+  return toBuilders(result);
 };

@@ -66,20 +66,33 @@ export default class Brick extends React.Component<IProps, object> {
             <div className="level-right">
               <div className="level-item">
                 <div className="is-info is-inverted is-small">
-                  &nbsp;&nbsp;{brick.builders}&nbsp; Builders&nbsp;&nbsp;
+                  &nbsp;&nbsp;{brick.numOfBuilders}&nbsp; Builders&nbsp;&nbsp;
                 </div>
               </div>
               <br />
               <div className="level-item">
-                {brick.status === BrickStatus.Open && (
-                  <a
-                    className="button is-dark is-small"
-                    onClick={this.startWork}
-                  >
-                    <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
-                    Work&nbsp;&nbsp;
-                  </a>
-                )}
+                {brick.status === BrickStatus.Open &&
+                  brick.builders &&
+                  (!brick.builders.some(
+                    b => b.walletAddress === RpcService.mainAccount
+                  ) && (
+                    <a
+                      className="button is-dark is-small"
+                      onClick={this.startWork}
+                    >
+                      <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
+                      Work&nbsp;&nbsp;
+                    </a>
+                  ))}
+                {brick.status === BrickStatus.Open &&
+                  brick.builders &&
+                  (brick.builders.some(
+                    b => b.walletAddress === RpcService.mainAccount
+                  ) && (
+                    <a className="button is-success is-small">
+                      <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;
+                    </a>
+                  ))}
                 {brick.status !== BrickStatus.Open && (
                   <span className="is-light is-button button is-small disabled">
                     <i className="fas fa-wrench" />&nbsp;&nbsp;Not
