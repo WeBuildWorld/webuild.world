@@ -15,7 +15,8 @@ NodeJS is required to build and run this project.
 For Mac, recommend brew install, more information [about nodejs](https://nodejs.org/)
 
 ```
-brew install node
+$ brew install node
+$ brew install yarn
 ```
 
 ### Installation & Run
@@ -42,9 +43,7 @@ Add additional notes about how to deploy this on a live system
 
 ## Contributing
 
-@todo
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Core Team
 
