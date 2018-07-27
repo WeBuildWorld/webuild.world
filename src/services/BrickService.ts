@@ -137,7 +137,13 @@ export const acceptWork = async (
   );
   const options = {};
   const result = await Promisify((cb: any) => {
-    return contract.accept(brickId, [winnerWalletAddress], [100], options, cb);
+    return contract.accept(
+      brickId,
+      [winnerWalletAddress],
+      [10000], // all
+      options,
+      cb
+    );
   });
 
   return result;
