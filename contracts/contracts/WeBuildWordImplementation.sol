@@ -98,7 +98,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
 
         // Add to the fund.
         if (_value > 0) {
-            bricks[_brickId].value += _value;
+            bricks[_brickId].value = bricks[_brickId].value.add(_value);
         }
 
         return true;
@@ -124,7 +124,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
                     break;
                 }
             }
-            total += _weights[i];
+            total = total.add(_weights[i]);
         }
 
         require(included);
@@ -136,7 +136,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         bricks[_brickId].dateCompleted = now;
 
         if (_value > 0) {
-            bricks[_brickId].value += _value;
+            bricks[_brickId].value = bricks[_brickId].value.add(_value);
         }
 
         return bricks[_brickId].value;

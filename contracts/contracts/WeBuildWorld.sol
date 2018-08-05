@@ -75,7 +75,7 @@ contract WeBuildWord is Extendable {
         uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, msg.value);
         require(total > 0);
         for (uint i=0; i < _winners.length; i++) {
-            _winners[i].transfer(total * _weights[i] / DONAMITOR);    
+            _winners[i].transfer(total.mul(_weights[i]).div(DONAMITOR));    
         }     
 
         return true;   
