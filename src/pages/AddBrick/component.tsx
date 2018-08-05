@@ -10,17 +10,50 @@ export interface IProps {
 
 interface IState {
   brick: IBrick;
+  validations: IValidationStatus;
+}
+
+type UncertainType<T> = T | undefined;
+
+interface IValidationStatus {
+  url: UncertainType<boolean>;
+  title: UncertainType<boolean>;
+  description: UncertainType<boolean>;
+  value: UncertainType<boolean>;
 }
 
 export default class Bricks extends React.Component<IProps, IState> {
   public state = {
-    brick: { owner: "", status: 0, title: "", url: "", value: 0.011 }
+    brick: {
+      description: "",
+      owner: "",
+      status: 0,
+      title: "",
+      url: "",
+      value: 0
+    },
+    validations: {} as IValidationStatus
+  }; // tslint:disable-next-line:object-literal-sort-keys
+
+  public URL_REGEXP = new RegExp(
+    "https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}",
+    "i"
+  );
+
+  public VALIDATION_RULES = {
+    url: () => this.URL_REGEXP.test(this.state.brick.url),
+    // tslint:disable-next-line:object-literal-sort-keys
+    title: () => !!this.state.brick.title,
+    description: () => !!this.state.brick.description,
+    value: () => !isNaN(this.state.brick.value) && this.state.brick.value > 0.01
   };
 
   public constructor(props: IProps) {
     super(props);
 
     this.setBrickState = this.setBrickState.bind(this);
+    this.addBrick = this.addBrick.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   public componentDidUpdate(prevProps: IProps) {
@@ -39,6 +72,8 @@ export default class Bricks extends React.Component<IProps, IState> {
     const value = event.currentTarget.value;
     const currentState = this.state.brick;
     currentState[field] = value;
+    this.validate(field);
+
     return this.setState({ brick: currentState });
   }
 
@@ -50,7 +85,7 @@ export default class Bricks extends React.Component<IProps, IState> {
             <label className="label">GitHub Issue Link</label>
             <div className="control has-icons-left">
               <input
-                className="input"
+                className={this.getClassName(this.state.validations.url)}
                 type="text"
                 name="url"
                 placeholder="GitHub Link"
@@ -65,7 +100,7 @@ export default class Bricks extends React.Component<IProps, IState> {
             <label className="label level">Title</label>
             <div className="control has-icons-left">
               <input
-                className="input"
+                className={this.getClassName(this.state.validations.title)}
                 type="text"
                 placeholder="Title"
                 name="title"
@@ -80,7 +115,10 @@ export default class Bricks extends React.Component<IProps, IState> {
             <label className="label level">Description</label>
             <div className="control has-icons-left">
               <textarea
-                className="textarea"
+                className={this.getClassName(
+                  this.state.validations.description,
+                  "textarea"
+                )}
                 name="description"
                 placeholder="Brief Description"
                 onChange={this.setBrickState}
@@ -92,7 +130,7 @@ export default class Bricks extends React.Component<IProps, IState> {
               <label className="label">ETH Value</label>
               <div className="control has-icons-left">
                 <input
-                  className="input"
+                  className={this.getClassName(this.state.validations.value)}
                   type="text"
                   placeholder="ETH"
                   name="value"
@@ -104,13 +142,7 @@ export default class Bricks extends React.Component<IProps, IState> {
               </div>
             </div>
           </div>
-          <button
-            className="button is-dark"
-            onClick={
-              // tslint:disable-next-line:jsx-no-lambda
-              () => this.addBrick()
-            }
-          >
+          <button className="button is-dark" onClick={this.addBrick}>
             Add Your Brick
           </button>
         </div>
@@ -124,6 +156,25 @@ export default class Bricks extends React.Component<IProps, IState> {
   }
 
   private addBrick() {
-    this.props.addBrick!(this.state.brick);
+    const validated = ["url", "title", "description", "value"].every(
+      this.validate
+    );
+    this.forceUpdate();
+    if (validated) {
+      this.props.addBrick!(this.state.brick);
+    }
+  }
+
+  private validate(field: string) {
+    this.state.validations[field] = this.VALIDATION_RULES[field]();
+    return this.state.validations[field];
+  }
+
+  private getClassName(val: UncertainType<boolean>, className = "input") {
+    if (val === undefined) {
+      return className;
+    }
+
+    return className + " " + (val ? " is-success" : " is-danger");
   }
 }

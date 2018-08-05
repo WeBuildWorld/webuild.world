@@ -59,7 +59,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         returns (bool success)
     {
         // greater than 0.01 eth
-        require(_value > 10 ** 16);
+        require(_value >= 10 ** 16);
         // solhint-disable-next-line
         require(bricks[_brickId].owner == 0x0 || bricks[_brickId].owner == tx.origin);
 
