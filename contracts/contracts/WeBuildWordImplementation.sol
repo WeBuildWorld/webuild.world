@@ -21,9 +21,9 @@ contract WeBuildWordImplementation is Ownable, Provider {
     }
     
     struct Brick {
-        bytes32 title;
-        bytes32 url;
-        bytes32 description;
+        string title;
+        string url;
+        string description;
         address owner;
         uint value;
         uint dateCreated;
@@ -54,7 +54,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return bricks[_brickId].owner == _address;
     }    
 
-    function addBrick(uint _brickId, bytes32 _title, bytes32 _url, bytes32 _description, uint _value) 
+    function addBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
         external onlyMain
         returns (bool success)
     {
@@ -87,7 +87,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return true;
     }
 
-    function changeBrick(uint _brickId, bytes32 _title, bytes32 _url, bytes32 _description, uint _value) 
+    function changeBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
         external onlyMain
         returns (bool success) 
     {
@@ -190,9 +190,9 @@ contract WeBuildWordImplementation is Ownable, Provider {
     }    
 
     function getBrick(uint _brickId) external view returns (
-        bytes32 title,
-        bytes32 url,
-        bytes32 description,
+        string title,
+        string url,
+        string description,
         address owner,
         uint value,
         uint dateCreated,
