@@ -272,15 +272,15 @@ export default {
       inputs: [
         {
           name: "_title",
-          type: "bytes32"
+          type: "string"
         },
         {
           name: "_url",
-          type: "bytes32"
+          type: "string"
         },
         {
           name: "_description",
-          type: "bytes32"
+          type: "string"
         }
       ],
       name: "addBrick",
@@ -303,15 +303,15 @@ export default {
         },
         {
           name: "_title",
-          type: "bytes32"
+          type: "string"
         },
         {
           name: "_url",
-          type: "bytes32"
+          type: "string"
         },
         {
           name: "_description",
-          type: "bytes32"
+          type: "string"
         }
       ],
       name: "changeBrick",
@@ -410,15 +410,15 @@ export default {
       outputs: [
         {
           name: "title",
-          type: "bytes32"
+          type: "string"
         },
         {
           name: "url",
-          type: "bytes32"
+          type: "string"
         },
         {
           name: "description",
-          type: "bytes32"
+          type: "string"
         },
         {
           name: "owner",
@@ -485,7 +485,7 @@ export default {
       type: "function"
     }
   ],
-  CONTRACT_ADDRESS: "0xb6eda24a5a318e88f2081c94278099be3cbb66d6",
+  CONTRACT_ADDRESS: "0x6e7f22dca789f3f771da4a13eb42610e399d7500",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,

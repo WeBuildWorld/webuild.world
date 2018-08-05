@@ -41,7 +41,7 @@ export default class Brick extends React.Component<IProps, object> {
 
   public renderOperations() {
     const options = this.props.brick.builders!.map(builder => ({
-      label: builder.nickName,
+      label: builder.walletAddress, // builder.nickName
       value: builder.walletAddress
     }));
     return (

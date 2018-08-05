@@ -232,8 +232,8 @@ contract WeBuildWordImplementation is Ownable, Provider {
         for (uint i = 0; i < bricks[_brickId].numBuilders; i++) {
             addresses[i] = bricks[_brickId].builders[i].addr;
             dates[i] = bricks[_brickId].builders[i].dateAdded;
-            keys[i] = keccak256(abi.encodePacked(bricks[_brickId].builders[i].key));
-            names[i] = keccak256(abi.encodePacked(bricks[_brickId].builders[i].nickName));
+            keys[i] = bricks[_brickId].builders[i].key;
+            names[i] = bricks[_brickId].builders[i].nickName;
         }
     }    
 

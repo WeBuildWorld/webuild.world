@@ -24,7 +24,7 @@ export default class Bricks extends React.Component<IProps, object> {
   }
 
   public componentWillMount() {
-    this.props.getBricks!();
+    setInterval(this.props.getBricks!, 1000);
   }
 
   public render() {
