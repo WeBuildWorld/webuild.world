@@ -10,7 +10,7 @@ contract WeBuildWord is Extendable {
     using SafeMath for uint256;	
 
     string public constant VERSION = "0.1";
-    uint public constant DONAMITOR = 10000;
+    uint public constant DENOMINATOR = 10000;
     
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
@@ -75,7 +75,7 @@ contract WeBuildWord is Extendable {
         uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, msg.value);
         require(total > 0);
         for (uint i=0; i < _winners.length; i++) {
-            _winners[i].transfer(total.mul(_weights[i]).div(DONAMITOR));    
+            _winners[i].transfer(total.mul(_weights[i]).div(DENOMINATOR));    
         }     
 
         return true;   

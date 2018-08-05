@@ -39,6 +39,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
 
     string public constant VERSION = "0.1";
     Dictionary.Data public brickIds;
+    uint public constant DENOMINATOR = 10000;
 
     modifier onlyMain() {
         require(msg.sender == main);
@@ -117,7 +118,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         bool included = false;
         for (uint i = 0; i < _winners.length; i++) {
             // solhint-disable-next-line
-            require(_winners[i] != tx.origin);
+            require(_winners[i] != tx.origin, "Owner should not win this himself");
             for (uint j =0; j < bricks[_brickId].numBuilders; j++) {
                 if (bricks[_brickId].builders[j].addr == _winners[i]) {
                     included = true;
@@ -127,8 +128,8 @@ contract WeBuildWordImplementation is Ownable, Provider {
             total = total.add(_weights[i]);
         }
 
-        require(included);
-        require(total == 100);
+        require(included, "Winner doesn't participant");
+        require(total == DENOMINATOR, "total should be in total equals to denominator");
 
         bricks[_brickId].status = BrickStatus.Completed;
         bricks[_brickId].winners = _winners;

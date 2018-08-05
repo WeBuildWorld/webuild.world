@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "merge": "./node_modules/.bin/sol-merger './contracts/*.sol' ./build",
     "build": "truffle compile  --network development",
     "test": "run-with-testrpc --port 8545  --network development 'truffle test'",
     "testCoverage": "run-with-testrpc --port 8545 'truffle test --network coverage' ",
