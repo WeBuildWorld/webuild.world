@@ -110,11 +110,11 @@ export default {
     {
       constant: true,
       inputs: [],
-      name: "DONAMITOR",
+      name: "owner",
       outputs: [
         {
           name: "",
-          type: "uint256"
+          type: "address"
         }
       ],
       payable: false,
@@ -124,11 +124,11 @@ export default {
     {
       constant: true,
       inputs: [],
-      name: "owner",
+      name: "DENOMINATOR",
       outputs: [
         {
           name: "",
-          type: "address"
+          type: "uint256"
         }
       ],
       payable: false,
@@ -147,6 +147,25 @@ export default {
       ],
       payable: false,
       stateMutability: "view",
+      type: "function"
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: "_newId",
+          type: "uint256"
+        }
+      ],
+      name: "resetCurrentIdTo",
+      outputs: [
+        {
+          name: "success",
+          type: "bool"
+        }
+      ],
+      payable: false,
+      stateMutability: "nonpayable",
       type: "function"
     },
     {
@@ -253,15 +272,15 @@ export default {
       inputs: [
         {
           name: "_title",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "_url",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "_description",
-          type: "string"
+          type: "bytes32"
         }
       ],
       name: "addBrick",
@@ -284,15 +303,15 @@ export default {
         },
         {
           name: "_title",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "_url",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "_description",
-          type: "string"
+          type: "bytes32"
         }
       ],
       name: "changeBrick",
@@ -361,11 +380,11 @@ export default {
         },
         {
           name: "_builderId",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "_nickName",
-          type: "string"
+          type: "bytes32"
         }
       ],
       name: "startWork",
@@ -391,15 +410,15 @@ export default {
       outputs: [
         {
           name: "title",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "url",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "description",
-          type: "string"
+          type: "bytes32"
         },
         {
           name: "owner",
@@ -466,7 +485,7 @@ export default {
       type: "function"
     }
   ],
-  CONTRACT_ADDRESS: "0x5aaa57040a12960f6018e601288b2c2d20f73474",
+  CONTRACT_ADDRESS: "0x857da2a9b3f0459c940adbfd5600749ccc739eef",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,
