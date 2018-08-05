@@ -141,7 +141,8 @@ export default class Brick extends React.Component<IProps, object> {
                 <div className="is-info is-inverted is-small">
                   &nbsp;&nbsp;{brick.numOfBuilders}&nbsp; Builders&nbsp;&nbsp;
                 </div>
-                {brick.numOfBuilders! > 0 &&
+                {brick.status === BrickStatus.Open &&
+                  brick.numOfBuilders! > 0 &&
                   brick.owner === RpcService.mainAccount && (
                     <div>
                       <button

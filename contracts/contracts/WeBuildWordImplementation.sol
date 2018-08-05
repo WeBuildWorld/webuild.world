@@ -16,14 +16,14 @@ contract WeBuildWordImplementation is Ownable, Provider {
     struct Builder {
         address addr;
         uint dateAdded;
-        string key;
-        string nickName;
+        bytes32 key;
+        bytes32 nickName;
     }
     
     struct Brick {
-        string title;
-        string url;
-        string description;
+        bytes32 title;
+        bytes32 url;
+        bytes32 description;
         address owner;
         uint value;
         uint dateCreated;
@@ -54,7 +54,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return bricks[_brickId].owner == _address;
     }    
 
-    function addBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
+    function addBrick(uint _brickId, bytes32 _title, bytes32 _url, bytes32 _description, uint _value) 
         external onlyMain
         returns (bool success)
     {
@@ -87,7 +87,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return true;
     }
 
-    function changeBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
+    function changeBrick(uint _brickId, bytes32 _title, bytes32 _url, bytes32 _description, uint _value) 
         external onlyMain
         returns (bool success) 
     {
@@ -155,7 +155,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return bricks[_brickId].value;
     }
 
-    function startWork(uint _brickId, string _builderId, string _nickName, address _builderAddress) 
+    function startWork(uint _brickId, bytes32 _builderId, bytes32 _nickName, address _builderAddress) 
         external onlyMain returns(bool success)
     {
         require(_builderAddress != 0x0);
@@ -190,9 +190,9 @@ contract WeBuildWordImplementation is Ownable, Provider {
     }    
 
     function getBrick(uint _brickId) external view returns (
-        string title,
-        string url,
-        string description,
+        bytes32 title,
+        bytes32 url,
+        bytes32 description,
         address owner,
         uint value,
         uint dateCreated,

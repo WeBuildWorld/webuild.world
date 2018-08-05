@@ -51,7 +51,7 @@ contract WeBuildWord is Extendable {
         return brickIds;
     }
 
-    function addBrick(string _title, string _url, string _description) 
+    function addBrick(bytes32 _title, bytes32 _url, bytes32 _description) 
         public payable
         returns (uint id)
     {
@@ -59,7 +59,7 @@ contract WeBuildWord is Extendable {
         require(getProvider(id).addBrick(id, _title, _url, _description, msg.value));
     }
 
-    function changeBrick(uint _brickId, string _title, string _url, string _description) 
+    function changeBrick(uint _brickId, bytes32 _title, bytes32 _url, bytes32 _description) 
         public onlyBrickOwner(_brickId) payable
         returns (bool success) 
     {
@@ -92,16 +92,16 @@ contract WeBuildWord is Extendable {
         return true;      
     }    
 
-    function startWork(uint _brickId, string _builderId, string _nickName) 
+    function startWork(uint _brickId, bytes32 _builderId, bytes32 _nickName) 
         public returns(bool success)
     {
         return getProvider(_brickId).startWork(_brickId, _builderId, _nickName, msg.sender);    
     }
 
     function getBrick(uint _brickId) public view returns (
-        string title,
-        string url,
-        string description,
+        bytes32 title,
+        bytes32 url,
+        bytes32 description,
         address owner,
         uint value,
         uint dateCreated,
