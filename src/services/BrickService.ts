@@ -21,7 +21,7 @@ export const toBrick = (arr: any[]): IBrick => {
   } as IBrick;
 
   // tslint:disable-next-line
-  console.log(brick);
+  // console.log(brick);
   return brick;
 };
 

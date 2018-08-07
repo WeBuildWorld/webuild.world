@@ -44,6 +44,7 @@ export default class Bricks extends React.Component<IProps, object> {
             bricks.map(brick => (
               <Brick
                 brick={brick}
+                key={brick.id}
                 // tslint:disable-next-line:jsx-no-lambda
                 startWork={id => this.props.startWork!(id)}
                 // tslint:disable-next-line:jsx-no-lambda

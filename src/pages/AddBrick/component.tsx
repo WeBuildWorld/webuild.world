@@ -152,7 +152,7 @@ export default class Bricks extends React.Component<IProps, IState> {
 
   public async componentWillReceiveProps(props: IProps) {
     // tslint:disable-next-line:no-console
-    console.log(props);
+    // console.log(props);
   }
 
   private addBrick() {
