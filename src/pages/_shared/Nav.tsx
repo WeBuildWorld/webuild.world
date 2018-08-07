@@ -1,6 +1,6 @@
-// import GitHubLogin from 'react-github-login';
 import { History } from "history";
 import * as React from "react";
+import GitHubLogin from 'react-github-login';
 import logo from "../../logo.svg";
 import RpcService from "../../services/RpcService";
 import "./Nav.css";
@@ -31,6 +31,11 @@ export default class Nav extends React.Component<IProps, object> {
     this.props.history!.push("/");
   }
 
+  public onSuccess(response: any) {
+    // tslint:disable-next-line:no-console
+    console.log('response:' , response);
+  }
+
   public render() {
     return (
       <nav className="navbar is-fixed-top level">
@@ -59,6 +64,16 @@ export default class Nav extends React.Component<IProps, object> {
             <div className="navbar-item">
               <div className="field is-grouped">
                 <p className="control">
+                  <GitHubLogin onSuccess={this.onSuccess}
+                    visible={false}
+                    className="bd-tw-button button"
+                    clientId='36d1aa5652f688cde83b'
+                    redirectUri="http://localhost:3000"
+                    scope="user.email"
+                  />
+                </p>
+
+                <p className="control">
                   <a
                     className="bd-tw-button button is-primary"
                     onClick={this.addBrick}
@@ -68,15 +83,6 @@ export default class Nav extends React.Component<IProps, object> {
                 </p>
 
                 {this.props.children}
-
-                <p className="control">
-                  {/* <GitHubLogin oonSuccess={onSuccess}
-										visible={false}
-										clientId='36d1aa5652f688cde83b'
-										redirectUri="http://localhost:3000"
-										scope="user.email"
-									/> */}
-                </p>
               </div>
             </div>
           </div>
