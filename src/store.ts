@@ -46,11 +46,12 @@ const store = createStore<IStore, any, any, any>(
 	// ),
 );
 
+
 // const load = storage.createLoader(engine);
 // tslint:disable-next-line:no-console
 // load(store).then((newState: IStore) => console.log('Loaded state:', newState));
 
-// Required when mergin Own Props with reducer props
+// Required when merge Own Props with reducer props
 const mergeProps = (stateProps: any, dispatchProps: any, ownProps: any) => {
 	return { ...ownProps, ...dispatchProps, ...stateProps };
 };

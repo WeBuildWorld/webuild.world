@@ -8,3 +8,17 @@ declare module 'react-github-login' {
 
 	}
 }
+
+
+declare module 'react-select' {
+	export default class Select extends React.Component<any> {
+
+	}
+
+	export class components extends React.Component<any> {
+		static SingleValue: any;
+		static MenuList: any; 
+	}
+
+
+}

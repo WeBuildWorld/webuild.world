@@ -4,10 +4,15 @@ export interface IStoreState {
   user?: ICredential;
   networkStatus?: any;
   hash?: string;
+  loggedIn?: boolean;
+  loggingIn?: boolean;
 }
 
 export interface ICredential {
   githubId?: string;
+  avatar_url?: string;
+  email?: string;
+  name?: string;
 }
 
 export interface IBrick {

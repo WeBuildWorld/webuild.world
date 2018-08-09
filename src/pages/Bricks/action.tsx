@@ -1,6 +1,7 @@
 import * as constants from "../../constants";
+import { Authentication } from "../../services/Authentication";
 import { acceptWork, getBricks, startWork } from "../../services/BrickService";
-import { IBrick } from "../../types";
+import { IBrick, ICredential } from "../../types";
 
 export interface IGetBricks {
   type: constants.GET_BRICKS;
@@ -24,11 +25,10 @@ export function retrieveBricks(start: number, length: number) {
 
 export function startWorkForBrick(
   brickId: number,
-  builderId: string,
-  builderName: string
 ) {
   return async (dispatch: any): Promise<void> => {
-    const result = await startWork(brickId, builderId, builderName);
+    const user: ICredential = Authentication.getCurrentUser(); // TODO
+    const result = await startWork(brickId, user.githubId || '', user.name || '');
     return dispatch({
       payload: { result },
       type: constants.START_WORK

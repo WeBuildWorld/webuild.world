@@ -61,8 +61,8 @@ export default class Nav extends React.Component<IProps, object> {
               <div className="field is-grouped">
 
                 <p className="control">
-                <GitHubButton />
-                </p> 
+                  <GitHubButton />
+                </p>
 
                 <p className="control">
                   <a

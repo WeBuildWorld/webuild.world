@@ -65,8 +65,8 @@ const toBuilders = (items: any) => {
   for (let i = 0; i < len; i++) {
     builders.push({
       dateStarted: items[1][i].toNumber(),
-      key: items[3][i],
-      nickName: rpcService.rpc.toAscii(items[2][i]),
+      key: rpcService.rpc.toDecimal(items[2][i]).toString(),
+      nickName: rpcService.rpc.toAscii(items[3][i]),
       walletAddress: items[0][i]
     } as IBuilder);
   }
@@ -108,6 +108,11 @@ export const startWork = async (
   );
   const options = {};
   const result = await Promisify((cb: any) => {
+
+    // tslint:disable-next-line:no-console
+    console.log('startWork', builderId, builderName);
+    // tslint:disable-next-line:no-debugger
+    debugger;
     return contract.startWork(brickId, builderId, builderName, options, cb);
   });
 

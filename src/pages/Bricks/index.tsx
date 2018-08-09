@@ -6,8 +6,8 @@ import Bricks, { IProps } from "./component";
 export function mapStateToProps({
   reducer
 }: {
-  reducer: { app: IStoreState };
-}) {
+    reducer: { app: IStoreState };
+  }) {
   return {
     brickCount: reducer.app.brickCount,
     bricks: reducer.app.bricks
@@ -21,7 +21,7 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {
     getBricks: (start: number = 0, length: number = 100) =>
       actions.retrieveBricks(start, length)(dispatch),
     startWork: (brickId: number) =>
-      actions.startWorkForBrick(brickId, "", "")(dispatch)
+      actions.startWorkForBrick(brickId)(dispatch)
   };
 }
 
