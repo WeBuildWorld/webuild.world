@@ -100,7 +100,7 @@ export class GitHubButton extends React.Component {
             visible={false}
             className="ant-btn ant-btn-primary"
             clientId={CLIENT_ID}
-            onFailure={this.onFakeSuccess}
+            // onFailure={this.onFakeSuccess}
             redirectUri={REDIRECT_URL}
             scope="user.email"
         />;
