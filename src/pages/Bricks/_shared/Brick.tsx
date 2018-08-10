@@ -1,6 +1,7 @@
+import { Button, Col, Modal, Row, Tag } from "antd";
 import * as React from "react";
-import * as Modal from "react-modal";
 import Select, { components } from "react-select";
+import { Authentication } from "../../../services/Authentication";
 import RpcService from "../../../services/RpcService";
 import { BrickStatus, IBrick } from "../../../types";
 import "./Brick.css";
@@ -19,11 +20,47 @@ export default class Brick extends React.Component<IProps, object> {
     this.startWork = this.startWork.bind(this);
     this.acceptWork = this.acceptWork.bind(this);
     this.startAcceptWork = this.startAcceptWork.bind(this);
+    this.cancelModal = this.cancelModal.bind(this);
+  }
+
+  public checkLoggedIn() {
+    const user = Authentication.getCurrentUser();
+    if (user) {
+      return true;
+    }
+
+    Modal.warn({
+      title: 'You have not sign in github yet.',
+      // tslint:disable-next-line:object-literal-sort-keys
+      content: (
+        <div>
+          <p>Please sign in github.</p>
+        </div>
+      ),
+      // tslint:disable-next-line:no-empty
+      onOk() { },
+    });
+    return false;
   }
 
   public startWork(e: React.SyntheticEvent<HTMLAnchorElement>) {
+
+    if (!this.checkLoggedIn()) {
+      return;
+    }
+
     if (!RpcService.hasMainAccount()) {
-      e.currentTarget.text = "Metamask needed.";
+      Modal.warn({
+        title: 'Metamask needed.',
+        // tslint:disable-next-line:object-literal-sort-keys
+        content: (
+          <div>
+            <p>Here is <a target="_blank" href="https://metamask.io/">Metamask</a>.</p>
+          </div>
+        ),
+        // tslint:disable-next-line:no-empty
+        onOk() { },
+      });
       return;
     }
     this.props.startWork(this.props.brick.id);
@@ -39,21 +76,34 @@ export default class Brick extends React.Component<IProps, object> {
     this.props.acceptWork(this.props.brick.id, this.state.winner);
   }
 
+  public cancelModal() {
+    this.state.modalIsOpen = false;
+    this.forceUpdate();
+  }
+
+
   public renderOperations() {
 
-    const avatar = <img className="avatar float-left mr-1"
-      src="https://avatars1.githubusercontent.com/u/5743338?v=4" />;
+
+    const getAvatar = (id: any) => {
+      const src = Authentication.getAvatarFromId(id);
+      return <img className="avatar float-left mr-1" src={src} />;
+    }
 
     const options = this.props.brick.builders!.map(builder => ({
       label: builder.nickName + '(' + builder.walletAddress + ')', // builder.nickName
+      name: builder.key,
       value: builder.walletAddress
     }));
 
-    const SingleValue = ({ children, ...props }: any) => (
-      <components.SingleValue {...props}>
-        {avatar} {children}
-      </components.SingleValue>
-    );
+    const SingleValue = ({ data, children, ...props }: any) => {
+      const Avatar = getAvatar(data.name);
+      return (
+        <components.SingleValue {...props}>
+          {Avatar} {children}
+        </components.SingleValue>
+      );
+    }
 
     const MenuList = (props: any) => {
       return (
@@ -63,57 +113,45 @@ export default class Brick extends React.Component<IProps, object> {
       );
     };
 
-    // const CustomOption = ({ innerProps, isDisabled }: any) =>
-    //   !isDisabled ? (
-    //     <div {...innerProps}> {/* your component internals */}</div>
-    //   ) : null;
+    const CustomOption = (params: any) => {
+      const { children, innerProps, isDisabled, data } = params;
+      const Avatar = getAvatar(data.name);
+      const result = !isDisabled ? (
+        <div {...innerProps}> {Avatar} {children}</div>
+      ) : null;
+ 
+      return result;
+
+    }
 
     return (
       <Modal
-        isOpen={this.state.modalIsOpen}
-        ariaHideApp={false}
-        contentLabel={"Accept work:" + this.props.brick.title}
-        className="Modal"
+        align="centered"
+        visible={this.state.modalIsOpen}
+        title={"Accept work:" + this.props.brick.title}
+        onOk={this.acceptWork}
+        onCancel={this.cancelModal}
       >
-        <h2>{"Accept work: " + this.props.brick.title}</h2>
-        <div className="content">
-          <p>
-            Please make sure that you are satisfied by the work the builder
-            submits. By clicking the button "submit", your fund will be
-            transferred to your selected builder.
-          </p>
-          <div className="field">
-            <label className="label">Winner</label>
-            <div className="control">
-              <Select
-                name="form-field-name"
-                options={options}
-                components={{ SingleValue, MenuList }}
-                // value={this.props.brick.winner}
-                // tslint:disable-next-line:jsx-no-lambda
-                onChange={(item: any) => {
-                  this.state.winner = this.props.brick.winner = item.value;
-                }}
-              />
-            </div>
-          </div>
+        <div className="desc">
+          Please make sure that you are satisfied by the work the builder
+                submits. By clicking the button "submit", your fund will be
+                transferred to your selected builder.
+                <br />  <br />
+        </div>
 
-          <div className="field is-grouped">
-            <div className="control">
-              <button className="button is-link" onClick={this.acceptWork}>
-                Submit
-              </button>
-            </div>
-            <div
-              className="control"
-              onClick={() => {
-                // tslint:disable-next-line:jsx-no-lambda
-                this.state.modalIsOpen = false;
-                this.forceUpdate();
+        <div className="field">
+          <h3 className="label">Winner</h3>
+          <div className="control">
+            <Select
+              name="form-field-name"
+              options={options}
+              components={{ SingleValue, MenuList, ...{ Option: CustomOption } }}
+              // value={this.props.brick.winner}
+              // tslint:disable-next-line:jsx-no-lambda
+              onChange={(item: any) => {
+                this.state.winner = this.props.brick.winner = item.value;
               }}
-            >
-              <button className="button is-text">Cancel</button>
-            </div>
+            />
           </div>
         </div>
       </Modal>
@@ -123,75 +161,66 @@ export default class Brick extends React.Component<IProps, object> {
   public render() {
     const { brick } = this.props;
 
-    if (brick === null) {
-      return <i>Brick is empty</i>;
-    }
-
     return (
-      <div className="card">
-        <div className="card-content">
-          <div className="level">
-            <div className="level-left">
-              <h4 className="title level-item is-5">
-                <a
-                  href={brick.url}
-                  target="_blank"
-                  className="is-link is-small"
-                >
-                  {brick.title}
-                </a>
-              </h4>
+      <div>
+        <Row>
+          <Col span={12}>
+            <h4 className="title level-item is-5">
+              <a
+                href={brick.url}
+                target="_blank"
+                className="is-link is-small"
+              >
+                {brick.title}
+              </a>
+            </h4>
+          </Col>
+          <Col span={12}>
+            <div className="text-right">
+              <span className="tag is-grey">
+                <i className="fab fa-ethereum" />&nbsp;{brick.value} ETH
+            </span>
             </div>
-            <div className="level-right ethValue">
-              <div className="tags has-addons nowrap level-item">
-                <span className="tag is-grey">
-                  <i className="fab fa-ethereum" />&nbsp;{brick.value} ETH
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="level">{brick.description || ""}</div>
-          <div className="level">
-            <div className="level-left">
-              <div className="level-item">
-                <div className="tags has-addons nowrap">
-                  <span className="tag">STATUS</span>
-                  <span className="tag is-info">
-                    {BrickStatus[brick.status]}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="level-right">
-              <div className="level-item">
-                <div className="is-info is-inverted is-small">
-                  &nbsp;&nbsp;{brick.numOfBuilders}&nbsp; Builders&nbsp;&nbsp;
-                </div>
+          </Col>
+        </Row>
+        <Row className="desc-row">
+          <Col span={24}>
+            {brick.description || ""}
+          </Col>
+        </Row>
+        <Row>
+          <Col className="tags" span={12}>
+            <Tag color="#dfdfdf">STATUS :</Tag><Tag color="#108ee9">{BrickStatus[brick.status]}</Tag>
+          </Col>
+          <Col className="flex-layout" span={12}>
+            <Row type="flex" gutter={8} justify="end" align="middle">
+              <Col >
+                {brick.numOfBuilders} Builders
+              </Col>
+              <Col>
                 {brick.status === BrickStatus.Open &&
                   brick.numOfBuilders! > 0 &&
                   brick.owner === RpcService.mainAccount && (
                     <div>
-                      <button
+                      <Button
+                        htmlType="button"
                         className="button is-info is-small"
                         onClick={this.startAcceptWork}
                       >
                         Accept work
-                      </button>
+                      </Button>
                       {this.renderOperations()}
                     </div>
                   )}
-              </div>
-              <br />
-              <div className="level-item">
+              </Col>
+              <Col>
                 {brick.status === BrickStatus.Open &&
                   brick.builders &&
                   (!brick.builders.some(
                     b => b.walletAddress === RpcService.mainAccount
                   ) && (
-                      <a
-                        className="button is-dark is-small"
-                        onClick={this.startWork}
-                      >
+                      <a className="button ant-btn ant-btn-primary"
+                        onClick={this.startWork}  >
                         <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
                         Work&nbsp;&nbsp;
                     </a>
@@ -201,33 +230,29 @@ export default class Brick extends React.Component<IProps, object> {
                   (brick.builders.some(
                     b => b.walletAddress === RpcService.mainAccount
                   ) && (
-                      <a className="button is-success is-small">
+                      <a className="button ant-btn ant-btn-primary is-success">
                         <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;
                     </a>
                     ))}
                 {brick.status !== BrickStatus.Open && (
-                  <span className="is-light is-button button is-small disabled">
-                    <i className="fas fa-wrench" />&nbsp;&nbsp;Not
-                    Available&nbsp;&nbsp;
-                  </span>
+                  <a className="button ant-btn ant-btn-primary disabled">
+                    <i className="fas fa-wrench" /> Not Available </a>
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="columns">
-          <div className="column is-one-quarter">
-            <div className="tags has-addons">
-              {brick.tags &&
-                brick.tags.map(tag => (
-                  <span key={tag} className="tag">
-                    {tag}
-                  </span>
-                ))}
-            </div>
-          </div>
-        </div>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            {brick.tags &&
+              brick.tags.map(tag => (
+                <Tag key={tag} color="geekblue">{tag}</Tag>
+              ))}
+          </Col>
+        </Row>
       </div>
-    );
+    )
   }
+
 }

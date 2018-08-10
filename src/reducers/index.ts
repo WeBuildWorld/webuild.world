@@ -1,5 +1,5 @@
 import { ADD_BRICK, GET_BRICKS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, STORAGE_SAVE } from "../constants";
-import { IStoreState } from "../types/index";
+import { IStoreState } from "../types";
 
 const defaultState: IStoreState = {
   brickCount: 0,

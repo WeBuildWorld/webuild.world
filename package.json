@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/lodash": "^4.14.109",
+    "antd": "^3.8.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^7.2.1",
@@ -29,10 +29,10 @@
     "web3": "^0.x.x"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
+    "start": "react-app-rewired start --scripts-version react-scripts-ts",
+    "build": "react-app-rewired build --scripts-version react-scripts-ts",
     "watch": "tsc -w",
-    "test": "react-scripts-ts test --env=jsdom",
+    "test": "react-app-rewired test --env=jsdom --scripts-version react-scripts-ts",
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
@@ -40,17 +40,20 @@
     "@types/bluebird": "^3.5.20",
     "@types/history": "^4.6.2",
     "@types/jest": "^22.2.3",
+    "@types/lodash": "^4.14.109",
     "@types/node": "^10.1.4",
     "@types/react": "^16.3.14",
     "@types/react-dom": "^16.0.5",
     "@types/react-modal": "^3.2.1",
-    "@types/react-redux": "^6.0.0",
+    "@types/react-redux": "^6.0.6",
     "@types/react-router-redux": "^5.0.15",
     "@types/react-select": "^2.0.2",
     "@types/react-test-renderer": "^16.0.1",
     "@types/redux-logger": "^3.0.6",
     "@types/web3": "^1.0.0",
-    "typescript": "^2.8.3",
+    "react-app-rewired": "^1.5.2",
+    "ts-import-plugin": "^1.5.4",
+    "typescript": "^3.0.1",
     "web3-typescript-typings": "^0.10.2"
   }
 }

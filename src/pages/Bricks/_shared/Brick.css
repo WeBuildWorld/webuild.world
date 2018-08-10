@@ -1,33 +1,47 @@
 .Modal {
-  /* position: absolute; */
-  top: 12rem;
-  border: 1px solid rgb(204, 204, 204);
-  background: rgb(255, 255, 255);
-  overflow: auto;
-  border-radius: 4px;
-  outline: none;
-  width: 600px;
-  height: 400px;
-  margin: 6rem auto;
+    /* position: absolute; */
+    top: 12rem;
+    border: 1px solid rgb(204, 204, 204);
+    background: rgb(255, 255, 255);
+    overflow: auto;
+    border-radius: 4px;
+    outline: none;
+    width: 600px;
+    height: 400px;
+    margin: 6rem auto;
 }
 
 h2 {
-  background: black;
-  color: white;
-  padding: 0.68rem;
-  font-weight: bold;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+    background: black;
+    color: white;
+    padding: 0.68rem;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .content {
-  padding: 1rem;
+    padding: 1rem;
 }
 
-.avatar{
-  width: 32px;
-  height: 32px;
-  max-height: 32px !important; 
-  border-radius: 3px;
+.avatar {
+    width: 32px;
+    height: 32px;
+    max-height: 32px !important;
+    border-radius: 3px;
 }
+
+.tags .ant-tag {
+    margin-right: 0;
+    border-radius: 0;
+}
+
+.text-right {
+    text-align: right
+}
+
+.desc-row {
+    margin: 15px 0;
+}
+ 

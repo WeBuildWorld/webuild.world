@@ -1,5 +1,6 @@
-import { connect, Dispatch } from "react-redux";
-import { IStoreState } from "../../types/";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { IStoreState } from "../../types";
 import * as actions from "./action";
 import Bricks, { IProps } from "./component";
 

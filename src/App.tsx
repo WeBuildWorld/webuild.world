@@ -1,3 +1,4 @@
+import { Layout } from 'antd';
 import "babel-polyfill";
 import { createBrowserHistory } from "history";
 import * as React from "react";
@@ -8,24 +9,31 @@ import Nav from "./pages/_shared/Nav";
 import AddBrick from "./pages/AddBrick";
 import Bricks from "./pages/Bricks";
 
+const { Header, Content } = Layout;
+
+
 const history = createBrowserHistory();
 class App extends React.Component {
   public render() {
     return (
-      <Router history={history}>
-        <div className="App">
-          <Nav history={history}>
-            <NetworkStatus />
-          </Nav>
-          <div className="container">
-            <Switch>
-              <Route exact={true} path="/" component={Bricks} />
-              <Route exact={true} path="/hash/:hash?" component={Bricks} />
-              <Route path="/add-brick" component={AddBrick} />
-            </Switch>
+      <Layout>
+        <Router history={history}>
+          <div className="App">
+            <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+              <Nav history={history}>
+                <NetworkStatus />
+              </Nav>
+            </Header>
+            <Content style={{ padding: '0 50px', marginTop: 64 }}>
+              <Switch>
+                <Route exact={true} path="/" component={Bricks} />
+                <Route exact={true} path="/hash/:hash?" component={Bricks} />
+                <Route path="/add-brick" component={AddBrick} />
+              </Switch>
+            </Content>
           </div>
-        </div>
-      </Router>
+        </Router>
+      </Layout>
     );
   }
 }

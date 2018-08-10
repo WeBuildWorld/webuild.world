@@ -1,10 +1,11 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 
 import axios from "axios";
 import GitHubLogin from 'react-github-login';
 import { ICredential, IStoreState } from "../../types";
 
+import { Avatar, Dropdown, Icon, Menu } from "antd";
 import { LOGIN_REQUEST, LOGIN_SUCCESS } from "../../constants";
 import { Authentication } from "../../services/Authentication";
 const CLIENT_ID = "36d1aa5652f688cde83b";
@@ -17,8 +18,6 @@ export class GitHubButton extends React.Component {
     constructor(props: any) {
         super(props);
 
-        // tslint:disable-next-line:no-console
-        console.log('props:', props);
         const user = Authentication.getCurrentUser();
         if (user) {
             this.state = { logged: true, avatar: user.avatar_url };
@@ -29,12 +28,18 @@ export class GitHubButton extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.onSuccess = this.onSuccess.bind(this);
         this.onFakeSuccess = this.onFakeSuccess.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     public handleClick() {
         this.setState((prevState: any) => {
             return { logged: !prevState.logged };
         });
+    }
+
+    public logout() {
+        Authentication.setCurrentUser(null);
+        this.setState({ logged: false });
     }
 
     public onFakeSuccess(response: any) {
@@ -46,7 +51,8 @@ export class GitHubButton extends React.Component {
         };
 
         Authentication.setCurrentUser(data);
-        this.setState({ logged: true, avatar: data.avatar_url, email: data.email });
+        const user = Authentication.getCurrentUser();
+        this.setState({ logged: true, avatar: user.avatar_url, email: user.email });
     }
 
     public onSuccess(response: any) {
@@ -75,14 +81,24 @@ export class GitHubButton extends React.Component {
     }
 
     public render() {
-        const image = <img alt={this.state.email}
-            className="avatar float-left mr-1"
-            src={this.state.avatar} />;
+
+        const menu = (
+            <Menu>
+                <Menu.Item key="0">
+                    <a href="javascript:;" onClick={this.logout} >logout</a>
+                </Menu.Item>
+            </Menu>
+        );
+        const image = <Dropdown overlay={menu} trigger={['click']}>
+            <a className="ant-dropdown-link" href="#">
+                <Avatar shape="square" src={this.state.avatar} /> <Icon type="down" />
+            </a>
+        </Dropdown>
 
         const button = <GitHubLogin
             onSuccess={this.onSuccess}
             visible={false}
-            className="bd-tw-button button"
+            className="ant-btn ant-btn-primary"
             clientId={CLIENT_ID}
             onFailure={this.onFakeSuccess}
             redirectUri={REDIRECT_URL}
@@ -125,7 +141,7 @@ export const userLoginSuccess = (user: ICredential, loggedIn: boolean) => {
     };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch) {
+export function mapDispatchToProps(dispatch: any) {
     return {
         userLoginRequest: (loggingIn: boolean) => userLoginRequest(loggingIn)(dispatch),
         userLoginSuccess: (user: ICredential, loggedIn: boolean) => userLoginSuccess(user, loggedIn)(dispatch),

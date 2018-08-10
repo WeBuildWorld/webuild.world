@@ -1,16 +1,42 @@
 h1 {
-  font-size: 1.76rem;
-  font-weight: bold;
+    font-size: 1.76rem;
+    font-weight: bold;
 }
 
 .navbar a:link,
 .navbar a:visited {
-  color: white;
+    color: white;
 }
-.navbar .avatar{
-   width: 32px;
-   height: 32px;
-   max-height: 32px !important;
-   margin-top: 2px;
-   border-radius: 3px;
+
+.navbar .avatar {
+    width: 32px;
+    height: 32px;
+    max-height: 32px !important;
+    margin-top: 2px;
+    border-radius: 3px;
+}
+
+.logo-wrap {
+    /* min-width: 280px; */
+}
+
+.logo-wrap h1 {
+    color: white;
+}
+
+.logo-wrap a {
+    text-decoration: none;
+}
+
+.nav-item {
+    float: left;
+}
+
+.nav-item.right {
+    float: right;
+    margin-left: 8px;
+}
+
+.hidden {
+    display: none;
 }

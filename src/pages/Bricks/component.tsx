@@ -1,9 +1,10 @@
+import { Alert, Button, Card, Icon, List } from 'antd';
 import * as React from "react";
 import config from "../../config";
 import { IBrick } from "../../types";
 import Brick from "./_shared/Brick";
-import "./style.css";
 
+import "./style.css";
 export interface IProps {
   brickCount: number;
   bricks?: IBrick[];
@@ -21,10 +22,71 @@ export default class Bricks extends React.Component<IProps, object> {
     super(props);
 
     this.dismiss = this.dismiss.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
 
   public componentWillMount() {
     setInterval(this.props.getBricks!, 1000);
+  }
+
+  public fetchMore = () => {
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'list/appendFetch',
+    //   payload: {
+    //     count: pageSize,
+    //   },
+    // });
+  };
+
+  public renderItem(item: any) {
+
+
+    // const ListContent = ({ data: { content, updatedAt, avatar, owner, href } }: any) => (
+    //   <div >
+    //     <div>{content}</div>
+    //     <div>
+    //       <Avatar src={avatar} size="small" />
+    //       <a href={href}>{owner}</a> 发布在
+    //       <a href={href}>{href}</a>
+    //     </div>
+    //   </div>
+    // );
+
+    // const IconText = ({ type, text }: any) => (
+    //   <span>
+    //     <Icon type={type} style={{ marginRight: 8 }} />
+    //     {text}
+    //   </span>
+    // );
+
+    return (
+      <List.Item
+        column=""
+        xs=""
+        sm=""
+        md=""
+        lg=""
+        xl=""
+        xxl=""
+        key={item.id}
+        extra={<div />}
+      >
+        <List.Item.Meta
+          description={
+            <Brick
+              brick={item}
+              key={item.id}
+              // tslint:disable-next-line:jsx-no-lambda
+              startWork={id => this.props.startWork!(id)}
+              // tslint:disable-next-line:jsx-no-lambda
+              acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
+            />
+          }
+        />
+        {/* <ListContent data={item} /> */}
+      </List.Item>
+    )
   }
 
   public render() {
@@ -33,46 +95,51 @@ export default class Bricks extends React.Component<IProps, object> {
     if (brickCount <= 0) {
       return this.renderNothing();
     }
+    const items = bricks || [];
+    const loading = false;
+    const loadMore =
+      items.length > 0 ? (
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <Button htmlType="button" onClick={this.fetchMore} style={{ paddingLeft: 48, paddingRight: 48 }}>
+            {loading ? (
+              <span>
+                <Icon type="loading" /> loading...
+            </span>
+            ) : (
+                'load more'
+              )}
+          </Button>
+        </div>
+      ) : null;
 
     return (
-      <div className="columns bricks">
-        <div className="column">
-          {this.state.hash && this.renderNotification(this.state.hash!)}
+      <Card>
 
-          {bricks &&
-            bricks.length &&
-            bricks.map(brick => (
-              <Brick
-                brick={brick}
-                key={brick.id}
-                // tslint:disable-next-line:jsx-no-lambda
-                startWork={id => this.props.startWork!(id)}
-                // tslint:disable-next-line:jsx-no-lambda
-                acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
-              />
-            ))}
-        </div>
-      </div>
+        {this.state.hash && this.renderNotification(this.state.hash!)}
+        <List
+          size="large"
+          rowKey="id"
+          itemLayout="vertical"
+          loadMore={loadMore}
+          dataSource={bricks}
+          renderItem={this.renderItem}
+        />
+      </Card>
     );
   }
 
   private renderNotification(hash: string) {
+
+    const link = <p>Your brick is being added to the network, click <a target="_blank" className="is-link" href={this.getTxLink(hash)}> here </a> for more info </p>;
+
     return (
-      <article className="message is-info">
-        <div className="message-header">
-          <p>
-            Your brick is being added to the network, click&nbsp;
-            <a target="_blank" className="is-link" href={this.getTxLink(hash)}>
-              here
-            </a>&nbsp; for more info.
-          </p>
-          <button
-            className="delete"
-            aria-label="delete"
-            onClick={this.dismiss}
-          />
-        </div>
-      </article>
+      <Alert
+        message=""
+        description={link}
+        type="success"
+        showIcon={true}
+        closable={true}
+      /> 
     );
   }
 

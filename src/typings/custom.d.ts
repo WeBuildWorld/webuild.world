@@ -17,7 +17,7 @@ declare module 'react-select' {
 
 	export class components extends React.Component<any> {
 		static SingleValue: any;
-		static MenuList: any; 
+		static MenuList: any;
 	}
 
 

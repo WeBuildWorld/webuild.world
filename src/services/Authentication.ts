@@ -6,9 +6,7 @@ export class Authentication {
     public static getCurrentUser() {
         let content = localStorage.getItem(STORAGE_KEY);
         if (content) {
-            // tslint:disable-next-line:no-debugger
-            // debugger;
-            content = atob(unescape(decodeURIComponent(content)));
+            content = decodeURIComponent(unescape(atob(content)));
             try {
                 const json = JSON.parse(content);
                 json.avatar_url = Authentication.getAvatarFromId(json.githubId);
@@ -27,6 +25,9 @@ export class Authentication {
     }
 
     public static setCurrentUser(user: any) {
+        if (!user) {
+            localStorage.removeItem(STORAGE_KEY);
+        }
         let content = JSON.stringify(user);
         content = btoa(escape(encodeURIComponent(content)));
         localStorage.setItem(STORAGE_KEY, content);
