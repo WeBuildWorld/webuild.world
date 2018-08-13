@@ -41,6 +41,25 @@ export default class Bricks extends React.Component<IProps, object> {
 
   public renderItem(item: any) {
 
+
+    // const ListContent = ({ data: { content, updatedAt, avatar, owner, href } }: any) => (
+    //   <div >
+    //     <div>{content}</div>
+    //     <div>
+    //       <Avatar src={avatar} size="small" />
+    //       <a href={href}>{owner}</a> 发布在
+    //       <a href={href}>{href}</a>
+    //     </div>
+    //   </div>
+    // );
+
+    // const IconText = ({ type, text }: any) => (
+    //   <span>
+    //     <Icon type={type} style={{ marginRight: 8 }} />
+    //     {text}
+    //   </span>
+    // );
+
     return (
       <List.Item
         column=""
@@ -120,7 +139,7 @@ export default class Bricks extends React.Component<IProps, object> {
         type="success"
         showIcon={true}
         closable={true}
-      />
+      /> 
     );
   }
 
