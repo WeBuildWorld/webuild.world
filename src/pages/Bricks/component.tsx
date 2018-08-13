@@ -13,23 +13,30 @@ export interface IProps {
   acceptWork?: (brickId: number, winner: string) => Promise<any>;
 }
 
-export default class Bricks extends React.Component<IProps, object> {
-  public state = {
-    hash: (this.props as any).match.params.hash
-  };
+export default class Bricks extends React.Component<IProps, any> {
+
 
   constructor(props: IProps) {
     super(props);
 
+    this.state = {
+      hash: (this.props as any).match.params.hash,
+      loading: true,
+      loadingMore: false,
+      showLoadingMore: true,
+    };
+
     this.dismiss = this.dismiss.bind(this);
     this.renderItem = this.renderItem.bind(this);
+    this.fetchMore = this.fetchMore.bind(this);
   }
 
   public componentWillMount() {
     setInterval(this.props.getBricks!, 1000);
   }
 
-  public fetchMore = () => {
+  public fetchMore() {
+
     // const { dispatch } = this.props;
     // dispatch({
     //   type: 'list/appendFetch',
@@ -120,7 +127,7 @@ export default class Bricks extends React.Component<IProps, object> {
           size="large"
           rowKey="id"
           itemLayout="vertical"
-          loadMore={loadMore}
+          // loadMore={loadMore}
           dataSource={bricks}
           renderItem={this.renderItem}
         />
@@ -139,7 +146,7 @@ export default class Bricks extends React.Component<IProps, object> {
         type="success"
         showIcon={true}
         closable={true}
-      /> 
+      />
     );
   }
 

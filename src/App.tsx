@@ -24,7 +24,7 @@ class App extends React.Component {
                 <NetworkStatus />
               </Nav>
             </Header>
-            <Content style={{ padding: '0 50px', marginTop: 64 }}>
+            <Content className="app-body" style={{ marginTop: 64 }}>
               <Switch>
                 <Route exact={true} path="/" component={Bricks} />
                 <Route exact={true} path="/hash/:hash?" component={Bricks} />

@@ -5,11 +5,11 @@ import { IProps, IState } from '../component';
 const FormItem = Form.Item;
 const formItemLayout = {
     labelCol: {
-        sm: { span: 8 },
+        sm: { span: 24 },
         xs: { span: 24 },
     },
     wrapperCol: {
-        sm: { span: 16 },
+        sm: { span: 24 },
         xs: { span: 24 },
     },
 };
@@ -124,8 +124,7 @@ export class AddBrickForm extends React.Component<any, IState> {
                 </FormItem>
 
                 <FormItem
-                    wrapperCol={{ span: 12, offset: 5 }}
-                >
+                    wrapperCol={{ span: 12, offset: 0 }} >
                     <Button type="primary" htmlType="submit">
                         Add Your Brick
           </Button>

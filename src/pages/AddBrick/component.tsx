@@ -83,82 +83,7 @@ export default class Bricks extends React.Component<IProps, IState> {
 
     return this.setState({ brick: currentState });
   }
-
-  public renderForm() {
-    return (
-      <Card title="Card title">
-        <div className="columns add-brick">
-          <div className="column">
-            <div className="field">
-              <label className="label">GitHub Issue Link</label>
-              <div className="control has-icons-left">
-                <input
-                  className={this.getClassName(this.state.validations.url)}
-                  type="text"
-                  name="url"
-                  placeholder="GitHub Link"
-                  onChange={this.setBrickState}
-                />
-                <span className="icon is-small is-left">
-                  <i className="fas fa-link" />
-                </span>
-              </div>
-            </div>
-            <div className="field">
-              <label className="label level">Title</label>
-              <div className="control has-icons-left">
-                <input
-                  className={this.getClassName(this.state.validations.title)}
-                  type="text"
-                  placeholder="Title"
-                  name="title"
-                  onChange={this.setBrickState}
-                />
-                <span className="icon is-small is-left">
-                  <i className="fa fa-user" />
-                </span>
-              </div>
-            </div>
-            <div className="field">
-              <label className="label level">Description</label>
-              <div className="control has-icons-left">
-                <textarea
-                  className={this.getClassName(
-                    this.state.validations.description,
-                    "textarea"
-                  )}
-                  name="description"
-                  placeholder="Brief Description"
-                  onChange={this.setBrickState}
-                />
-              </div>
-            </div>
-            <div className="level">
-              <div className="field">
-                <label className="label">ETH Value</label>
-                <div className="control has-icons-left">
-                  <input
-                    className={this.getClassName(this.state.validations.value)}
-                    type="text"
-                    placeholder="ETH"
-                    name="value"
-                    onChange={this.setBrickState}
-                  />
-                  <span className="icon is-small is-left">
-                    <i className="fab fa-ethereum" />
-                  </span>
-                </div>
-              </div>
-            </div>
-            <Button type="primary" htmlType="button" className="button is-dark" onClick={this.addBrick}>
-              Add Your Brick
-          </Button>
-          </div>
-        </div>
-      </Card>
-    );
-  }
-
+ 
   public formSubmitted(values: any) {
     this.forceUpdate();
     this.props.addBrick!(values);
@@ -166,7 +91,7 @@ export default class Bricks extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <Card title="Card title">
+      <Card>
         <AddBrickForm onSubmit={this.formSubmitted} />
       </Card>)
   }

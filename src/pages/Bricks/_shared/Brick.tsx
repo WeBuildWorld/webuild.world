@@ -81,12 +81,11 @@ export default class Brick extends React.Component<IProps, object> {
     this.forceUpdate();
   }
 
-
   public renderOperations() {
 
 
     const getAvatar = (id: any) => {
-      const src = Authentication.getAvatarFromId(id);
+      const src = Authentication.getAvatarFromId(parseInt(id, 10));
       return <img className="avatar float-left mr-1" src={src} />;
     }
 
@@ -119,7 +118,7 @@ export default class Brick extends React.Component<IProps, object> {
       const result = !isDisabled ? (
         <div {...innerProps}> {Avatar} {children}</div>
       ) : null;
- 
+
       return result;
 
     }

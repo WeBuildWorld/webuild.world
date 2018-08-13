@@ -17,11 +17,14 @@ export const toBrick = (arr: any[]): IBrick => {
     title: arr[0],
     url: arr[1],
     value: rpcService.rpc.fromWei(arr[4].toString(), "ether"),
-    winner: rpcService.rpc.toHex(arr[9])
+    winner: null // arr[9] // It's already hex
   } as IBrick;
 
-  // tslint:disable-next-line
-  // console.log(brick);
+  if (arr[9]) {
+    const winner = (arr as any).builders.find((b: IBuilder) => b.walletAddress === arr[9]);
+    brick.winner = winner;
+  }
+ 
   return brick;
 };
 
@@ -63,9 +66,16 @@ const toBuilders = (items: any) => {
 
   const builders = [] as IBuilder[];
   for (let i = 0; i < len; i++) {
+
+    // rpcService.rpc.toDecimal(items[2][i].replace(/0*$/, '')).toString();
+    // tslint:disable-next-line:no-debugger
+    // debugger;
+
+    const keyValue = rpcService.rpc.toAscii(items[2][i]).replace('a', '');
+
     builders.push({
       dateStarted: items[1][i].toNumber(),
-      key: rpcService.rpc.toDecimal(items[2][i]).toString(),
+      key: keyValue, // hacked github id
       nickName: rpcService.rpc.toAscii(items[3][i]),
       walletAddress: items[0][i]
     } as IBuilder);
@@ -108,12 +118,8 @@ export const startWork = async (
   );
   const options = {};
   const result = await Promisify((cb: any) => {
-
-    // tslint:disable-next-line:no-console
-    console.log('startWork', builderId, builderName);
-    // tslint:disable-next-line:no-debugger
-    debugger;
-    return contract.startWork(brickId, builderId, builderName, options, cb);
+    const hackedBuilderId = builderId + 'a';
+    return contract.startWork(brickId, hackedBuilderId, builderName, options, cb);
   });
 
   return result;

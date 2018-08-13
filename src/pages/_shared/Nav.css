@@ -24,7 +24,7 @@ h1 {
     color: white;
 }
 
-.logo-wrap a {
+a.logo-wrap {
     text-decoration: none;
 }
 
@@ -39,4 +39,20 @@ h1 {
 
 .hidden {
     display: none;
+}
+
+.nav-phone-icon {
+    position: absolute;
+    right: 30px;
+    top: 25px;
+    z-index: 1;
+    width: 16px;
+    height: 22px;
+    cursor: pointer;
+    display: block;
+    color: white;
+}
+
+.ant-popover-inner .header-menu-content {
+    min-height: 40px;
 }

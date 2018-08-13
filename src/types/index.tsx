@@ -28,7 +28,7 @@ export interface IBrick {
   tags?: string[];
   dateCreated?: Date | number;
   dateCompleted?: Date | number;
-  winner?: string;
+  winner?: IBuilder;
 }
 
 export enum BrickStatus {

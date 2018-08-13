@@ -20,7 +20,7 @@ export class Authentication {
         }
     }
 
-    public static getAvatarFromId(id: string) {
+    public static getAvatarFromId(id: any) {
         return AVATAR_TEMPLATE.replace('{id}', id);
     }
 
