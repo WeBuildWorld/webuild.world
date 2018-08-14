@@ -34,12 +34,13 @@ export interface IBrick {
 export enum BrickStatus {
   Inactive,
   Open,
-  Completed
+  Completed,
+  Canceled,
 }
 
 export interface IBuilder {
-  nickName: string;
-  walletAddress: string;
+  nickName?: string;
+  walletAddress?: string;
   dateStarted?: number;
   key?: string;
 }

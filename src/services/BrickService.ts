@@ -21,12 +21,25 @@ export const toBrick = (arr: any[]): IBrick => {
   } as IBrick;
 
   if (arr[9]) {
-    const winner = (arr as any).builders.find((b: IBuilder) => b.walletAddress === arr[9]);
+    const winner = brick.builders.find((b: IBuilder) => arr[9].includes(b.walletAddress));
     brick.winner = winner;
+    if (brick.winner && brick.winner.nickName) {
+      brick.winner.nickName = trimZeroCode(brick.winner.nickName);
+      brick.winner.key = trimZeroCode(brick.winner.key);
+    }
   }
- 
+
   return brick;
 };
+
+export const trimZeroCode = (str: string) => {
+
+  while (str.charAt(str.length - 1) === String.fromCharCode(0)) {
+    str = str.substring(0, str.length - 1);
+  }
+
+  return str;
+}
 
 export const getBricks = async (start: number, length: number) => {
   const contract = rpcService.contract(
@@ -105,6 +118,21 @@ export const addBrick = async (brick: IBrick): Promise<number> => {
   })) as number;
 
   return newId;
+};
+
+export const cancel = async (
+  brickId: number
+): Promise<any> => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  const options = {};
+  const result = await Promisify((cb: any) => {
+    return contract.cancel(brickId, options, cb);
+  });
+
+  return result;
 };
 
 export const startWork = async (

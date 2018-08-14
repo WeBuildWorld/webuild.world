@@ -11,6 +11,7 @@ export interface IProps {
   getBricks?: () => void;
   startWork?: (brickId: number) => Promise<any>;
   acceptWork?: (brickId: number, winner: string) => Promise<any>;
+  cancelBrick?: (brickId: number) => Promise<void>;
 }
 
 export default class Bricks extends React.Component<IProps, any> {
@@ -88,6 +89,8 @@ export default class Bricks extends React.Component<IProps, any> {
               startWork={id => this.props.startWork!(id)}
               // tslint:disable-next-line:jsx-no-lambda
               acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
+              // tslint:disable-next-line:jsx-no-lambda
+              cancelBrick = {id => this.props.cancelBrick!(id)}
             />
           }
         />

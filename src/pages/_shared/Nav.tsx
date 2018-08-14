@@ -99,7 +99,8 @@ export default class Nav extends React.Component<IProps, any> {
             onVisibleChange={this.onMenuVisibleChange}
             style={{ minHeight: 120 }}
           >
-            <Icon className="nav-phone-icon" type="profile" onClick={this.handleShowMenu} />
+           <i className="fas fa-bars nav-phone-icon" onClick={this.handleShowMenu} />
+            {/* <Icon className="nav-phone-icon" type="profile" onClick={this.handleShowMenu} /> */}
           </Popover>
         ) : null}
         <Row >
