@@ -158,7 +158,7 @@ export default class Brick extends React.Component<IProps, object> {
 
     return (
       <Modal
-        align="centered"
+        align={{}}
         visible={this.state.modalIsOpen}
         title={"Accept work:" + this.props.brick.title}
         onOk={this.acceptWork}

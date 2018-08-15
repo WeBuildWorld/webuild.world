@@ -37,46 +37,20 @@ export default class Bricks extends React.Component<IProps, any> {
   }
 
   public fetchMore() {
-
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'list/appendFetch',
-    //   payload: {
-    //     count: pageSize,
-    //   },
-    // });
+    // const { dispatch } = this.props; 
   };
 
   public renderItem(item: any) {
 
-
-    // const ListContent = ({ data: { content, updatedAt, avatar, owner, href } }: any) => (
-    //   <div >
-    //     <div>{content}</div>
-    //     <div>
-    //       <Avatar src={avatar} size="small" />
-    //       <a href={href}>{owner}</a> 发布在
-    //       <a href={href}>{href}</a>
-    //     </div>
-    //   </div>
-    // );
-
-    // const IconText = ({ type, text }: any) => (
-    //   <span>
-    //     <Icon type={type} style={{ marginRight: 8 }} />
-    //     {text}
-    //   </span>
-    // );
-
     return (
       <List.Item
-        column=""
-        xs=""
-        sm=""
-        md=""
-        lg=""
-        xl=""
-        xxl=""
+        column={24}
+        xs={24}
+        sm={24}
+        md={24}
+        lg={24}
+        xl={24}
+        xxl={24}
         key={item.id}
         extra={<div />}
       >
@@ -90,7 +64,7 @@ export default class Bricks extends React.Component<IProps, any> {
               // tslint:disable-next-line:jsx-no-lambda
               acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
               // tslint:disable-next-line:jsx-no-lambda
-              cancelBrick = {id => this.props.cancelBrick!(id)}
+              cancelBrick={id => this.props.cancelBrick!(id)}
             />
           }
         />

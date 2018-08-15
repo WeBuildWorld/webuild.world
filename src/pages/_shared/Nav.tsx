@@ -1,4 +1,4 @@
-import { Button, Col, Icon, Modal, Popover, Row } from 'antd';
+import { Button, Col, Icon, Menu, Modal, Popover, Row } from 'antd';
 import { History } from "history";
 import * as React from "react";
 import logo from "../../logo.svg";
@@ -12,6 +12,8 @@ import "./Nav.css";
 interface IProps {
   history?: History | undefined;
 }
+
+
 
 // tslint:disable-next-line:no-console
 // const onSuccess = (response) => console.log(response);
@@ -85,6 +87,18 @@ export default class Nav extends React.Component<IProps, any> {
       </div>
     </div>;
 
+    const menus = <Menu>
+      <Menu.Item>
+        <Button htmlType="button" onClick={this.addBrick} type="primary"> Add a Brick </Button>
+      </Menu.Item>
+      <Menu.Item>
+        <GitHubButton />
+      </Menu.Item>
+      <Menu.Item>
+        {this.props.children}
+      </Menu.Item>
+    </Menu>;
+
     return (
       <div className="header-wrapper app-body">
         {menuMode === 'inline' ? (
@@ -92,14 +106,14 @@ export default class Nav extends React.Component<IProps, any> {
             openClassName="menu-popover"
             overlayClassName="popover-menu"
             placement="bottomRight"
-            content={items}
+            content={menus}
             trigger="click"
             visible={menuVisible}
             arrowPointAtCenter={true}
             onVisibleChange={this.onMenuVisibleChange}
             style={{ minHeight: 120 }}
           >
-           <i className="fas fa-bars nav-phone-icon" onClick={this.handleShowMenu} />
+            <i className="fas fa-bars nav-phone-icon" onClick={this.handleShowMenu} />
             {/* <Icon className="nav-phone-icon" type="profile" onClick={this.handleShowMenu} /> */}
           </Popover>
         ) : null}

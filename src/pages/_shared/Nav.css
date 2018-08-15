@@ -57,3 +57,7 @@ a.logo-wrap {
 .ant-popover-inner .header-menu-content {
     min-height: 40px;
 }
+
+.ant-popover-inner .ant-menu-inline, .ant-menu-vertical, .ant-menu-vertical-left{
+    border: 0;
+}
