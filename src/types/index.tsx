@@ -13,6 +13,7 @@ export interface ICredential {
   avatar_url?: string;
   email?: string;
   name?: string;
+  login?: string;
 }
 
 export interface IBrick {

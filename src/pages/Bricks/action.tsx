@@ -27,8 +27,9 @@ export function startWorkForBrick(
   brickId: number,
 ) {
   return async (dispatch: any): Promise<void> => {
-    const user: ICredential = Authentication.getCurrentUser(); // TODO
-    const result = await startWork(brickId, user.githubId || '', user.name || '');
+    const user: ICredential = Authentication.getCurrentUser();
+    const githubIdAndUserName = Authentication.getGithubIdAndName(user);
+    const result = await startWork(brickId, githubIdAndUserName, user.name!);
     return dispatch({
       payload: { result },
       type: constants.START_WORK

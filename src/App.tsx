@@ -11,7 +11,6 @@ import Bricks from "./pages/Bricks";
 
 const { Header, Content } = Layout;
 
-
 const history = createBrowserHistory();
 class App extends React.Component {
   public render() {

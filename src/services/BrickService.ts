@@ -6,7 +6,6 @@ import rpcService from "./RpcService";
 
 export const toBrick = (obj: any): IBrick => {
 
-
   const brick = {
     builders: obj.builders,
     dateCompleted: obj.dateCompleted.toNumber(),
@@ -105,12 +104,10 @@ const toBuilders = (items: any) => {
 
   const builders = [] as IBuilder[];
   for (let i = 0; i < len; i++) {
-
-    const keyValue = rpcService.rpc.toAscii(items[2][i]).replace('a', '');
-
+    const githubIdAndUserName = rpcService.rpc.toAscii(items[2][i]);
     builders.push({
       dateStarted: items[1][i].toNumber(),
-      key: keyValue, // hacked github id
+      key: githubIdAndUserName,
       nickName: rpcService.rpc.toAscii(items[3][i]),
       walletAddress: items[0][i]
     } as IBuilder);
@@ -171,8 +168,7 @@ export const startWork = async (
   );
   const options = {};
   const result = await Promisify((cb: any) => {
-    const hackedBuilderId = builderId + 'a';
-    return contract.startWork(brickId, hackedBuilderId, builderName, options, cb);
+    return contract.startWork(brickId, builderId, builderName, options, cb);
   });
 
   return result;

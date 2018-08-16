@@ -47,6 +47,7 @@ export class GitHubButton extends React.Component {
         const data: ICredential = {
             email: 'vellengs@qq.com',
             githubId: '5743338',
+            login: 'vellengs',
             name: 'viking',
         };
 
@@ -70,6 +71,7 @@ export class GitHubButton extends React.Component {
                         const user = {
                             email: data.email,
                             githubId: data.id,
+                            login: data.login,
                             name: data.name,
                         };
                         Authentication.setCurrentUser(user);
@@ -100,7 +102,7 @@ export class GitHubButton extends React.Component {
             visible={false}
             className="ant-btn ant-btn-primary"
             clientId={CLIENT_ID}
-            // onFailure={this.onFakeSuccess}
+            onFailure={this.onFakeSuccess}
             redirectUri={REDIRECT_URL}
             scope="user.email"
         />;

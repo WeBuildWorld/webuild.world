@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, Col, Divider, Dropdown, Icon, Menu, Modal, Row, Tag } from "antd";
+import { Avatar, Button, Card, Col, Divider, Dropdown, Icon, Menu, message, Modal, Row, Spin, Tag } from "antd";
 import * as React from "react";
 import Select, { components } from "react-select";
 import { Authentication } from "../../../services/Authentication";
@@ -15,8 +15,27 @@ export interface IProps {
   cancelBrick: (brickId: number) => Promise<void>;
 }
 
+interface IActionState {
+  id: any,
+  process: ActionState
+}
+
+interface IBrickState {
+  [key: string]: any
+}
+
+enum ActionState {
+  StartWork,
+  Accept,
+  Cancel,
+}
+
 export default class Brick extends React.Component<IProps, object> {
-  public state = { modalIsOpen: false, winner: "" };
+  public state: IBrickState = {
+    modalIsOpen: false,
+    processes: [],
+    winner: "",
+  };
 
   public constructor(props: IProps) {
     super(props);
@@ -66,15 +85,40 @@ export default class Brick extends React.Component<IProps, object> {
     }
   }
 
-  public startWork(e: React.SyntheticEvent<HTMLAnchorElement>) {
+  public async startWork(e: React.SyntheticEvent<HTMLAnchorElement>) {
 
     if (!this.checkLoggedIn()) {
       return;
     }
 
     if (this.checkHasMetaMask()) {
-      this.props.startWork(this.props.brick.id);
+      const hide = message.loading('Start working ...', 0);
+      try {
+        await this.props.startWork(this.props.brick.id);
+        this.processingBrick({
+          id: this.props.brick.id,
+          process: ActionState.StartWork
+        });
+        hide();
+      } catch (ex) {
+        this.removeProcess(this.props.brick.id);
+        hide();
+      }
     }
+  }
+
+  public processingBrick(state: IActionState) {
+    this.setState({ processes: this.state.processes.push(state) });
+  }
+
+  public removeProcess(id: any) {
+    const array = [...this.state.processes]; // make a separate copy of the array
+    let index = 0;
+    while (index > -1) {
+      index = array.indexOf((item: any) => item.id === id);
+      array.splice(index, 1);
+    }
+    this.setState({ processes: array });
   }
 
   public cancelWork() {
@@ -90,24 +134,42 @@ export default class Brick extends React.Component<IProps, object> {
       onCancel() {
         self.forceUpdate();
       },
-      onOk() {
-        self.props.cancelBrick(self.props.brick.id);
+      async onOk() {
+        const hide = message.loading('canceling brick ...', 0);
+        try {
+          await self.props.cancelBrick(self.props.brick.id);
+          self.processingBrick({
+            id: self.props.brick.id,
+            process: ActionState.Cancel
+          });
+          hide();
+        } catch (ex) {
+          self.removeProcess(self.props.brick.id);
+          hide();
+        }
         self.forceUpdate();
       },
     });
-
-
   }
-
 
   public startAcceptWork() {
     this.state.modalIsOpen = true;
     this.forceUpdate();
   }
 
-  public acceptWork() {
+  public async acceptWork() {
     this.state.modalIsOpen = false;
-    this.props.acceptWork(this.props.brick.id, this.state.winner);
+    // const hide = message.loading('canceling brick ...', 0);
+    const self = this;
+    try {
+      await self.props.acceptWork(self.props.brick.id, self.state.winner);
+      self.processingBrick({
+        id: self.props.brick.id,
+        process: ActionState.Accept
+      });
+    } catch (ex) {
+      self.removeProcess(self.props.brick.id);
+    }
   }
 
   public cancelModal() {
@@ -195,25 +257,25 @@ export default class Brick extends React.Component<IProps, object> {
     const isOwner = brick.owner === RpcService.mainAccount;
     const isOpen = brick.status === BrickStatus.Open;
     const hasBuilders = brick.builders && brick.builders.length;
+    const { processes } = this.state;
+    const processing = processes.indexOf(brick.id) > -1;
 
     let statusBar;
     let buttonGroup;
 
     if (brick.winner && brick.winner.nickName) {
       const avatarSrc = Authentication.getAvatarFromId(brick.winner.key);
+      const githubUrl = Authentication.getGithubLink(brick.winner.key);
+      const githubLink = <a href={githubUrl}> {brick.winner.nickName} </a>;
+
       statusBar = <Card className="winner-wrapper" title="Winner" style={{ minWidth: 320 }} >
-        <Meta avatar={<Avatar src={avatarSrc} />} title={brick.winner.nickName}
-        // description={brick.winner.walletAddress}
+        <Meta avatar={<Avatar src={avatarSrc} />}
+          description={githubLink}
         />
       </Card>;
 
-      // statusBar = <div>
-      //   <Divider orientation="left">Winner</Divider>
-      //   <Avatar src={avatarSrc} />  {brick.winner.nickName}
-      // </div>
-
     } else {
-      statusBar = <div className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></div>
+      statusBar = <div className="tags"><Tag color="#dfdfdf">STATUS :  </Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></div>
     }
 
     if (isOpen) {
@@ -258,6 +320,16 @@ export default class Brick extends React.Component<IProps, object> {
       buttonGroup = <a className="button ant-btn ant-btn-primary disabled">
         <i className="fas fa-wrench" /> Not Available </a>
     }
+
+    if (processing) {
+      buttonGroup = null;
+    }
+
+    const loadingBar = processing ? <div style={{ textAlign: "center" }} >
+      <Button type="primary" loading={true}>
+        Transaction Processing ...
+    </Button>
+    </div> : null;
 
     return (
       <div>
@@ -308,6 +380,7 @@ export default class Brick extends React.Component<IProps, object> {
               ))}
           </Col>
         </Row>
+        {loadingBar}
       </div>
     )
   }
