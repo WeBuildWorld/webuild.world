@@ -51,19 +51,19 @@ contract WeBuildWord is Extendable {
         return brickIds;
     }
 
-    function addBrick(string _title, string _url, string _description) 
+    function addBrick(string _title, string _url, string _description, bytes32[] _tags) 
         public payable
         returns (uint id)
     {
         id = getId();
-        require(getProvider(id).addBrick(id, _title, _url, _description, msg.value));
+        require(getProvider(id).addBrick(id, _title, _url, _description, _tags, msg.value));
     }
 
-    function changeBrick(uint _brickId, string _title, string _url, string _description) 
+    function changeBrick(uint _brickId, string _title, string _url, string _description, bytes32[] _tags) 
         public onlyBrickOwner(_brickId) payable
         returns (bool success) 
     {
-        return getProvider(_brickId).changeBrick(_brickId, _title, _url, _description, msg.value);
+        return getProvider(_brickId).changeBrick(_brickId, _title, _url, _description, _tags, msg.value);
     }
 
     // msg.value is tip.
@@ -101,17 +101,24 @@ contract WeBuildWord is Extendable {
     function getBrick(uint _brickId) public view returns (
         string title,
         string url,
-        string description,
         address owner,
         uint value,
         uint dateCreated,
         uint dateCompleted,
-        uint32 builders,
-        uint32 status,
-        address[] winners        
+        uint32 status      
     ) {
         return getProvider(_brickId).getBrick(_brickId);
     }
+
+    function getBrickDetail(uint _brickId) public view returns (
+        bytes32[] tags,
+        string description,
+        uint32 builders,
+        address[] winners        
+    ) {
+        return getProvider(_brickId).getBrickDetail(_brickId);
+    }
+
 
     function getBrickBuilders(uint _brickId) public view returns (
         address[] addresses,

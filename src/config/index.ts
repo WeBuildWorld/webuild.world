@@ -281,6 +281,10 @@ export default {
         {
           "name": "_description",
           "type": "string"
+        },
+        {
+          "name": "_tags",
+          "type": "bytes32[]"
         }
       ],
       "name": "addBrick",
@@ -312,6 +316,10 @@ export default {
         {
           "name": "_description",
           "type": "string"
+        },
+        {
+          "name": "_tags",
+          "type": "bytes32[]"
         }
       ],
       "name": "changeBrick",
@@ -417,10 +425,6 @@ export default {
           "type": "string"
         },
         {
-          "name": "description",
-          "type": "string"
-        },
-        {
           "name": "owner",
           "type": "address"
         },
@@ -437,11 +441,34 @@ export default {
           "type": "uint256"
         },
         {
-          "name": "builders",
+          "name": "status",
           "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_brickId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBrickDetail",
+      "outputs": [
+        {
+          "name": "tags",
+          "type": "bytes32[]"
         },
         {
-          "name": "status",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "builders",
           "type": "uint32"
         },
         {
@@ -485,7 +512,8 @@ export default {
       "type": "function"
     }
   ],
-  CONTRACT_ADDRESS: "0xbabb3faec25ff0dc5c34fe9e202d815a49594b41",
+  // CONTRACT_ADDRESS: "0xbabb3faec25ff0dc5c34fe9e202d815a49594b41",
+  CONTRACT_ADDRESS: "0x51EC288D994b037e7b94a263793Be80e49BAE0cb",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,

@@ -16,6 +16,7 @@ export interface IState {
   brick: IBrick;
   validations: IValidationStatus;
   confirmDirty?: any;
+  inputVisible?: false,
 }
 
 type UncertainType<T> = T | undefined;

@@ -4,24 +4,27 @@ import Promisify from "../helpers/Promisify";
 import { IBrick, IBuilder } from "../types";
 import rpcService from "./RpcService";
 
-export const toBrick = (arr: any[]): IBrick => {
+export const toBrick = (obj: any): IBrick => {
+
+
   const brick = {
-    builders: (arr as any).builders,
-    dateCompleted: arr[6].toNumber(),
-    dateCreated: arr[5].toNumber(),
-    description: arr[2],
-    id: (arr as any).id.toNumber(),
-    numOfBuilders: arr[7].toNumber(),
-    owner: rpcService.rpc.toHex(arr[3]),
-    status: arr[8].toNumber(),
-    title: arr[0],
-    url: arr[1],
-    value: rpcService.rpc.fromWei(arr[4].toString(), "ether"),
-    winner: null // arr[9] // It's already hex
+    builders: obj.builders,
+    dateCompleted: obj.dateCompleted.toNumber(),
+    dateCreated: obj.dateCreated.toNumber(),
+    description: obj.description,
+    id: obj.id.toNumber(),
+    numOfBuilders: obj.numOfBuilders.toNumber(),
+    owner: rpcService.rpc.toHex(obj.owner),
+    status: obj.status.toNumber(),
+    tags: obj.tags,
+    title: obj.title,
+    url: obj.url,
+    value: rpcService.rpc.fromWei(obj.value.toString(), "ether"),
+    winner: null
   } as IBrick;
 
-  if (arr[9]) {
-    const winner = brick.builders.find((b: IBuilder) => arr[9].includes(b.walletAddress));
+  if (obj.winners) {
+    const winner = brick.builders.find((b: IBuilder) => obj.winners.includes(b.walletAddress));
     brick.winner = winner;
     if (brick.winner && brick.winner.nickName) {
       brick.winner.nickName = trimZeroCode(brick.winner.nickName);
@@ -59,12 +62,35 @@ export const getBricks = async (start: number, length: number) => {
     brickCount: ids.length,
     bricks: (await Promise.all(
       ids.map(async id => {
-        const result: any = await Promisify((cb: any) =>
+
+        const brickArr: any = await Promisify((cb: any) =>
           contract.getBrick(id, cb)
         );
-        result.id = id;
-        result.builders = await getBrickBuilders(id);
 
+        const brickDetailArr: any = await Promisify((cb: any) =>
+          contract.getBrickDetail(id, cb)
+        );
+
+        const result: any = {
+          title: brickArr[0],
+          url: brickArr[1],
+          // tslint:disable-next-line:object-literal-sort-keys
+          owner: brickArr[2],
+          value: brickArr[3],
+          dateCreated: brickArr[4],
+          dateCompleted: brickArr[5],
+          status: brickArr[6],
+          tags: brickDetailArr[0],
+          description: brickDetailArr[1],
+          numOfBuilders: brickDetailArr[2],
+          winners: brickDetailArr[3]
+        }
+        result.id = id;
+        if (result.tags && result.tags.length) {
+          result.tags = result.tags.map((tag: any) => rpcService.rpc.toAscii(tag));
+        }
+
+        result.builders = await getBrickBuilders(id);
         return result;
       })
     )).map(toBrick)
@@ -79,10 +105,6 @@ const toBuilders = (items: any) => {
 
   const builders = [] as IBuilder[];
   for (let i = 0; i < len; i++) {
-
-    // rpcService.rpc.toDecimal(items[2][i].replace(/0*$/, '')).toString();
-    // tslint:disable-next-line:no-debugger
-    // debugger;
 
     const keyValue = rpcService.rpc.toAscii(items[2][i]).replace('a', '');
 
@@ -107,11 +129,14 @@ export const addBrick = async (brick: IBrick): Promise<number> => {
     Config.CONTRACT_ADDRESS
   );
   const options = { value: rpcService.rpc.toWei(brick.value, "ether") };
+  const tags: any[] = brick.tags;
   const newId = (await Promisify((cb: any) => {
+
     return contract.addBrick(
       brick.title,
       brick.url || "",
       brick.description || "",
+      tags,
       options,
       cb
     );

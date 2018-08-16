@@ -1,4 +1,4 @@
-import { Button, Form, Icon, Input, Row } from 'antd';
+import { Button, Form, Icon, Input, Row, Tag, Tooltip } from 'antd';
 import * as  React from 'react';
 import { IProps, IState } from '../component';
 
@@ -21,15 +21,23 @@ const URL_REGEXP = new RegExp(
     "i"
 )
 
-export class AddBrickForm extends React.Component<any, IState> {
+export class AddBrickForm extends React.Component<any, any> {
 
+    public input: any;
 
     constructor(props: any) {
         super(props);
+        this.state = this.state || { tags: [] };
         this.validateLink = this.validateLink.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateETH = this.validateETH.bind(this);
+        this.showInput = this.showInput.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleInputConfirm = this.handleInputConfirm.bind(this);
+
     }
+    public saveInputRef = (input: any) => this.input = input;
 
     public validateLink(rule: any, value: any, callback: any) {
         // const form = this.props.form;
@@ -47,16 +55,47 @@ export class AddBrickForm extends React.Component<any, IState> {
     }
     public handleSubmit(e: any) {
         e.preventDefault();
+        const self = this;
         this.props.form.validateFields((err: any, values: any) => {
             if (!err && this.props.onSubmit) {
-                // console.log('Received values of form: ', values);
+                values.tags = self.state.tags;
                 this.props.onSubmit(values);
             }
         });
     }
 
+    public handleClose = (removedTag: any) => {
+        const tags = this.state.tags.filter((tag: any) => tag !== removedTag);
+        this.setState({ tags });
+    }
+
+    public handleInputChange(e: any) {
+        this.setState({ inputValue: e.target.value });
+    }
+
+    public handleInputConfirm() {
+        const state = this.state;
+        const inputValue = state.inputValue;
+        let tags = state.tags;
+        if (inputValue && tags.indexOf(inputValue) === -1) {
+            tags = [...tags, inputValue];
+        }
+        this.setState({
+            inputValue: '',
+            inputVisible: false,
+            tags
+        });
+    }
+
+    public showInput() {
+        this.setState({ inputVisible: true }, () => this.input.focus());
+    }
+
+
     public render() {
         const { getFieldDecorator } = this.props.form;
+        const { tags, inputVisible, inputValue } = this.state;
+
         return (
             <Form layout="vertical" onSubmit={this.handleSubmit}>
                 <FormItem
@@ -89,6 +128,48 @@ export class AddBrickForm extends React.Component<any, IState> {
                         <Input
                             prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
                             placeholder="Title" autosize={true} />
+                    )}
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="Title">
+                    {getFieldDecorator('tags', {
+                        rules: [],
+                    })(
+                        <div>
+                            {tags.map((tag: any, index: number) => {
+                                const isLongTag = tag.length > 20;
+                                const tagElem = (
+                                    <Tag key={tag} closable={true}
+                                        // tslint:disable-next-line:jsx-no-lambda
+                                        afterClose={() => this.handleClose(tag)}>
+                                        {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                                    </Tag>
+                                );
+                                return isLongTag ? <Tooltip title={tag} key={tag}>{tagElem}</Tooltip> : tagElem;
+                            })}
+                            {inputVisible && (
+                                <Input
+                                    ref={this.saveInputRef}
+                                    type="text"
+                                    size="small"
+                                    style={{ width: 78 }}
+                                    value={inputValue}
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputConfirm}
+                                    onPressEnter={this.handleInputConfirm}
+                                />
+                            )}
+                            {!inputVisible && (
+                                <Tag
+                                    onClick={this.showInput}
+                                    style={{ background: '#fff', borderStyle: 'dashed' }}
+                                >
+                                    <Icon type="plus" /> New Tag
+                                </Tag>
+                            )}
+                        </div>
                     )}
                 </FormItem>
 

@@ -59,3 +59,24 @@ h2 {
 .flex-layout {
     padding: 15px 0;
 }
+
+.tag-list {
+    padding-top: 15px;
+}
+
+.winner-wrapper .ant-card-body {
+    padding: 12px 8px;
+}
+
+.winner-wrapper .ant-card-head-title {
+    padding: 8px 0;
+}
+
+.winner-wrapper .ant-card-head {
+    padding: 0 16px;
+    min-height: 32px;
+}
+
+.winner-wrapper .ant-card-meta-title {
+    line-height: 2;
+}

@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, Col, Dropdown, Icon, Menu, Modal, Row, Tag } from "antd";
+import { Avatar, Button, Card, Col, Divider, Dropdown, Icon, Menu, Modal, Row, Tag } from "antd";
 import * as React from "react";
 import Select, { components } from "react-select";
 import { Authentication } from "../../../services/Authentication";
@@ -201,11 +201,16 @@ export default class Brick extends React.Component<IProps, object> {
 
     if (brick.winner && brick.winner.nickName) {
       const avatarSrc = Authentication.getAvatarFromId(brick.winner.key);
-      statusBar = <Card title="Winner" style={{ minWidth: 320 }} >
+      statusBar = <Card className="winner-wrapper" title="Winner" style={{ minWidth: 320 }} >
         <Meta avatar={<Avatar src={avatarSrc} />} title={brick.winner.nickName}
         // description={brick.winner.walletAddress}
         />
       </Card>;
+
+      // statusBar = <div>
+      //   <Divider orientation="left">Winner</Divider>
+      //   <Avatar src={avatarSrc} />  {brick.winner.nickName}
+      // </div>
 
     } else {
       statusBar = <div className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></div>
@@ -239,13 +244,13 @@ export default class Brick extends React.Component<IProps, object> {
 
       } else {
         if (started) {
+          buttonGroup = <a className="button ant-btn disabled is-success">
+            <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;</a>
+        } else {
           buttonGroup = <a className="button ant-btn ant-btn-primary"
             onClick={this.startWork}  >
             <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
-            Work&nbsp;&nbsp; </a>
-        } else {
-          buttonGroup = <a className="button ant-btn disabled is-success">
-            <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;</a>
+          Work&nbsp;&nbsp; </a>
         }
       }
 
@@ -296,10 +301,10 @@ export default class Brick extends React.Component<IProps, object> {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="tag-list">
             {brick.tags &&
               brick.tags.map(tag => (
-                <Tag key={tag} color="geekblue">{tag}</Tag>
+                <Tag key={tag} color="#87d068">{tag}</Tag>
               ))}
           </Col>
         </Row>
