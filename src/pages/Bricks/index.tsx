@@ -23,8 +23,10 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {
       actions.cancelBrick(brickId)(dispatch),
     getBricks: (start: number = 0, length: number = 100) =>
       actions.retrieveBricks(start, length)(dispatch),
+    removeHash: () =>
+      actions.removeHash()(dispatch),
     startWork: (brickId: number) =>
-      actions.startWorkForBrick(brickId)(dispatch)
+      actions.startWorkForBrick(brickId)(dispatch),
   };
 }
 

@@ -12,10 +12,10 @@ export interface IProps {
   startWork?: (brickId: number) => Promise<any>;
   acceptWork?: (brickId: number, winner: string) => Promise<any>;
   cancelBrick?: (brickId: number) => Promise<void>;
+  removeHash?: () => Promise<void>;
 }
 
 export default class Bricks extends React.Component<IProps, any> {
-
 
   constructor(props: IProps) {
     super(props);
@@ -27,18 +27,29 @@ export default class Bricks extends React.Component<IProps, any> {
       showLoadingMore: true,
     };
 
+    this.props.removeHash();
     this.dismiss = this.dismiss.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.fetchMore = this.fetchMore.bind(this);
+    this.closeAlert = this.closeAlert.bind(this);
   }
 
   public componentWillMount() {
-    setInterval(this.props.getBricks!, 1000);
+    const interval = setInterval(this.props.getBricks!, 1000);
+    this.setState({interval});
+  }
+
+  public componentWillUnmount() {
+    clearInterval(this.state.interval);
   }
 
   public fetchMore() {
     // const { dispatch } = this.props; 
   };
+
+  public closeAlert() {
+    this.props.removeHash();
+  }
 
   public renderItem(item: any) {
 
@@ -123,6 +134,7 @@ export default class Bricks extends React.Component<IProps, any> {
         type="success"
         showIcon={true}
         closable={true}
+        afterClose={this.closeAlert}
       />
     );
   }

@@ -11,7 +11,6 @@ export interface IProps {
   form?: any,
   hash?: string;
 }
-
 export interface IState {
   brick: IBrick;
   validations: IValidationStatus;

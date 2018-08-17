@@ -45,10 +45,20 @@ export function cancelBrick(
     const result = await cancel(brickId);
     return dispatch({
       payload: { result },
-      type: constants.START_WORK
+      type: constants.CANCEL_BRICK
     });
   };
 }
+
+export function removeHash() {
+  return async (dispatch: any): Promise<void> => {
+    return dispatch({
+      payload: { hash: null },
+      type: constants.REMOVE_HASH
+    });
+  };
+}
+
 
 export function acceptWorkForBrick(
   brickId: number,

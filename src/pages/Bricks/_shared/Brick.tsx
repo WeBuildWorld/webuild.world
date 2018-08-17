@@ -143,7 +143,7 @@ export default class Brick extends React.Component<IProps, object> {
       async onOk() {
         const hide = message.loading('Please check your MetaMask ...', 0);
         try {
-          // await self.props.cancelBrick(self.props.brick.id);
+          await self.props.cancelBrick(self.props.brick.id);
           self.processingBrick({
             id: self.props.brick.id,
             process: ActionState.Cancel

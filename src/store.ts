@@ -40,7 +40,7 @@ const store = createStore<IStore, any, any, any>(
 	// composeWithDevTools(
 	applyMiddleware(
 		// storageMiddleware,
-		loggerMiddleware,
+		// loggerMiddleware,
 		reduxThunk.withExtraArgument(middleware),
 	),
 	// ),
