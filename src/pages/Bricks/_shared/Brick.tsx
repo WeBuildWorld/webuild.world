@@ -92,7 +92,7 @@ export default class Brick extends React.Component<IProps, object> {
     }
 
     if (this.checkHasMetaMask()) {
-      const hide = message.loading('Start working ...', 0);
+      const hide = message.loading('Please check your MetaMask ...', 0);
       try {
         await this.props.startWork(this.props.brick.id);
         this.processingBrick({
@@ -108,17 +108,23 @@ export default class Brick extends React.Component<IProps, object> {
   }
 
   public processingBrick(state: IActionState) {
-    this.setState({ processes: this.state.processes.push(state) });
+    this.setState((prevState: any, props) => {
+      // tslint:disable-next-line:no-debugger
+      debugger;
+      return { processes: prevState.processes.concat([state]) };
+    });
   }
 
   public removeProcess(id: any) {
-    const array = [...this.state.processes]; // make a separate copy of the array
+    const { processes } = this.state;
     let index = 0;
     while (index > -1) {
-      index = array.indexOf((item: any) => item.id === id);
-      array.splice(index, 1);
+      index = processes.indexOf((item: any) => item.id === id);
+      processes.splice(index, 1);
     }
-    this.setState({ processes: array });
+    // tslint:disable-next-line:no-debugger
+    debugger;
+    this.setState({ processes });
   }
 
   public cancelWork() {
@@ -135,9 +141,9 @@ export default class Brick extends React.Component<IProps, object> {
         self.forceUpdate();
       },
       async onOk() {
-        const hide = message.loading('canceling brick ...', 0);
+        const hide = message.loading('Please check your MetaMask ...', 0);
         try {
-          await self.props.cancelBrick(self.props.brick.id);
+          // await self.props.cancelBrick(self.props.brick.id);
           self.processingBrick({
             id: self.props.brick.id,
             process: ActionState.Cancel
@@ -258,7 +264,10 @@ export default class Brick extends React.Component<IProps, object> {
     const isOpen = brick.status === BrickStatus.Open;
     const hasBuilders = brick.builders && brick.builders.length;
     const { processes } = this.state;
-    const processing = processes.indexOf(brick.id) > -1;
+
+    let processing = isOpen && processes.findIndex((p: IActionState) => {
+      return p.id === brick.id;
+    }) > -1;
 
     let statusBar;
     let buttonGroup;
@@ -275,7 +284,7 @@ export default class Brick extends React.Component<IProps, object> {
       </Card>;
 
     } else {
-      statusBar = <div className="tags"><Tag color="#dfdfdf">STATUS :  </Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></div>
+      statusBar = <div className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></div>
     }
 
     if (isOpen) {
@@ -306,6 +315,7 @@ export default class Brick extends React.Component<IProps, object> {
 
       } else {
         if (started) {
+          processing = false;
           buttonGroup = <a className="button ant-btn disabled is-success">
             <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;</a>
         } else {
@@ -317,6 +327,7 @@ export default class Brick extends React.Component<IProps, object> {
       }
 
     } else {
+      processing = false;
       buttonGroup = <a className="button ant-btn ant-btn-primary disabled">
         <i className="fas fa-wrench" /> Not Available </a>
     }

@@ -114,7 +114,7 @@ export default class Bricks extends React.Component<IProps, any> {
 
   private renderNotification(hash: string) {
 
-    const link = <p>Your brick is being added to the network, click <a target="_blank" className="is-link" href={this.getTxLink(hash)}> here </a> for more info </p>;
+    const link = <p>Your brick is being added to the network, you will see it at list after a while, click <a target="_blank" className="is-link" href={this.getTxLink(hash)}> here </a> for more info </p>;
 
     return (
       <Alert

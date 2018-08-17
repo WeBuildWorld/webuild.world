@@ -1,4 +1,4 @@
-import { Button, Card, Form } from 'antd';
+import { Button, Card, Form, message } from 'antd';
 import * as React from "react";
 
 import { IBrick } from "../../types";
@@ -84,10 +84,16 @@ export default class Bricks extends React.Component<IProps, IState> {
 
     return this.setState({ brick: currentState });
   }
- 
-  public formSubmitted(values: any) {
+
+  public async formSubmitted(values: any) {
     this.forceUpdate();
-    this.props.addBrick!(values);
+    const hide = message.loading('Please check your MetaMask ...', 0);
+    try {
+      await this.props.addBrick!(values);
+      hide();
+    } catch (ex) {
+      hide();
+    }
   }
 
   public render() {
