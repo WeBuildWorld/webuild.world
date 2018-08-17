@@ -167,14 +167,17 @@ export default class Brick extends React.Component<IProps, object> {
     this.state.modalIsOpen = false;
     // const hide = message.loading('canceling brick ...', 0);
     const self = this;
+    const hide = message.loading('Please check your MetaMask ...', 0);
     try {
       await self.props.acceptWork(self.props.brick.id, self.state.winner);
       self.processingBrick({
         id: self.props.brick.id,
         process: ActionState.Accept
       });
+      hide();
     } catch (ex) {
       self.removeProcess(self.props.brick.id);
+      hide();
     }
   }
 
@@ -294,6 +297,11 @@ export default class Brick extends React.Component<IProps, object> {
       );
 
       if (isOwner) {
+
+        processing = processes.findIndex((p: IActionState) => {
+          return p.id === brick.id && (p.process === ActionState.Accept || p.process === ActionState.Cancel);
+        }) > -1;
+
         if (hasBuilders) {
           buttonGroup = <div>
             <Button.Group>
@@ -315,7 +323,7 @@ export default class Brick extends React.Component<IProps, object> {
 
       } else {
         if (started) {
-          processing = false;
+          processing = false; // should not processing before started.
           buttonGroup = <a className="button ant-btn disabled is-success">
             <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;</a>
         } else {
@@ -327,7 +335,7 @@ export default class Brick extends React.Component<IProps, object> {
       }
 
     } else {
-      processing = false;
+      processing = false; // closed no actions
       buttonGroup = <a className="button ant-btn ant-btn-primary disabled">
         <i className="fas fa-wrench" /> Not Available </a>
     }
