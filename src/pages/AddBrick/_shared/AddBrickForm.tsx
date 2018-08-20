@@ -111,8 +111,7 @@ export class AddBrickForm extends React.Component<any, any> {
                         }],
                     })(
                         <Input prefix={<Icon type="link" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="Github Link"
-                            autosize={true} />
+                            placeholder="Github Link" />
                     )}
                 </FormItem>
 
@@ -127,7 +126,7 @@ export class AddBrickForm extends React.Component<any, any> {
                     })(
                         <Input
                             prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="Title" autosize={true} />
+                            placeholder="Title" />
                     )}
                 </FormItem>
 
@@ -200,7 +199,7 @@ export class AddBrickForm extends React.Component<any, any> {
                     })(
                         <Input
                             prefix={<i style={{ color: 'rgba(0,0,0,.25)' }} className="fab fa-ethereum" />}
-                            placeholder="ETH" autosize={true} />
+                            placeholder="ETH" />
                     )}
                 </FormItem>
 

@@ -26,7 +26,7 @@
     "redux-storage": "^4.1.2",
     "redux-storage-engine-cookies": "^1.0.0",
     "redux-thunk": "^2.3.0",
-    "web3": "^0.x.x"
+    "web3": "0.20.6"
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts-ts",
