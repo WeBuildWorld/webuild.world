@@ -1,13 +1,15 @@
-import { connect, Dispatch } from "react-redux";
-import { IBrick, IStoreState } from "../../types/";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+
+import { IBrick, IStoreState } from "../../types";
 import * as actions from "./action";
 import AddBrick, { IProps } from "./component";
 
 export function mapStateToProps({
   reducer
 }: {
-  reducer: { app: IStoreState };
-}) {
+    reducer: { app: IStoreState };
+  }) {
   return { hash: reducer.app.hash };
 }
 

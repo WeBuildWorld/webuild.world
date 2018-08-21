@@ -1,4 +1,4 @@
-image: 'node:latest'
+image: "node:latest"
 
 before_script:
   - yarn install
@@ -17,8 +17,8 @@ build html:
     - yarn build
   artifacts:
     paths:
-    - ./build    
-    
+      - ./build
+
 deploy:
   stage: deploy
   before_script:
@@ -27,9 +27,9 @@ deploy:
     - chmod 700 ~/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H '188.166.218.211' >> ~/.ssh/known_hosts
+    - ssh-keyscan -H '18.191.5.73' >> ~/.ssh/known_hosts
   script:
     - yarn build
-    - scp -r ./public/ root@188.166.218.211:/var/www/WeBuild/Portal/
+    - scp -r ./public/ ubuntu@18.191.5.73:/var/www/WeBuild.World/build
   only:
     - develop

@@ -1,43 +1,54 @@
+@import '~antd/dist/antd.css';
 .App {
+    text-align: center;
+}
+
+.app-body {
+    text-align: left;
+    margin: 0 auto;
+    max-width: 1170px;
+    padding: 0 15px;
 }
 
 img.App-logo {
-  /* animation: App-logo-spin infinite 20s linear; */
-  max-height: 3rem;
-  margin-right: 1rem;
+    /* animation: App-logo-spin infinite 20s linear; */
+    max-height: 3rem;
+    margin-right: 1rem;
+    float: left;
+    margin-top: 0.5rem;
 }
 
 .App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+    background-color: #222;
+    height: 150px;
+    padding: 20px;
+    color: white;
 }
 
 .App-title {
-  font-size: 1.5em;
+    font-size: 1.5em;
 }
 
 .App-intro {
-  font-size: large;
+    font-size: large;
 }
 
 .is-button {
-  color: #24292e;
-  background-color: #eff3f6;
-  background-image: linear-gradient(-180deg, #fafbfc 0%, #eff3f6 90%);
+    color: #24292e;
+    background-color: #eff3f6;
+    background-image: linear-gradient(-180deg, #fafbfc 0%, #eff3f6 90%);
 }
 
 .btn-primary {
-  background-color: #28a745;
-  background-image: linear-gradient(-180deg, #34d058 0%, #28a745 90%);
+    background-color: #28a745;
+    background-image: linear-gradient(-180deg, #34d058 0%, #28a745 90%);
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

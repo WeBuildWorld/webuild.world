@@ -1,6 +1,7 @@
 import * as constants from "../../constants";
-import { acceptWork, getBricks, startWork } from "../../services/BrickService";
-import { IBrick } from "../../types";
+import { Authentication } from "../../services/Authentication";
+import { acceptWork, cancel, getBricks, startWork } from "../../services/BrickService";
+import { IBrick, ICredential } from "../../types";
 
 export interface IGetBricks {
   type: constants.GET_BRICKS;
@@ -24,17 +25,40 @@ export function retrieveBricks(start: number, length: number) {
 
 export function startWorkForBrick(
   brickId: number,
-  builderId: string,
-  builderName: string
 ) {
   return async (dispatch: any): Promise<void> => {
-    const result = await startWork(brickId, builderId, builderName);
+    const user: ICredential = Authentication.getCurrentUser();
+    const githubIdAndUserName = Authentication.getGithubIdAndName(user);
+    const result = await startWork(brickId, githubIdAndUserName, user.name!);
     return dispatch({
       payload: { result },
       type: constants.START_WORK
     });
   };
 }
+
+
+export function cancelBrick(
+  brickId: number,
+) {
+  return async (dispatch: any): Promise<void> => {
+    const result = await cancel(brickId);
+    return dispatch({
+      payload: { result },
+      type: constants.CANCEL_BRICK
+    });
+  };
+}
+
+export function removeHash() {
+  return async (dispatch: any): Promise<void> => {
+    return dispatch({
+      payload: { hash: null },
+      type: constants.REMOVE_HASH
+    });
+  };
+}
+
 
 export function acceptWorkForBrick(
   brickId: number,
