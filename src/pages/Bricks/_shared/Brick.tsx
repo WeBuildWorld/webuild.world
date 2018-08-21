@@ -13,6 +13,7 @@ export interface IProps {
   startWork: (brickId: number) => Promise<void>;
   acceptWork: (brickId: number, winner: string) => Promise<void>;
   cancelBrick: (brickId: number) => Promise<void>;
+  pullBrick: (brickId: number) => Promise<void>;
 }
 
 interface IActionState {
@@ -44,6 +45,24 @@ export default class Brick extends React.Component<IProps, object> {
     this.startAcceptWork = this.startAcceptWork.bind(this);
     this.cancelModal = this.cancelModal.bind(this);
     this.cancelWork = this.cancelWork.bind(this);
+    this.refreshBrick = this.refreshBrick.bind(this);
+  }
+
+  public componentDidMount() {
+    const interval = setInterval(this.refreshBrick, 5000);
+    this.setState({ interval });
+  }
+
+  public componentWillUnmount() {
+    clearInterval(this.state.interval);
+  }
+
+  public refreshBrick() {
+    if (this.props.brick.status !== BrickStatus.Open) {
+      clearInterval(this.state.interval);
+    } else {
+      this.props.pullBrick(this.props.brick.id);
+    }
   }
 
   public checkLoggedIn() {
@@ -109,8 +128,6 @@ export default class Brick extends React.Component<IProps, object> {
 
   public processingBrick(state: IActionState) {
     this.setState((prevState: any, props) => {
-      // tslint:disable-next-line:no-debugger
-      debugger;
       return { processes: prevState.processes.concat([state]) };
     });
   }
@@ -122,8 +139,6 @@ export default class Brick extends React.Component<IProps, object> {
       index = processes.indexOf((item: any) => item.id === id);
       processes.splice(index, 1);
     }
-    // tslint:disable-next-line:no-debugger
-    debugger;
     this.setState({ processes });
   }
 

@@ -1,6 +1,18 @@
 @import '~antd/dist/antd.css';
+html,
+body {
+    height: 100%;
+    background-color: #f0f2f5;
+}
+
 .App {
     text-align: center;
+    height: 100%;
+}
+
+#root,
+#root .ant-layout {
+    height: 100%;
 }
 
 .app-body {
@@ -8,6 +20,13 @@
     margin: 0 auto;
     max-width: 1170px;
     padding: 0 15px;
+}
+
+.main-container {
+    height: 100%;
+    background-color: white;
+    border: 1px solid #e8e8e8;
+    padding-bottom: 50px;
 }
 
 img.App-logo {

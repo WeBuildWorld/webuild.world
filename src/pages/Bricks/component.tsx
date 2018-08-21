@@ -1,14 +1,22 @@
-import { Alert, Button, Card, Icon, List } from 'antd';
+import { Alert, Avatar, Button, Card, Icon, List, message, Spin } from 'antd';
 import * as React from "react";
+import * as InfiniteScroll from 'react-infinite-scroller';
+
 import config from "../../config";
 import { IBrick } from "../../types";
 import Brick from "./_shared/Brick";
 
+import update from 'react-addons-update';
+
+import { getBrick, getBricks } from "../../services/BrickService";
 import "./style.css";
+
+const pageSize = 10;
+
 export interface IProps {
   brickCount: number;
   bricks?: IBrick[];
-  getBricks?: () => void;
+  getBricks?: (start?: number, length?: number) => void;
   startWork?: (brickId: number) => Promise<any>;
   acceptWork?: (brickId: number, winner: string) => Promise<any>;
   cancelBrick?: (brickId: number) => Promise<void>;
@@ -17,38 +25,57 @@ export interface IProps {
 
 export default class Bricks extends React.Component<IProps, any> {
 
+  public state: any = {
+    hasMore: true,
+    items: [],
+    loading: false,
+    start: 0,
+  }
+
   constructor(props: IProps) {
     super(props);
 
-    this.state = {
-      hash: (this.props as any).match.params.hash,
-      loading: true,
-      loadingMore: false,
-      showLoadingMore: true,
-    };
-
+    this.state.hash = (this.props as any).match.params.hash;
     this.props.removeHash();
     this.dismiss = this.dismiss.bind(this);
     this.renderItem = this.renderItem.bind(this);
-    this.fetchMore = this.fetchMore.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
+    this.loadMore = this.loadMore.bind(this);
+    this.pullBrick = this.pullBrick.bind(this);
   }
 
   public componentWillMount() {
-    const interval = setInterval(this.props.getBricks!, 1000);
-    this.setState({interval});
+    // const interval = setInterval(this.props.getBricks!, 1000);
+    // this.setState({ interval });
+    // this.props.getBricks(0, pageSize);
+    // this.handleInfiniteOnLoad();
+  }
+
+  public componentDidMount() {
+    this.loadMore();
   }
 
   public componentWillUnmount() {
     clearInterval(this.state.interval);
   }
 
-  public fetchMore() {
-    // const { dispatch } = this.props; 
-  };
-
   public closeAlert() {
     this.props.removeHash();
+    this.dismiss();
+  }
+
+  public async pullBrick(id: any): Promise<void> {
+    const brick = await getBrick(id);
+    const newItems = [...this.state.items];
+    const index = this.state.items.findIndex((item: IBrick) => item.id === brick.id);
+    newItems[index] = brick;
+
+    // tslint:disable-next-line:no-console
+    // console.log('brick', brick.id);
+    
+    this.setState({
+      items: newItems
+    })
   }
 
   public renderItem(item: any) {
@@ -69,6 +96,8 @@ export default class Bricks extends React.Component<IProps, any> {
               acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
               // tslint:disable-next-line:jsx-no-lambda
               cancelBrick={id => this.props.cancelBrick!(id)}
+              // tslint:disable-next-line:jsx-no-lambda
+              pullBrick={id => this.pullBrick(id)}
             />
           }
         />
@@ -77,42 +106,70 @@ export default class Bricks extends React.Component<IProps, any> {
     )
   }
 
-  public render() {
-    const { brickCount, bricks } = this.props;
 
-    if (brickCount <= 0) {
+  public loadMore() {
+    let items = this.state.items || [];
+    let start = this.state.start;
+
+    this.setState({
+      loading: true,
+    });
+
+    getBricks(start, pageSize).then((res) => {
+
+      if (!res.bricks.length) {
+        message.warning('No more bricks');
+        this.setState({
+          hasMore: false,
+          loading: false,
+        });
+        return;
+      }
+
+      items = items.concat(res.bricks);
+      start = start + pageSize;
+
+      this.setState({
+        items,
+        loading: false,
+        start,
+      })
+    });
+
+  }
+
+  public render() {
+
+    if (this.state.items.length <= 0) {
       return this.renderNothing();
     }
-    const items = bricks || [];
-    const loading = false;
-    const loadMore =
-      items.length > 0 ? (
-        <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <Button htmlType="button" onClick={this.fetchMore} style={{ paddingLeft: 48, paddingRight: 48 }}>
-            {loading ? (
-              <span>
-                <Icon type="loading" /> loading...
-            </span>
-            ) : (
-                'load more'
-              )}
-          </Button>
-        </div>
-      ) : null;
 
     return (
-      <Card>
-
+      <div className="bricks-infinite-container">
         {this.state.hash && this.renderNotification(this.state.hash!)}
-        <List
-          size="large"
-          rowKey="id"
-          itemLayout="vertical"
-          // loadMore={loadMore}
-          dataSource={bricks}
-          renderItem={this.renderItem}
-        />
-      </Card>
+
+        <InfiniteScroll
+          initialLoad={false}
+          pageStart={0}
+          loadMore={this.loadMore}
+          hasMore={!this.state.loading && this.state.hasMore}
+          useWindow={false}
+        >
+          <List
+            size="large"
+            rowKey="id"
+            itemLayout="vertical"
+            dataSource={this.state.items}
+            renderItem={this.renderItem}
+          >
+            {this.state.loading && this.state.hasMore && (
+              <div className="bricks-loading-container">
+                <Spin />
+              </div>
+            )}
+          </List>
+        </InfiniteScroll>
+      </div>
     );
   }
 
