@@ -17,6 +17,13 @@ contract WeBuildWord is Extendable {
         _;
     }
 
+    event BrickAdded (uint _brickId);
+    event BrickUpdated (uint _brickId);
+    event BrickCancelled (uint _brickId);
+    event WorkStarted (uint _brickId, address _builderAddress);
+    event WorkAccepted (uint _brickId, address[] _winners);
+
+
     function () public payable {
         revert();
     }
@@ -57,13 +64,17 @@ contract WeBuildWord is Extendable {
     {
         id = getId();
         require(getProvider(id).addBrick(id, _title, _url, _description, _tags, msg.value));
+        emit BrickAdded(id);
     }
 
     function changeBrick(uint _brickId, string _title, string _url, string _description, bytes32[] _tags) 
         public onlyBrickOwner(_brickId) payable
         returns (bool success) 
     {
-        return getProvider(_brickId).changeBrick(_brickId, _title, _url, _description, _tags, msg.value);
+        success = getProvider(_brickId).changeBrick(_brickId, _title, _url, _description, _tags, msg.value);
+        emit BrickUpdated(_brickId);
+
+        return success;
     }
 
     // msg.value is tip.
@@ -78,6 +89,7 @@ contract WeBuildWord is Extendable {
             _winners[i].transfer(total.mul(_weights[i]).div(DENOMINATOR));    
         }     
 
+        emit WorkAccepted(_brickId, _winners);
         return true;   
     }
 
@@ -89,13 +101,15 @@ contract WeBuildWord is Extendable {
         require(value > 0);
 
         msg.sender.transfer(value);  
+        emit BrickCancelled(_brickId);
         return true;      
     }    
 
     function startWork(uint _brickId, bytes32 _builderId, bytes32 _nickName) 
         public returns(bool success)
     {
-        return getProvider(_brickId).startWork(_brickId, _builderId, _nickName, msg.sender);    
+        success = getProvider(_brickId).startWork(_brickId, _builderId, _nickName, msg.sender);    
+        emit WorkStarted(_brickId, msg.sender);
     }
 
     function getBrick(uint _brickId) public view returns (
@@ -118,7 +132,6 @@ contract WeBuildWord is Extendable {
     ) {
         return getProvider(_brickId).getBrickDetail(_brickId);
     }
-
 
     function getBrickBuilders(uint _brickId) public view returns (
         address[] addresses,
