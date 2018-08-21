@@ -18,6 +18,7 @@ contract Extendable is Ownable {
         public onlyOwner returns (bool) 
     {
         require(_address != 0x0);
+        require(providers[currentVersion].providerAddress != _address);
 
         // first time
         if (providers[currentVersion].providerAddress == 0x0) {
