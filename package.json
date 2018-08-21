@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts-ts",
-    "build": "react-app-rewired build --scripts-version react-scripts-ts",
+    "build": "NODE_ENV=production react-app-rewired build --scripts-version react-scripts-ts",
     "watch": "tsc -w",
     "test": "react-app-rewired test --env=jsdom --scripts-version react-scripts-ts",
     "eject": "react-scripts-ts eject"
