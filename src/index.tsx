@@ -1,4 +1,4 @@
-import 'bulma/css/bulma.min.css';
+// import 'bulma/css/bulma.min.css';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';

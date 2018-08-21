@@ -4,10 +4,16 @@ export interface IStoreState {
   user?: ICredential;
   networkStatus?: any;
   hash?: string;
+  loggedIn?: boolean;
+  loggingIn?: boolean;
 }
 
 export interface ICredential {
   githubId?: string;
+  avatar_url?: string;
+  email?: string;
+  name?: string;
+  login?: string;
 }
 
 export interface IBrick {
@@ -23,18 +29,19 @@ export interface IBrick {
   tags?: string[];
   dateCreated?: Date | number;
   dateCompleted?: Date | number;
-  winner?: string;
+  winner?: IBuilder;
 }
 
 export enum BrickStatus {
   Inactive,
   Open,
-  Completed
+  Completed,
+  Canceled,
 }
 
 export interface IBuilder {
-  nickName: string;
-  walletAddress: string;
+  nickName?: string;
+  walletAddress?: string;
   dateStarted?: number;
   key?: string;
 }

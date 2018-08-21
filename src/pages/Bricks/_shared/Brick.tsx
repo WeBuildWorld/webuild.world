@@ -1,32 +1,161 @@
+import { Avatar, Button, Card, Col, Divider, Dropdown, Icon, Menu, message, Modal, Row, Spin, Tag } from "antd";
 import * as React from "react";
-import * as Modal from "react-modal";
-import Select from "react-select";
+import Select, { components } from "react-select";
+import { Authentication } from "../../../services/Authentication";
 import RpcService from "../../../services/RpcService";
 import { BrickStatus, IBrick } from "../../../types";
 import "./Brick.css";
+
+const { Meta } = Card;
 
 export interface IProps {
   brick: IBrick;
   startWork: (brickId: number) => Promise<void>;
   acceptWork: (brickId: number, winner: string) => Promise<void>;
+  cancelBrick: (brickId: number) => Promise<void>;
+}
+
+interface IActionState {
+  id: any,
+  process: ActionState
+}
+
+interface IBrickState {
+  [key: string]: any
+}
+
+enum ActionState {
+  StartWork,
+  Accept,
+  Cancel,
 }
 
 export default class Brick extends React.Component<IProps, object> {
-  public state = { modalIsOpen: false, winner: "" };
+  public state: IBrickState = {
+    modalIsOpen: false,
+    processes: [],
+    winner: "",
+  };
 
   public constructor(props: IProps) {
     super(props);
     this.startWork = this.startWork.bind(this);
     this.acceptWork = this.acceptWork.bind(this);
     this.startAcceptWork = this.startAcceptWork.bind(this);
+    this.cancelModal = this.cancelModal.bind(this);
+    this.cancelWork = this.cancelWork.bind(this);
   }
 
-  public startWork(e: React.SyntheticEvent<HTMLAnchorElement>) {
+  public checkLoggedIn() {
+    const user = Authentication.getCurrentUser();
+    if (user) {
+      return true;
+    }
+
+    Modal.warn({
+      title: 'You have not sign in github yet.',
+      // tslint:disable-next-line:object-literal-sort-keys
+      content: (
+        <div>
+          <p>Please sign in github.</p>
+        </div>
+      ),
+      // tslint:disable-next-line:no-empty
+      onOk() { },
+    });
+    return false;
+  }
+
+  public checkHasMetaMask() {
     if (!RpcService.hasMainAccount()) {
-      e.currentTarget.text = "Metamask needed.";
+      Modal.warn({
+        content: (
+          <div>
+            <p>Here is <a target="_blank" href="https://metamask.io/">Metamask</a>.</p>
+          </div>
+        ),
+        title: 'Metamask needed.',
+        onOk() {
+          // tslint:disable-next-line:no-empty
+        },
+      });
+      return false;
+    } {
+      return true;
+    }
+  }
+
+  public async startWork(e: React.SyntheticEvent<HTMLAnchorElement>) {
+
+    if (!this.checkLoggedIn()) {
       return;
     }
-    this.props.startWork(this.props.brick.id);
+
+    if (this.checkHasMetaMask()) {
+      const hide = message.loading('Please check your MetaMask ...', 0);
+      try {
+        await this.props.startWork(this.props.brick.id);
+        this.processingBrick({
+          id: this.props.brick.id,
+          process: ActionState.StartWork
+        });
+        hide();
+      } catch (ex) {
+        this.removeProcess(this.props.brick.id);
+        hide();
+      }
+    }
+  }
+
+  public processingBrick(state: IActionState) {
+    this.setState((prevState: any, props) => {
+      // tslint:disable-next-line:no-debugger
+      debugger;
+      return { processes: prevState.processes.concat([state]) };
+    });
+  }
+
+  public removeProcess(id: any) {
+    const { processes } = this.state;
+    let index = 0;
+    while (index > -1) {
+      index = processes.indexOf((item: any) => item.id === id);
+      processes.splice(index, 1);
+    }
+    // tslint:disable-next-line:no-debugger
+    debugger;
+    this.setState({ processes });
+  }
+
+  public cancelWork() {
+    const self = this;
+    Modal.confirm({
+      title: 'Are you sure to cancel this brick?',
+      // tslint:disable-next-line:object-literal-sort-keys
+      content: (
+        <div>
+          <p>Brick: {self.props.brick.title} </p>
+        </div>
+      ),
+      onCancel() {
+        self.forceUpdate();
+      },
+      async onOk() {
+        const hide = message.loading('Please check your MetaMask ...', 0);
+        try {
+          await self.props.cancelBrick(self.props.brick.id);
+          self.processingBrick({
+            id: self.props.brick.id,
+            process: ActionState.Cancel
+          });
+          hide();
+        } catch (ex) {
+          self.removeProcess(self.props.brick.id);
+          hide();
+        }
+        self.forceUpdate();
+      },
+    });
   }
 
   public startAcceptWork() {
@@ -34,60 +163,98 @@ export default class Brick extends React.Component<IProps, object> {
     this.forceUpdate();
   }
 
-  public acceptWork() {
+  public async acceptWork() {
     this.state.modalIsOpen = false;
-    this.props.acceptWork(this.props.brick.id, this.state.winner);
+    // const hide = message.loading('canceling brick ...', 0);
+    const self = this;
+    const hide = message.loading('Please check your MetaMask ...', 0);
+    try {
+      await self.props.acceptWork(self.props.brick.id, self.state.winner);
+      self.processingBrick({
+        id: self.props.brick.id,
+        process: ActionState.Accept
+      });
+      hide();
+    } catch (ex) {
+      self.removeProcess(self.props.brick.id);
+      hide();
+    }
+  }
+
+  public cancelModal() {
+    this.state.modalIsOpen = false;
+    this.forceUpdate();
   }
 
   public renderOperations() {
+
+    const getAvatar = (id: any) => {
+      const src = Authentication.getAvatarFromId(parseInt(id, 10));
+      return <img className="avatar float-left mr-1" src={src} />;
+    }
+
     const options = this.props.brick.builders!.map(builder => ({
-      label: builder.walletAddress, // builder.nickName
+      label: builder.nickName + '(' + builder.walletAddress + ')', // builder.nickName
+      name: builder.key,
       value: builder.walletAddress
     }));
+
+    const SingleValue = ({ data, children, ...props }: any) => {
+      const avatarEle = getAvatar(data.name);
+      return (
+        <components.SingleValue {...props}>
+          {avatarEle} {children}
+        </components.SingleValue>
+      );
+    }
+
+    const MenuList = (props: any) => {
+      return (
+        <components.MenuList {...props}>
+          {props.children}
+        </components.MenuList>
+      );
+    };
+
+    const CustomOption = (params: any) => {
+      const { children, innerProps, isDisabled, data } = params;
+      const avatarEle = getAvatar(data.name);
+      const result = !isDisabled ? (
+        <div {...innerProps}> {avatarEle} {children}</div>
+      ) : null;
+
+      return result;
+
+    }
+
     return (
       <Modal
-        isOpen={this.state.modalIsOpen}
-        contentLabel={"Accept work:" + this.props.brick.title}
-        className="Modal"
+        align={{}}
+        visible={this.state.modalIsOpen}
+        title={"Accept work:" + this.props.brick.title}
+        onOk={this.acceptWork}
+        onCancel={this.cancelModal}
       >
-        <h2>{"Accept work: " + this.props.brick.title}</h2>
-        <div className="content">
-          <p>
-            Please make sure that you are sastified by the work the builder
-            submits. By clicking the button "submit", your fund will be
-            transfered to your selected builder.
-          </p>
-          <div className="field">
-            <label className="label">Winner</label>
-            <div className="control">
-              <Select
-                name="form-field-name"
-                options={options}
-                // value={this.props.brick.winner}
-                // tslint:disable-next-line:jsx-no-lambda
-                onChange={(item: any) => {
-                  this.state.winner = this.props.brick.winner = item.value;
-                }}
-              />
-            </div>
-          </div>
+        <div className="desc">
+          Please make sure that you are satisfied by the work the builder
+                submits. By clicking the button "submit", your fund will be
+                transferred to your selected builder.
+                <br />  <br />
+        </div>
 
-          <div className="field is-grouped">
-            <div className="control">
-              <button className="button is-link" onClick={this.acceptWork}>
-                Submit
-              </button>
-            </div>
-            <div
-              className="control"
-              onClick={() => {
-                // tslint:disable-next-line:jsx-no-lambda
-                this.state.modalIsOpen = false;
-                this.forceUpdate();
+        <div className="field">
+          <h3 className="label">Winner</h3>
+          <div className="control">
+            <Select
+              name="form-field-name"
+              options={options}
+              components={{ SingleValue, MenuList, ...{ Option: CustomOption } }}
+              // value={this.props.brick.winner}
+              // tslint:disable-next-line:jsx-no-lambda
+              onChange={(item: any) => {
+                this.state.winner = this.props.brick.winner = item.value;
               }}
-            >
-              <button className="button is-text">Cancel</button>
-            </div>
+            />
           </div>
         </div>
       </Modal>
@@ -96,112 +263,145 @@ export default class Brick extends React.Component<IProps, object> {
 
   public render() {
     const { brick } = this.props;
+    const isOwner = brick.owner === RpcService.mainAccount;
+    const isOpen = brick.status === BrickStatus.Open;
+    const hasBuilders = brick.builders && brick.builders.length;
+    const { processes } = this.state;
 
-    if (brick === null) {
-      return <i>Brick is empty</i>;
+    let processing = isOpen && processes.findIndex((p: IActionState) => {
+      return p.id === brick.id;
+    }) > -1;
+
+    let statusBar;
+    let buttonGroup;
+
+    if (brick.winner && brick.winner.nickName) {
+      const avatarSrc = Authentication.getAvatarFromId(brick.winner.key);
+      const githubUrl = Authentication.getGithubLink(brick.winner.key);
+      const githubLink = <a href={githubUrl}> {brick.winner.nickName} </a>;
+
+      statusBar = <Card className="winner-wrapper" title="Winner" style={{ minWidth: 320 }} >
+        <Meta avatar={<Avatar src={avatarSrc} />}
+          description={githubLink}
+        />
+      </Card>;
+
+    } else {
+      statusBar = <div className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></div>
     }
 
+    if (isOpen) {
+      brick.builders = brick.builders || [];
+      const started = brick.builders.some(
+        b => b.walletAddress === RpcService.mainAccount
+      );
+
+      if (isOwner) {
+
+        processing = processes.findIndex((p: IActionState) => {
+          return p.id === brick.id && (p.process === ActionState.Accept || p.process === ActionState.Cancel);
+        }) > -1;
+
+        if (hasBuilders) {
+          buttonGroup = <div>
+            <Button.Group>
+              <Button htmlType="button" className="button ant-btn ant-btn-primary" onClick={this.startAcceptWork}>
+                Accept Work
+              </Button>
+              <Button htmlType="button" className="button ant-btn" onClick={this.cancelWork}>
+                Cancel Brick
+              </Button>
+            </Button.Group>
+            {this.renderOperations()}
+          </div>
+        } else {
+          buttonGroup = <div>
+            <Button htmlType="button" className="button ant-btn ant-btn-primary" onClick={this.cancelWork}>
+              Cancel Brick
+        </Button> </div>
+        }
+
+      } else {
+        if (started) {
+          processing = false; // should not processing before started.
+          buttonGroup = <a className="button ant-btn disabled is-success">
+            <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;</a>
+        } else {
+          buttonGroup = <a className="button ant-btn ant-btn-primary"
+            onClick={this.startWork}  >
+            <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
+          Work&nbsp;&nbsp; </a>
+        }
+      }
+
+    } else {
+      processing = false; // closed no actions
+      buttonGroup = <a className="button ant-btn ant-btn-primary disabled">
+        <i className="fas fa-wrench" /> Not Available </a>
+    }
+
+    if (processing) {
+      buttonGroup = null;
+    }
+
+    const loadingBar = processing ? <div style={{ textAlign: "center" }} >
+      <Button type="primary" loading={true}>
+        Transaction Processing ...
+    </Button>
+    </div> : null;
+
     return (
-      <div className="card">
-        <div className="card-content">
-          <div className="level">
-            <div className="level-left">
-              <h4 className="title level-item is-5">
-                <a
-                  href={brick.url}
-                  target="_blank"
-                  className="is-link is-small"
-                >
-                  {brick.title}
-                </a>
-              </h4>
+      <div>
+        <Row>
+          <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}  >
+            <h4 className="title level-item is-5">
+              <a
+                href={brick.url}
+                target="_blank"
+                className="is-link is-small">
+                {brick.title}
+              </a>
+            </h4>
+          </Col>
+          <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+            <div className="text-right">
+              <span className="tag is-grey">
+                <i className="fab fa-ethereum" />&nbsp;{brick.value} ETH
+            </span>
             </div>
-            <div className="level-right ethValue">
-              <div className="tags has-addons nowrap level-item">
-                <span className="tag is-grey">
-                  <i className="fab fa-ethereum" />&nbsp;{brick.value} ETH
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="level">{brick.description || ""}</div>
-          <div className="level">
-            <div className="level-left">
-              <div className="level-item">
-                <div className="tags has-addons nowrap">
-                  <span className="tag">STATUS</span>
-                  <span className="tag is-info">
-                    {BrickStatus[brick.status]}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="level-right">
-              <div className="level-item">
-                <div className="is-info is-inverted is-small">
-                  &nbsp;&nbsp;{brick.numOfBuilders}&nbsp; Builders&nbsp;&nbsp;
-                </div>
-                {brick.status === BrickStatus.Open &&
-                  brick.numOfBuilders! > 0 &&
-                  brick.owner === RpcService.mainAccount && (
-                    <div>
-                      <button
-                        className="button is-info is-small"
-                        onClick={this.startAcceptWork}
-                      >
-                        Accept work
-                      </button>
-                      {this.renderOperations()}
-                    </div>
-                  )}
-              </div>
-              <br />
-              <div className="level-item">
-                {brick.status === BrickStatus.Open &&
-                  brick.builders &&
-                  (!brick.builders.some(
-                    b => b.walletAddress === RpcService.mainAccount
-                  ) && (
-                    <a
-                      className="button is-dark is-small"
-                      onClick={this.startWork}
-                    >
-                      <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
-                      Work&nbsp;&nbsp;
-                    </a>
-                  ))}
-                {brick.status === BrickStatus.Open &&
-                  brick.builders &&
-                  (brick.builders.some(
-                    b => b.walletAddress === RpcService.mainAccount
-                  ) && (
-                    <a className="button is-success is-small">
-                      <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;
-                    </a>
-                  ))}
-                {brick.status !== BrickStatus.Open && (
-                  <span className="is-light is-button button is-small disabled">
-                    <i className="fas fa-wrench" />&nbsp;&nbsp;Not
-                    Available&nbsp;&nbsp;
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="columns">
-          <div className="column is-one-quarter">
-            <div className="tags has-addons">
-              {brick.tags &&
-                brick.tags.map(tag => (
-                  <span key={tag} className="tag">
-                    {tag}
-                  </span>
-                ))}
-            </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
+        <Row className="desc-row">
+          <Col span={24}>
+            {brick.description || ""}
+          </Col>
+        </Row>
+        <Row>
+          <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24} >
+            {statusBar}
+          </Col>
+          <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24} className="flex-layout" span={12}>
+            <Row type="flex" gutter={8} justify="end" align="middle">
+              <Col >
+                {brick.numOfBuilders} Builders
+              </Col>
+              <Col>
+                {buttonGroup}
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="tag-list">
+            {brick.tags &&
+              brick.tags.map(tag => (
+                <Tag key={tag} color="#87d068">{tag}</Tag>
+              ))}
+          </Col>
+        </Row>
+        {loadingBar}
       </div>
-    );
+    )
   }
+
 }

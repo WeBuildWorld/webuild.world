@@ -4,26 +4,44 @@ import Promisify from "../helpers/Promisify";
 import { IBrick, IBuilder } from "../types";
 import rpcService from "./RpcService";
 
-export const toBrick = (arr: any[]): IBrick => {
+export const toBrick = (obj: any): IBrick => {
+
   const brick = {
-    builders: (arr as any).builders,
-    dateCompleted: arr[6].toNumber(),
-    dateCreated: arr[5].toNumber(),
-    description: arr[2],
-    id: (arr as any).id.toNumber(),
-    numOfBuilders: arr[7].toNumber(),
-    owner: rpcService.rpc.toHex(arr[3]),
-    status: arr[8].toNumber(),
-    title: arr[0],
-    url: arr[1],
-    value: rpcService.rpc.fromWei(arr[4].toString(), "ether"),
-    winner: rpcService.rpc.toHex(arr[9])
+    builders: obj.builders,
+    dateCompleted: obj.dateCompleted.toNumber(),
+    dateCreated: obj.dateCreated.toNumber(),
+    description: obj.description,
+    id: obj.id.toNumber(),
+    numOfBuilders: obj.numOfBuilders.toNumber(),
+    owner: rpcService.rpc.toHex(obj.owner),
+    status: obj.status.toNumber(),
+    tags: obj.tags,
+    title: obj.title,
+    url: obj.url,
+    value: rpcService.rpc.fromWei(obj.value.toString(), "ether"),
+    winner: null
   } as IBrick;
 
-  // tslint:disable-next-line
-  console.log(brick);
+  if (obj.winners) {
+    const winner = brick.builders.find((b: IBuilder) => obj.winners.includes(b.walletAddress));
+    brick.winner = winner;
+    if (brick.winner && brick.winner.nickName) {
+      brick.winner.nickName = trimZeroCode(brick.winner.nickName);
+      brick.winner.key = trimZeroCode(brick.winner.key);
+    }
+  }
+
   return brick;
 };
+
+export const trimZeroCode = (str: string) => {
+
+  while (str.charAt(str.length - 1) === String.fromCharCode(0)) {
+    str = str.substring(0, str.length - 1);
+  }
+
+  return str;
+}
 
 export const getBricks = async (start: number, length: number) => {
   const contract = rpcService.contract(
@@ -43,12 +61,35 @@ export const getBricks = async (start: number, length: number) => {
     brickCount: ids.length,
     bricks: (await Promise.all(
       ids.map(async id => {
-        const result: any = await Promisify((cb: any) =>
+
+        const brickArr: any = await Promisify((cb: any) =>
           contract.getBrick(id, cb)
         );
-        result.id = id;
-        result.builders = await getBrickBuilders(id);
 
+        const brickDetailArr: any = await Promisify((cb: any) =>
+          contract.getBrickDetail(id, cb)
+        );
+
+        const result: any = {
+          title: brickArr[0],
+          url: brickArr[1],
+          // tslint:disable-next-line:object-literal-sort-keys
+          owner: brickArr[2],
+          value: brickArr[3],
+          dateCreated: brickArr[4],
+          dateCompleted: brickArr[5],
+          status: brickArr[6],
+          tags: brickDetailArr[0],
+          description: brickDetailArr[1],
+          numOfBuilders: brickDetailArr[2],
+          winners: brickDetailArr[3]
+        }
+        result.id = id;
+        if (result.tags && result.tags.length) {
+          result.tags = result.tags.map((tag: any) => rpcService.rpc.toAscii(tag));
+        }
+
+        result.builders = await getBrickBuilders(id);
         return result;
       })
     )).map(toBrick)
@@ -63,10 +104,11 @@ const toBuilders = (items: any) => {
 
   const builders = [] as IBuilder[];
   for (let i = 0; i < len; i++) {
+    const githubIdAndUserName = rpcService.rpc.toAscii(items[2][i]);
     builders.push({
       dateStarted: items[1][i].toNumber(),
-      key: items[3][i],
-      nickName: rpcService.rpc.toAscii(items[2][i]),
+      key: githubIdAndUserName,
+      nickName: rpcService.rpc.toAscii(items[3][i]),
       walletAddress: items[0][i]
     } as IBuilder);
   }
@@ -84,17 +126,35 @@ export const addBrick = async (brick: IBrick): Promise<number> => {
     Config.CONTRACT_ADDRESS
   );
   const options = { value: rpcService.rpc.toWei(brick.value, "ether") };
+  const tags: any[] = brick.tags;
   const newId = (await Promisify((cb: any) => {
+
     return contract.addBrick(
       brick.title,
       brick.url || "",
       brick.description || "",
+      tags,
       options,
       cb
     );
   })) as number;
 
   return newId;
+};
+
+export const cancel = async (
+  brickId: number
+): Promise<any> => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  const options = {};
+  const result = await Promisify((cb: any) => {
+    return contract.cancel(brickId, options, cb);
+  });
+
+  return result;
 };
 
 export const startWork = async (

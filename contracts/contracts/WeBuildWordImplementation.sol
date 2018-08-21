@@ -24,6 +24,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         string title;
         string url;
         string description;
+        bytes32[] tags;
         address owner;
         uint value;
         uint dateCreated;
@@ -54,7 +55,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return bricks[_brickId].owner == _address;
     }    
 
-    function addBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
+    function addBrick(uint _brickId, string _title, string _url, string _description, bytes32[] _tags, uint _value) 
         external onlyMain
         returns (bool success)
     {
@@ -66,7 +67,8 @@ contract WeBuildWordImplementation is Ownable, Provider {
         Brick memory brick = Brick({
             title: _title,
             url: _url,
-            description: _description,
+            description: _description,   
+            tags: _tags,
             // solhint-disable-next-line
             owner: tx.origin,
             status: BrickStatus.Active,
@@ -87,7 +89,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return true;
     }
 
-    function changeBrick(uint _brickId, string _title, string _url, string _description, uint _value) 
+    function changeBrick(uint _brickId, string _title, string _url, string _description, bytes32[] _tags, uint _value) 
         external onlyMain
         returns (bool success) 
     {
@@ -96,6 +98,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         bricks[_brickId].title = _title;
         bricks[_brickId].url = _url;
         bricks[_brickId].description = _description;
+        bricks[_brickId].tags = _tags;
 
         // Add to the fund.
         if (_value > 0) {
@@ -192,26 +195,35 @@ contract WeBuildWordImplementation is Ownable, Provider {
     function getBrick(uint _brickId) external view returns (
         string title,
         string url,
-        string description,
         address owner,
         uint value,
         uint dateCreated,
         uint dateCompleted,
-        uint32 builders,
-        uint32 status,
-        address[] winners        
+        uint32 status
     ) {
         Brick memory brick = bricks[_brickId];
         return (
             brick.title,
             brick.url,
-            brick.description,
             brick.owner,
             brick.value,
             brick.dateCreated,
             brick.dateCompleted,
+            uint32(brick.status)
+        );
+    }
+    
+    function getBrickDetail(uint _brickId) external view returns (
+        bytes32[] tags,
+        string description, 
+        uint32 builders,
+        address[] winners
+    ) {
+        Brick memory brick = bricks[_brickId];
+        return ( 
+            brick.tags, 
+            brick.description, 
             brick.numBuilders,
-            uint32(brick.status),
             brick.winners
         );
     }
