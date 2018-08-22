@@ -22,3 +22,8 @@ declare module 'react-select' {
 
 
 }
+
+declare module 'react-addons-update' {
+	const update: any;
+	export default update;
+}

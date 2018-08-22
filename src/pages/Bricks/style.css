@@ -1,21 +1,35 @@
 nav.navbar {
-  box-shadow: 0 0.5px rgba(0, 0, 0, 0.5);
-  background: #24292e;
-  color: white;
+    box-shadow: 0 0.5px rgba(0, 0, 0, 0.5);
+    background: #24292e;
+    color: white;
 }
 
 nav.navbar a:link {
-  color: white;
+    color: white;
 }
 
 .bricks {
-  margin-top: 1em;
+    margin-top: 1em;
 }
 
 h4.title {
-  font-size: 1.5em;
+    font-size: 1.5em;
 }
 
 .greeting {
-  margin-top: 5rem;
+    margin-top: 5rem;
+}
+
+.bricks-infinite-container {
+    border-radius: 0;
+    overflow: auto;
+    padding: 8px 24px;
+    height: 100%;
+}
+
+.bricks-loading-container {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
 }

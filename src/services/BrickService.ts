@@ -6,12 +6,14 @@ import rpcService from "./RpcService";
 
 export const toBrick = (obj: any): IBrick => {
 
+  const id = obj.id.toNumber ? obj.id.toNumber() : obj.id;
+
   const brick = {
     builders: obj.builders,
     dateCompleted: obj.dateCompleted.toNumber(),
     dateCreated: obj.dateCreated.toNumber(),
     description: obj.description,
-    id: obj.id.toNumber(),
+    id,
     numOfBuilders: obj.numOfBuilders.toNumber(),
     owner: rpcService.rpc.toHex(obj.owner),
     status: obj.status.toNumber(),
@@ -51,48 +53,21 @@ export const getBricks = async (start: number, length: number) => {
   let ids: any[] = await Promisify<number[]>((cb: any) =>
     contract.getBrickIds(start, length, cb)
   );
+
+
   ids = _(ids)
     .filter(id => id.toNumber() !== 0)
-    .drop(start)
-    .take(length)
+    // .drop(start)
+    // .take(length)
     .value();
 
   return {
     brickCount: ids.length,
     bricks: (await Promise.all(
       ids.map(async id => {
-
-        const brickArr: any = await Promisify((cb: any) =>
-          contract.getBrick(id, cb)
-        );
-
-        const brickDetailArr: any = await Promisify((cb: any) =>
-          contract.getBrickDetail(id, cb)
-        );
-
-        const result: any = {
-          title: brickArr[0],
-          url: brickArr[1],
-          // tslint:disable-next-line:object-literal-sort-keys
-          owner: brickArr[2],
-          value: brickArr[3],
-          dateCreated: brickArr[4],
-          dateCompleted: brickArr[5],
-          status: brickArr[6],
-          tags: brickDetailArr[0],
-          description: brickDetailArr[1],
-          numOfBuilders: brickDetailArr[2],
-          winners: brickDetailArr[3]
-        }
-        result.id = id;
-        if (result.tags && result.tags.length) {
-          result.tags = result.tags.map((tag: any) => rpcService.rpc.toAscii(tag));
-        }
-
-        result.builders = await getBrickBuilders(id);
-        return result;
+        return await getBrick(id);
       })
-    )).map(toBrick)
+    ))
   };
 };
 
@@ -115,6 +90,45 @@ const toBuilders = (items: any) => {
 
   return builders;
 };
+
+export const getBrick = async (id: any): Promise<IBrick> => {
+
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+
+  const brickArr: any = await Promisify((cb: any) =>
+    contract.getBrick(id, cb)
+  );
+
+  const brickDetailArr: any = await Promisify((cb: any) =>
+    contract.getBrickDetail(id, cb)
+  );
+
+  const result: any = {
+    title: brickArr[0],
+    url: brickArr[1],
+    // tslint:disable-next-line:object-literal-sort-keys
+    owner: brickArr[2],
+    value: brickArr[3],
+    dateCreated: brickArr[4],
+    dateCompleted: brickArr[5],
+    status: brickArr[6],
+    tags: brickDetailArr[0],
+    description: brickDetailArr[1],
+    numOfBuilders: brickDetailArr[2],
+    winners: brickDetailArr[3]
+  }
+  result.id = id;
+  if (result.tags && result.tags.length) {
+    result.tags = result.tags.map((tag: any) => rpcService.rpc.toAscii(tag));
+  }
+
+  result.builders = await getBrickBuilders(id);
+  return toBrick(result);
+
+}
 
 export const addBrick = async (brick: IBrick): Promise<number> => {
   if (!rpcService.mainAccount) {

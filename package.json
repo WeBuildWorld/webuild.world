@@ -11,8 +11,10 @@
     "history": "^4.7.2",
     "lodash": "^4.17.10",
     "react": "^16.4.0",
+    "react-addons-update": "^15.6.2",
     "react-dom": "^16.4.0",
     "react-github-login": "^1.0.3",
+    "react-infinite-scroller": "^1.2.0",
     "react-modal": "^3.5.1",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
@@ -26,6 +28,7 @@
     "redux-storage": "^4.1.2",
     "redux-storage-engine-cookies": "^1.0.0",
     "redux-thunk": "^2.3.0",
+    "reqwest": "^2.0.5",
     "web3": "0.20.6"
   },
   "scripts": {
@@ -43,7 +46,9 @@
     "@types/lodash": "^4.14.109",
     "@types/node": "^10.1.4",
     "@types/react": "^16.3.14",
+    "@types/react-addons-update": "^0.14.20",
     "@types/react-dom": "^16.0.5",
+    "@types/react-infinite-scroller": "^1.0.7",
     "@types/react-modal": "^3.2.1",
     "@types/react-redux": "^6.0.6",
     "@types/react-router-redux": "^5.0.15",
