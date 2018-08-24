@@ -5,6 +5,8 @@ import logo from "../../logo.svg";
 import { enquireScreen, getLocalizedPathname } from './../../utils';
 import GitHubButton from "./GithubButton";
 
+import { watchEvents } from "../../services/BrickService";
+
 
 import RpcService from "../../services/RpcService";
 import "./Nav.css";
@@ -29,6 +31,7 @@ export default class Nav extends React.Component<IProps, any> {
     this.home = this.home.bind(this);
     this.handleShowMenu = this.handleShowMenu.bind(this);
     this.onMenuVisibleChange = this.onMenuVisibleChange.bind(this);
+    watchEvents();
   }
 
   public componentDidMount() {

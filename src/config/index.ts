@@ -219,6 +219,76 @@ export default {
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "name": "_brickId",
+          "type": "uint256"
+        }
+      ],
+      "name": "BrickAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_brickId",
+          "type": "uint256"
+        }
+      ],
+      "name": "BrickUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_brickId",
+          "type": "uint256"
+        }
+      ],
+      "name": "BrickCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_brickId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_builderAddress",
+          "type": "address"
+        }
+      ],
+      "name": "WorkStarted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_brickId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_winners",
+          "type": "address[]"
+        }
+      ],
+      "name": "WorkAccepted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "name": "previousOwner",
           "type": "address"
@@ -513,7 +583,7 @@ export default {
     }
   ],
   // CONTRACT_ADDRESS: "0xbabb3faec25ff0dc5c34fe9e202d815a49594b41",
-  CONTRACT_ADDRESS: "0x51EC288D994b037e7b94a263793Be80e49BAE0cb",
+  CONTRACT_ADDRESS: "0xea3b20cf68e3b0ddd4c177452bfd26a588c9a101",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,

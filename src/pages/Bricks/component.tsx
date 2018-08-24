@@ -72,7 +72,7 @@ export default class Bricks extends React.Component<IProps, any> {
 
     // tslint:disable-next-line:no-console
     // console.log('brick', brick.id);
-    
+
     this.setState({
       items: newItems
     })
