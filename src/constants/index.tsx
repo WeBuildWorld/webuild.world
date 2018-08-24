@@ -1,6 +1,12 @@
 export const GET_BRICKS = "GET_BRICKS";
 export type GET_BRICKS = typeof GET_BRICKS;
 
+export const GET_MORE_BRICKS = "GET_MORE_BRICKS";
+export type GET_MORE_BRICKS = typeof GET_MORE_BRICKS;
+
+export const ON_BRICKS_CHANGED = "ON_BRICKS_CHANGED";
+export type ON_BRICKS_CHANGED = typeof ON_BRICKS_CHANGED;
+
 export const ADD_BRICK = "ADD_BRICK";
 export type ADD_BRICK = typeof ADD_BRICK;
 

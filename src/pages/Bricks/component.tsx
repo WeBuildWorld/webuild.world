@@ -3,12 +3,11 @@ import * as React from "react";
 import * as InfiniteScroll from 'react-infinite-scroller';
 
 import config from "../../config";
+
+import { getBrick, getBricks, watchEvents } from "../../services/BrickService";
 import { IBrick } from "../../types";
 import Brick from "./_shared/Brick";
 
-import update from 'react-addons-update';
-
-import { getBrick, getBricks } from "../../services/BrickService";
 import "./style.css";
 
 const pageSize = 10;
@@ -17,6 +16,8 @@ export interface IProps {
   brickCount: number;
   bricks?: IBrick[];
   getBricks?: (start?: number, length?: number) => void;
+  getMoreBricks?: (start?: number, length?: number) => void;
+  onBricksChanged?: (bricks: IBrick[]) => void;
   startWork?: (brickId: number) => Promise<any>;
   acceptWork?: (brickId: number, winner: string) => Promise<any>;
   cancelBrick?: (brickId: number) => Promise<void>;
@@ -41,41 +42,15 @@ export default class Bricks extends React.Component<IProps, any> {
     this.renderItem = this.renderItem.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
     this.loadMore = this.loadMore.bind(this);
-    this.pullBrick = this.pullBrick.bind(this);
-  }
-
-  public componentWillMount() {
-    // const interval = setInterval(this.props.getBricks!, 1000);
-    // this.setState({ interval });
-    // this.props.getBricks(0, pageSize);
-    // this.handleInfiniteOnLoad();
   }
 
   public componentDidMount() {
     this.loadMore();
   }
 
-  public componentWillUnmount() {
-    clearInterval(this.state.interval);
-  }
-
   public closeAlert() {
     this.props.removeHash();
     this.dismiss();
-  }
-
-  public async pullBrick(id: any): Promise<void> {
-    const brick = await getBrick(id);
-    const newItems = [...this.state.items];
-    const index = this.state.items.findIndex((item: IBrick) => item.id === brick.id);
-    newItems[index] = brick;
-
-    // tslint:disable-next-line:no-console
-    // console.log('brick', brick.id);
-
-    this.setState({
-      items: newItems
-    })
   }
 
   public renderItem(item: any) {
@@ -96,8 +71,6 @@ export default class Bricks extends React.Component<IProps, any> {
               acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
               // tslint:disable-next-line:jsx-no-lambda
               cancelBrick={id => this.props.cancelBrick!(id)}
-              // tslint:disable-next-line:jsx-no-lambda
-              pullBrick={id => this.pullBrick(id)}
             />
           }
         />
@@ -129,6 +102,7 @@ export default class Bricks extends React.Component<IProps, any> {
       items = items.concat(res.bricks);
       start = start + pageSize;
 
+      this.props.onBricksChanged(items);
       this.setState({
         items,
         loading: false,
@@ -159,7 +133,7 @@ export default class Bricks extends React.Component<IProps, any> {
             size="large"
             rowKey="id"
             itemLayout="vertical"
-            dataSource={this.state.items}
+            dataSource={this.props.bricks}
             renderItem={this.renderItem}
           >
             {this.state.loading && this.state.hasMore && (

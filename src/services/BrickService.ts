@@ -223,22 +223,17 @@ export const acceptWork = async (
   return result;
 };
 
-export function watchEvents() {
+export function watchEvents(callback: any) {
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS
   );
   const events = contract.allEvents();
-
-  // tslint:disable-next-line:no-console
-  console.log('start watch events:', contract);
   events.watch((error: any, result: any) => {
-    if (!error) {
-      // tslint:disable-next-line:no-console
-      console.log('contract events:', result);
+    if (!error && callback) {
+      const brickId = result.args._brickId.toNumber();
+      callback(brickId);
     }
-    // tslint:disable-next-line:no-console
-    console.log('contract events:', error, result);
 
   });
 }

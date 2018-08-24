@@ -1,5 +1,7 @@
 import { IStoreState } from './types';
 
+import * as constants from "./constants";
+
 import createHistory from 'history/createBrowserHistory';
 import { routerMiddleware, routerReducer } from 'react-router-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
@@ -9,6 +11,7 @@ import { createLogger } from 'redux-logger';
 import reduxThunk from 'redux-thunk';
 
 // import { composeWithDevTools } from 'redux-devtools-extension';
+import { getBrick, watchEvents } from "./services/BrickService";
 
 // import { Hour } from './helpers/formatter';
 import app from './reducers';
@@ -55,5 +58,31 @@ const store = createStore<IStore, any, any, any>(
 const mergeProps = (stateProps: any, dispatchProps: any, ownProps: any) => {
 	return { ...ownProps, ...dispatchProps, ...stateProps };
 };
+
+watchEvents(async (brickId: any) => {
+	const dispatch = store.dispatch;
+	const brick = await getBrick(brickId);
+	const items = store.getState().reducer.app.bricks || [];
+	const bricks = [...items];
+	const index = bricks.findIndex(
+		(item: any) => {
+			return item.id === brickId;
+		});
+	if (index > -1) {
+		bricks[index] = brick;
+	} else {
+		bricks.unshift(brick);
+	}
+
+	const payload = {
+		brickCount: bricks.length,
+		bricks,
+	}
+
+	dispatch({
+		payload,
+		type: constants.ON_BRICKS_CHANGED
+	});
+});
 
 export { store, history, mergeProps };
