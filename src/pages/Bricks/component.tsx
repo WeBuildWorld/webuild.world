@@ -1,4 +1,4 @@
-import { Alert, Avatar, Button, Card, Icon, List, message, Spin } from 'antd';
+import { Alert, Avatar, Button, Card, Icon, List, message, Select, Spin } from 'antd';
 import * as React from "react";
 import * as InfiniteScroll from 'react-infinite-scroller';
 
@@ -27,6 +27,7 @@ export interface IProps {
 export default class Bricks extends React.Component<IProps, any> {
 
   public state: any = {
+    filters: [],
     hasMore: true,
     items: [],
     loading: false,
@@ -37,7 +38,6 @@ export default class Bricks extends React.Component<IProps, any> {
     super(props);
 
     this.state.hash = (this.props as any).match.params.hash;
-    this.props.removeHash();
     this.dismiss = this.dismiss.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
@@ -112,15 +112,33 @@ export default class Bricks extends React.Component<IProps, any> {
 
   }
 
+  public filterChanged() {
+    //
+  }
+
   public render() {
 
     if (this.state.items.length <= 0) {
       return this.renderNothing();
     }
 
+    const { filters } = this.state;
+
     return (
       <div className="bricks-infinite-container">
         {this.state.hash && this.renderNotification(this.state.hash!)}
+
+        <div className="search-bar">
+          <Select
+            mode="tags"
+            style={{ width: '100%' }}
+            onChange={this.filterChanged}
+            tokenSeparators={[',']}
+            placeholder="select tags"
+          >
+            {filters}
+          </Select>
+        </div>
 
         <InfiniteScroll
           initialLoad={false}

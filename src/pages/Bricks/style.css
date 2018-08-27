@@ -34,3 +34,12 @@ h4.title {
     width: 100%;
     text-align: center;
 }
+
+.search-bar { 
+    padding: 32px 0;
+    text-align: center; 
+}
+
+.search-bar .ant-select{
+    max-width: 380px;
+}

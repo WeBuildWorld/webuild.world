@@ -45,4 +45,20 @@ export interface IBuilder {
   dateStarted?: number;
   key?: string;
 }
- 
+
+
+export interface IActionState {
+  id: any,
+  process: ActionState
+}
+
+export interface IBrickState {
+  [key: string]: any,
+  brick?: IBrick
+}
+
+export enum ActionState {
+  StartWork,
+  Accept,
+  Cancel,
+}

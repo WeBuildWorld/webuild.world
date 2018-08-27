@@ -7,6 +7,7 @@ import NetworkStatus from "react-web3-network-status";
 import "./App.css";
 import Nav from "./pages/_shared/Nav";
 import AddBrick from "./pages/AddBrick";
+import BrickDetail from "./pages/BrickDetail";
 import Bricks from "./pages/Bricks";
 
 const { Header, Content } = Layout;
@@ -27,6 +28,7 @@ class App extends React.Component {
               <Switch>
                 <Route exact={true} path="/" component={Bricks} />
                 <Route exact={true} path="/hash/:hash?" component={Bricks} />
+                <Route exact={true} path="/brick/:hash?" component={BrickDetail} />
                 <Route path="/add-brick" component={AddBrick} />
               </Switch>
             </Content>

@@ -3,7 +3,7 @@ import * as React from "react";
 import Select, { components } from "react-select";
 import { Authentication } from "../../../services/Authentication";
 import RpcService from "../../../services/RpcService";
-import { BrickStatus, IBrick } from "../../../types";
+import { ActionState, BrickStatus, IActionState, IBrick, IBrickState } from "../../../types";
 import "./Brick.css";
 
 const { Meta } = Card;
@@ -13,21 +13,6 @@ export interface IProps {
   startWork: (brickId: number) => Promise<void>;
   acceptWork: (brickId: number, winner: string) => Promise<void>;
   cancelBrick: (brickId: number) => Promise<void>;
-}
-
-interface IActionState {
-  id: any,
-  process: ActionState
-}
-
-interface IBrickState {
-  [key: string]: any
-}
-
-enum ActionState {
-  StartWork,
-  Accept,
-  Cancel,
 }
 
 export default class Brick extends React.Component<IProps, object> {
@@ -353,8 +338,7 @@ export default class Brick extends React.Component<IProps, object> {
           <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}  >
             <h4 className="title level-item is-5">
               <a
-                href={brick.url}
-                target="_blank"
+                href={'/brick/' + brick.id}
                 className="is-link is-small">
                 {brick.title}
               </a>
@@ -390,6 +374,7 @@ export default class Brick extends React.Component<IProps, object> {
         </Row>
         <Row>
           <Col className="tag-list">
+            {/* <i className="fab fa-github" />  */}
             {brick.tags &&
               brick.tags.map(tag => (
                 <Tag key={tag} color="#87d068">{tag}</Tag>
