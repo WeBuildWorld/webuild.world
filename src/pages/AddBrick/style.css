@@ -1,3 +1,7 @@
-div.add-brick{
+div.add-brick {
 	margin: 2em 1em;
+}
+
+.form-wrap {
+	padding: 20px;
 }

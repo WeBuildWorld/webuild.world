@@ -97,7 +97,7 @@ export class AddBrickForm extends React.Component<any, any> {
         const { tags, inputVisible, inputValue } = this.state;
 
         return (
-            <Form layout="vertical" onSubmit={this.handleSubmit}>
+            <Form className="form-wrap" layout="vertical" onSubmit={this.handleSubmit}>
                 <FormItem
                     {...formItemLayout}
                     label="GitHub Issue Link"

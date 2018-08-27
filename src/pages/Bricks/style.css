@@ -17,7 +17,8 @@ h4.title {
 }
 
 .greeting {
-    margin-top: 5rem;
+    text-align: center;
+    margin: 60px 0;
 }
 
 .bricks-infinite-container {

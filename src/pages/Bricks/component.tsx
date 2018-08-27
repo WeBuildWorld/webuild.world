@@ -169,9 +169,12 @@ export default class Bricks extends React.Component<IProps, any> {
 
   private renderNothing() {
     return (
-      <p className="greeting">
-        No bricks has been added yet or it's being loaded.
-      </p>
+
+      <div className="greeting">
+        <Button type="primary" loading={true}>
+          No bricks has been added yet or it's being loaded.
+        </Button>
+      </div>
     );
   }
 

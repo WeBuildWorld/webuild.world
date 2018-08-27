@@ -97,9 +97,7 @@ export default class Bricks extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <Card>
-        <AddBrickForm onSubmit={this.formSubmitted} />
-      </Card>)
+      <AddBrickForm onSubmit={this.formSubmitted} />)
   }
 
   public async componentWillReceiveProps(props: IProps) {
