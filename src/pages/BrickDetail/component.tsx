@@ -367,7 +367,6 @@ export default class BrickDetail extends React.Component<IProps, object> {
                     <a href={brick.url} className="brick-title"> {brick.title} </a>
                 </h1>
 
-
                 <Row className="detail-meta">
                     <Col style={{ paddingBottom: 16 }} span={12}>
                         {statusBar}
@@ -377,11 +376,11 @@ export default class BrickDetail extends React.Component<IProps, object> {
                         </Tag>
                     </Col>
                     <Col style={{ paddingBottom: 16 }} span={12}>
-                        <Row>
-                            <Col span={12}>
-                                {brick.numOfBuilders} Builders
+                        <Row type="flex" justify="end" align="middle">
+                            <Col>
+                                {brick.numOfBuilders} Builders &nbsp;
                             </Col>
-                            <Col span={12}>
+                            <Col>
                                 {buttonGroup}
                             </Col>
                         </Row>
@@ -390,7 +389,7 @@ export default class BrickDetail extends React.Component<IProps, object> {
 
                 <Divider style={{ marginBottom: 32 }} />
 
-                <Row className="desc-row">
+                <Row className="desc-row" style={{ marginBottom: 32 }}>
                     <Col span={24}>
                         {brick.description || ""}
                     </Col>
