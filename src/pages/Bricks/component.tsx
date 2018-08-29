@@ -1,11 +1,12 @@
-import { Alert, Avatar, Button, Card, Icon, List, message, Select, Spin } from 'antd';
+import { Alert, Avatar, Button, Card, Icon, List, message, Select, Spin, Tag } from 'antd';
+import * as moment from "moment";
 import * as React from "react";
 import * as InfiniteScroll from 'react-infinite-scroller';
 
 import config from "../../config";
 
 import { getBrick, getBricks, watchEvents } from "../../services/BrickService";
-import { IBrick } from "../../types";
+import { BrickStatus, IBrick } from "../../types";
 import Brick from "./_shared/Brick";
 
 import "./style.css";
@@ -15,7 +16,6 @@ const pageSize = 10;
 export interface IProps {
   brickCount: number;
   bricks?: IBrick[];
-  history?:any;
   getBricks?: (start?: number, length?: number) => void;
   getMoreBricks?: (start?: number, length?: number) => void;
   onBricksChanged?: (bricks: IBrick[]) => void;
@@ -54,28 +54,35 @@ export default class Bricks extends React.Component<IProps, any> {
     this.dismiss();
   }
 
-  public renderItem(item: any) {
+  public renderItem(brick: any) {
+
+    const started = moment((brick.dateCreated as any) * 1000).fromNow();
+    let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
+    expired = expired ? (" • Expired " + expired) : "";
+    const detailUrl = "/brick/" + brick.id;
+    const desc = "Status " + BrickStatus[brick.status] + " • " + "Opened "
+      + started + expired;
 
     return (
       <List.Item
-        key={item.id}
-        extra={<div />}
+        key={brick.id}
+        extra={
+          <Tag color="#2db7f5">{brick.value} ETH <i className="fab fa-ethereum" /></Tag>
+        }
       >
         <List.Item.Meta
-          description={
-            <Brick 
-              brick={item}
-              key={item.id}
-              // tslint:disable-next-line:jsx-no-lambda
-              startWork={id => this.props.startWork!(id)}
-              // tslint:disable-next-line:jsx-no-lambda
-              acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
-              // tslint:disable-next-line:jsx-no-lambda
-              cancelBrick={id => this.props.cancelBrick!(id)}
-            />
-          }
+          avatar={<Avatar src="https://avatars1.githubusercontent.com/u/5743338?v=4" />}
+          title={<a href={detailUrl}>{brick.title}</a>}
+          description={desc}
         />
-        {/* <ListContent data={item} /> */}
+
+        <div>
+          {brick.tags &&
+            brick.tags.map((tag: string) => (
+              <Tag key={tag} color="#87d068">{tag}</Tag>
+            ))}
+        </div>
+
       </List.Item>
     )
   }

@@ -1,7 +1,7 @@
 export interface IStoreState {
   bricks: IBrick[];
   brickCount: number;
-  history?:any;
+  history?: any;
   user?: ICredential;
   networkStatus?: any;
   hash?: string;
@@ -30,6 +30,7 @@ export interface IBrick {
   tags?: string[];
   dateCreated?: Date | number;
   dateCompleted?: Date | number;
+  expired?: Date | number;
   winner?: IBuilder;
 }
 

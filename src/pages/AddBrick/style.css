@@ -5,3 +5,6 @@ div.add-brick {
 .form-wrap {
 	padding: 20px;
 }
+.date-time{
+	min-width: 200px;
+}

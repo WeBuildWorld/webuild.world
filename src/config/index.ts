@@ -365,6 +365,10 @@ export default {
           "type": "string"
         },
         {
+          "name": "_expired",
+          "type": "uint256"
+        },
+        {
           "name": "_description",
           "type": "string"
         },
@@ -603,7 +607,7 @@ export default {
     }
   ],
   // CONTRACT_ADDRESS: "0x248852a1A109e8a9cc8f42a87539dCaA31843245",
-  CONTRACT_ADDRESS: "0xf0f841b85f2a3cf74c555660a00a2ed0c41e7c11",
+  CONTRACT_ADDRESS: "0xf6ae46afaa49a2e7963e5bcd210988ff539b8034",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,

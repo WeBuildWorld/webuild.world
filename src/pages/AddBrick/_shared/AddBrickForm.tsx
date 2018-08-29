@@ -1,4 +1,4 @@
-import { Button, Form, Icon, Input, Row, Tag, Tooltip } from 'antd';
+import { Button, DatePicker, Form, Icon, Input, Row, Tag, Tooltip } from 'antd';
 import * as  React from 'react';
 import { IProps, IState } from '../component';
 
@@ -35,6 +35,7 @@ export class AddBrickForm extends React.Component<any, any> {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleInputConfirm = this.handleInputConfirm.bind(this);
+        this.onExpiredChanged = this.onExpiredChanged.bind(this);
 
     }
     public saveInputRef = (input: any) => this.input = input;
@@ -91,6 +92,10 @@ export class AddBrickForm extends React.Component<any, any> {
         this.setState({ inputVisible: true }, () => this.input.focus());
     }
 
+    public onExpiredChanged() {
+        //
+    }
+
 
     public render() {
         const { getFieldDecorator } = this.props.form;
@@ -127,6 +132,26 @@ export class AddBrickForm extends React.Component<any, any> {
                         <Input
                             prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
                             placeholder="Title" />
+                    )}
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="Expired">
+                    {getFieldDecorator('expired', {
+                        rules: [{
+                            // tslint:disable-next-line:object-literal-sort-keys
+                            required: true, message: 'Please set expired!',
+                        }],
+                    })(
+                        <DatePicker 
+                        className="date-time"
+                        showTime={true}
+                        format="YYYY-MM-DD HH:mm:ss" 
+                        placeholder="Select time" onChange={this.onExpiredChanged} />
+                        // <Input
+                        //     prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        //     placeholder="Title" />
                     )}
                 </FormItem>
 

@@ -363,37 +363,36 @@ export default class BrickDetail extends React.Component<IProps, object> {
 
         return (
             <div className="detail">
-                <Row>
-                    <Col >
-                        <h4 className="title level-item is-5">
-                            <a
-                                href={'/brick/' + brick.id}
-                                className="is-link is-small">
-                                {brick.title}
-                            </a>
-                        </h4>
-                        <div className="text-left">
-                            <span className="tag is-grey">
-                                &nbsp; <i className="fab fa-ethereum" />&nbsp;{brick.value} ETH
-                            </span>
+                <h1>
+                    <a href={brick.url} className="brick-title"> {brick.title} </a>
+                </h1>
 
-                            {statusBar}
-                        </div>
+
+                <Row className="detail-meta">
+                    <Col style={{ paddingBottom: 16 }} span={12}>
+                        {statusBar}
+                        &nbsp;
+                        <Tag>
+                            {brick.value} ETH  <i className="fab fa-ethereum" />
+                        </Tag>
+                    </Col>
+                    <Col style={{ paddingBottom: 16 }} span={12}>
+                        <Row>
+                            <Col span={12}>
+                                {brick.numOfBuilders} Builders
+                            </Col>
+                            <Col span={12}>
+                                {buttonGroup}
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
+
+                <Divider style={{ marginBottom: 32 }} />
+
                 <Row className="desc-row">
                     <Col span={24}>
                         {brick.description || ""}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <span>
-                            {buttonGroup}
-                        </span>
-                        <span >
-                            &nbsp; {brick.numOfBuilders} Builders
-                        </span>
                     </Col>
                 </Row>
                 <Row>

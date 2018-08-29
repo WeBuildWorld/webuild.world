@@ -64,12 +64,12 @@ contract WeBuildWorld is Extendable {
         return brickIds;
     }
 
-    function addBrick(string _title, string _url, string _description, bytes32[] _tags) 
+    function addBrick(string _title, string _url, uint _expired, string _description, bytes32[] _tags) 
         public payable
         returns (uint id)
     {
         id = getId();
-        require(getProvider(id).addBrick(id, _title, _url, _description, _tags, msg.value));
+        require(getProvider(id).addBrick(id, _title, _url, _expired, _description, _tags, msg.value));
         emit BrickAdded(id);
     }
 

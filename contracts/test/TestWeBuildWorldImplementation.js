@@ -21,7 +21,7 @@ contract('WeBuildWord', function (accounts) {
 
       main = weBuildWorld;
       implement = weBuildWorldImplementation;
-      
+
     });
   });
 
@@ -29,6 +29,7 @@ contract('WeBuildWord', function (accounts) {
 
     const txObj = await main.addBrick('brick title',
       'https://github.com/hello/mock/issue/100',
+      new Date().getTime() / 1000,
       'mock brick description',
       ['mock', 'test'], {
         value: web3.toWei(1, "ether"),
@@ -40,7 +41,11 @@ contract('WeBuildWord', function (accounts) {
       .map((id) => id.toNumber())
       .filter(id => id !== 0);
 
-    assert.equal(ids.length, 1, 'An brick can be found.');
+    const brickId = ids[0];
+    const brick = await main.getBrick(brickId);
+    console.log('brick:', brick);
+    assert.ok(brick, "An brick can be found.");
+    // assert.equal(ids.length, 1, 'An brick can be found.');
   });
 
 });

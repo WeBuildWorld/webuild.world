@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import * as moment from "moment";
 import Config from "../config";
 import Promisify from "../helpers/Promisify";
 import { IBrick, IBuilder } from "../types";
@@ -13,6 +14,7 @@ export const toBrick = (obj: any): IBrick => {
     dateCompleted: obj.dateCompleted.toNumber(),
     dateCreated: obj.dateCreated.toNumber(),
     description: obj.description,
+    expired: obj.expired.toNumber(),
     id,
     numOfBuilders: obj.numOfBuilders.toNumber(),
     owner: rpcService.rpc.toHex(obj.owner),
@@ -114,7 +116,8 @@ export const getBrick = async (id: any): Promise<IBrick> => {
     value: brickArr[3],
     dateCreated: brickArr[4],
     dateCompleted: brickArr[5],
-    status: brickArr[6],
+    expired: brickArr[6],
+    status: brickArr[7],
     tags: brickDetailArr[0],
     description: brickDetailArr[1],
     numOfBuilders: brickDetailArr[2],
@@ -146,6 +149,7 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
     return contract.addBrick(
       brick.title,
       brick.url || "",
+      brick.expired.valueOf() / 1000,
       brick.description || "",
       tags,
       options,

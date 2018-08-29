@@ -56,7 +56,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         return bricks[_brickId].owner == _address;
     }    
 
-    function addBrick(uint _brickId, string _title, string _url, string _description, bytes32[] _tags, uint _value) 
+    function addBrick(uint _brickId, string _title, string _url, uint _expired, string _description, bytes32[] _tags, uint _value) 
         external onlyMain
         returns (bool success)
     {
@@ -77,7 +77,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
             // solhint-disable-next-line 
             dateCreated: now,
             dateCompleted: 0,
-            expired:0,
+            expired:_expired,
             numBuilders: 0,
             winners: new address[](0)
         });
