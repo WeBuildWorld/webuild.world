@@ -15,6 +15,7 @@ const pageSize = 10;
 export interface IProps {
   brickCount: number;
   bricks?: IBrick[];
+  history?:any;
   getBricks?: (start?: number, length?: number) => void;
   getMoreBricks?: (start?: number, length?: number) => void;
   onBricksChanged?: (bricks: IBrick[]) => void;
@@ -62,7 +63,7 @@ export default class Bricks extends React.Component<IProps, any> {
       >
         <List.Item.Meta
           description={
-            <Brick
+            <Brick 
               brick={item}
               key={item.id}
               // tslint:disable-next-line:jsx-no-lambda

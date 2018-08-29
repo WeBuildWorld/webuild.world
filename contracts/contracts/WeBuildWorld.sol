@@ -6,12 +6,12 @@ import "./libs/Extendable.sol";
 import "./Provider.sol";
 
 
-contract WeBuildWord is Extendable {
-    using SafeMath for uint256;	
+contract WeBuildWorld is Extendable {
+    using SafeMath for uint256;
 
     string public constant VERSION = "0.1";
     uint public constant DENOMINATOR = 10000;
-    
+
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
         _;
@@ -28,9 +28,10 @@ contract WeBuildWord is Extendable {
         revert();
     }
 
-    function getBrickIds(uint _skip, uint _take) public view returns(uint[] brickIds) {
+    function getBrickIds(uint _skip, uint _take, bytes32[] _tags, uint _status, uint _started, uint _expired) public view returns(uint[] brickIds) {
         address[] memory providers = getAllProviders();
         uint[] memory temp;
+
         brickIds = new uint[](_take);
         uint counter = 0; 
         uint taken = 0;
@@ -43,15 +44,20 @@ contract WeBuildWord is Extendable {
             Provider provider = Provider(providers[i-1]);
             temp = provider.getBrickIds();
             
-            for (uint j = 0; j < temp.length; j++) {
+            for (uint j = 0; j < temp.length; j++) { 
                 if (taken >= _take) {
                     break;
                 }
-                if (counter >= _skip) {
-                    brickIds[taken] = temp[j];
-                    taken++;
+                
+                bool exist = provider.filterBrick(temp[j], _tags, _status, _started, _expired);
+                // exist = true;
+                if(exist){
+                    if (counter >= _skip) { 
+                        brickIds[taken] = temp[j];                     
+                        taken++;
+                    }
+                    counter++;
                 }
-                counter++;
             }
         }
 
@@ -119,7 +125,8 @@ contract WeBuildWord is Extendable {
         uint value,
         uint dateCreated,
         uint dateCompleted,
-        uint32 status      
+        uint expired,
+        uint32 status
     ) {
         return getProvider(_brickId).getBrick(_brickId);
     }

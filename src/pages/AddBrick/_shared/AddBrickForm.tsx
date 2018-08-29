@@ -132,7 +132,7 @@ export class AddBrickForm extends React.Component<any, any> {
 
                 <FormItem
                     {...formItemLayout}
-                    label="Title">
+                    label="Tags">
                     {getFieldDecorator('tags', {
                         rules: [],
                     })(

@@ -45,15 +45,15 @@ export const trimZeroCode = (str: string) => {
   return str;
 }
 
-export const getBricks = async (start: number, length: number) => {
+export const getBricks = async (start: number, length: number, tags: string[] = [],
+  status: number = -1, started: number = 0, expired: number = 0) => {
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS
   );
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIds(start, length, cb)
+    contract.getBrickIds(start, length, tags, status, started, expired, cb)
   );
-
 
   ids = _(ids)
     .filter(id => id.toNumber() !== 0)
@@ -130,7 +130,7 @@ export const getBrick = async (id: any): Promise<IBrick> => {
 
 }
 
-export const addBrick = async (brick: IBrick): Promise<number> => {
+export const addBrick = async (brick: IBrick): Promise<any> => {
   if (!rpcService.mainAccount) {
     throw new Error("Metamask required");
   }
@@ -141,7 +141,7 @@ export const addBrick = async (brick: IBrick): Promise<number> => {
   );
   const options = { value: rpcService.rpc.toWei(brick.value, "ether") };
   const tags: any[] = brick.tags;
-  const newId = (await Promisify((cb: any) => {
+  const hash = (await Promisify((cb: any) => {
 
     return contract.addBrick(
       brick.title,
@@ -151,9 +151,9 @@ export const addBrick = async (brick: IBrick): Promise<number> => {
       options,
       cb
     );
-  })) as number;
+  }));
 
-  return newId;
+  return hash;
 };
 
 export const cancel = async (

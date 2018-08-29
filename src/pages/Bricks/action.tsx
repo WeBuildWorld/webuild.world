@@ -17,9 +17,6 @@ export function retrieveBricks(start: number, length: number) {
   return async (dispatch: any): Promise<IGetBricks> => {
     const payload = await getBricks(start, length);
 
-    // tslint:disable-next-line:no-console
-    console.log('getMore', payload);
-
     return dispatch({
       payload,
       type: constants.GET_BRICKS
@@ -44,9 +41,6 @@ export function onBricksChanged(bricks: IBrick[]) {
       brickCount: bricks.length,
       bricks,
     }
-
-    // tslint:disable-next-line:no-console
-    console.log('bricks... ', payload);
 
     return dispatch({
       payload,

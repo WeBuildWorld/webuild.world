@@ -1,6 +1,7 @@
 export interface IStoreState {
   bricks: IBrick[];
   brickCount: number;
+  history?:any;
   user?: ICredential;
   networkStatus?: any;
   hash?: string;

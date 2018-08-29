@@ -6,6 +6,10 @@ import RpcService from "../../../services/RpcService";
 import { ActionState, BrickStatus, IActionState, IBrick, IBrickState } from "../../../types";
 import "./Brick.css";
 
+import createHistory from 'history/createBrowserHistory';
+const history = createHistory();
+
+
 const { Meta } = Card;
 
 export interface IProps {
@@ -243,6 +247,11 @@ export default class Brick extends React.Component<IProps, object> {
     );
   }
 
+  // public enterDetail(id: any) {
+  //   history.push("/brick/" + id);
+  //   this.forceUpdate();
+  // }
+
   public render() {
     const { brick } = this.props;
     const isOwner = brick.owner === RpcService.mainAccount;
@@ -338,7 +347,9 @@ export default class Brick extends React.Component<IProps, object> {
           <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}  >
             <h4 className="title level-item is-5">
               <a
-                href={'/brick/' + brick.id}
+                 href={'/brick/' + brick.id}
+                // tslint:disable-next-line:jsx-no-lambda
+                // onClick={() => { this.enterDetail(brick.id) }}
                 className="is-link is-small">
                 {brick.title}
               </a>

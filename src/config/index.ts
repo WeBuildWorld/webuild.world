@@ -324,6 +324,22 @@ export default {
         {
           "name": "_take",
           "type": "uint256"
+        },
+        {
+          "name": "_tags",
+          "type": "bytes32[]"
+        },
+        {
+          "name": "_status",
+          "type": "uint256"
+        },
+        {
+          "name": "_started",
+          "type": "uint256"
+        },
+        {
+          "name": "_expired",
+          "type": "uint256"
         }
       ],
       "name": "getBrickIds",
@@ -511,6 +527,10 @@ export default {
           "type": "uint256"
         },
         {
+          "name": "expired",
+          "type": "uint256"
+        },
+        {
           "name": "status",
           "type": "uint32"
         }
@@ -582,8 +602,8 @@ export default {
       "type": "function"
     }
   ],
-  // CONTRACT_ADDRESS: "0xbabb3faec25ff0dc5c34fe9e202d815a49594b41",
-  CONTRACT_ADDRESS: "0xea3b20cf68e3b0ddd4c177452bfd26a588c9a101",
+  // CONTRACT_ADDRESS: "0x248852a1A109e8a9cc8f42a87539dCaA31843245",
+  CONTRACT_ADDRESS: "0xf0f841b85f2a3cf74c555660a00a2ed0c41e7c11",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,

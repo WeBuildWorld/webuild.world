@@ -23,6 +23,7 @@ interface Provider {
         uint value,
         uint dateCreated,
         uint dateCompleted, 
+        uint expired,
         uint32 status
     );
 
@@ -38,5 +39,9 @@ interface Provider {
         uint[] dates,
         bytes32[] keys,
         bytes32[] names
+    );
+
+    function filterBrick(uint _brickId, bytes32[] _tags, uint _status, uint _started, uint _expired) external view returns (
+      bool
     );
 }
