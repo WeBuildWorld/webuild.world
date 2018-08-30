@@ -47,6 +47,7 @@ export default class Bricks extends React.Component<IProps, any> {
     this.loadMore = this.loadMore.bind(this);
     this.addFilter = this.addFilter.bind(this);
     this.onDeselect = this.onDeselect.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   public componentDidMount() {
@@ -64,6 +65,8 @@ export default class Bricks extends React.Component<IProps, any> {
       if (!tags.includes(tag)) {
         tags.push(tag);
       }
+      
+      this.refresh(tags); 
       return { filters: tags };
     });
   }
@@ -75,6 +78,7 @@ export default class Bricks extends React.Component<IProps, any> {
       if (index !== -1) {
         tags.splice(index, 1);
       }
+      this.refresh(tags);
       return { filters: tags };
     });
   }
@@ -119,16 +123,16 @@ export default class Bricks extends React.Component<IProps, any> {
     )
   }
 
-
   public loadMore() {
     let items = this.state.items || [];
     let start = this.state.start;
+    const tags = this.state.filters;
 
     this.setState({
       loading: true,
     });
 
-    getBricks(start, pageSize).then((res) => {
+    getBricks(start, pageSize, tags).then((res) => {
 
       if (!res.bricks.length) {
         message.warning('No more bricks');
@@ -152,7 +156,33 @@ export default class Bricks extends React.Component<IProps, any> {
 
   }
 
+  public refresh(tags: string[]) {
+    this.setState({
+      loading: true,
+      start: 0
+    });
 
+    getBricks(0, pageSize, tags).then((res) => {
+      if (!res.bricks.length) {
+        message.warning('No more bricks');
+        this.setState({
+          hasMore: false,
+          loading: false,
+        });
+        return;
+      }
+
+      const items = res.bricks;
+      const start = pageSize;
+
+      this.props.onBricksChanged(items);
+      this.setState({
+        items,
+        loading: false,
+        start,
+      })
+    });
+  }
 
   public render() {
 
