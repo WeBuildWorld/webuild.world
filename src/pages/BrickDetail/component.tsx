@@ -2,7 +2,7 @@ import { Avatar, Button, Card, Col, Divider, Dropdown, Icon, Menu, message, Moda
 import * as React from "react";
 import Select, { components } from "react-select";
 import { Authentication } from "../../services/Authentication";
-import { cancel, getBrick, startWork } from "../../services/BrickService";
+import { acceptWork, cancel, getBrick, startWork } from "../../services/BrickService";
 import RpcService from "../../services/RpcService";
 import { ActionState, BrickStatus, IActionState, IBrick, IBrickState, ICredential } from "../../types";
 import "./style.css";
@@ -102,18 +102,20 @@ export default class BrickDetail extends React.Component<IProps, object> {
 
         if (this.checkHasMetaMask()) {
             const hide = message.loading('Please check your MetaMask ...', 0);
+            const brickId = this.state.hash;
+
             try {
                 const user: ICredential = Authentication.getCurrentUser();
                 const githubIdAndUserName = Authentication.getGithubIdAndName(user);
                 await startWork(this.state.brick.id, githubIdAndUserName, user.name);
 
                 this.processingBrick({
-                    id: this.props.brick.id,
+                    id: brickId,
                     process: ActionState.StartWork
                 });
                 hide();
             } catch (ex) {
-                this.removeProcess(this.props.brick.id);
+                this.removeProcess(brickId);
                 hide();
             }
         }
@@ -137,6 +139,7 @@ export default class BrickDetail extends React.Component<IProps, object> {
 
     public cancelWork() {
         const self = this;
+        const brickId = this.state.hash;
         Modal.confirm({
             title: 'Are you sure to cancel this brick?',
             // tslint:disable-next-line:object-literal-sort-keys
@@ -152,14 +155,14 @@ export default class BrickDetail extends React.Component<IProps, object> {
                 const hide = message.loading('Please check your MetaMask ...', 0);
                 try {
 
-                    await cancel(self.state.brick.id);
+                    await cancel(brickId);
                     self.processingBrick({
-                        id: self.state.brick.id,
+                        id: brickId,
                         process: ActionState.Cancel
                     });
                     hide();
                 } catch (ex) {
-                    self.removeProcess(self.state.brick.id);
+                    self.removeProcess(brickId);
                     hide();
                 }
                 self.forceUpdate();
@@ -177,15 +180,17 @@ export default class BrickDetail extends React.Component<IProps, object> {
         // const hide = message.loading('canceling brick ...', 0);
         const self = this;
         const hide = message.loading('Please check your MetaMask ...', 0);
+        const brickId = this.state.hash;
+
         try {
-            await self.props.acceptWork(self.props.brick.id, self.state.winner);
+            await acceptWork(brickId, self.state.winner);
             self.processingBrick({
-                id: self.props.brick.id,
+                id: brickId,
                 process: ActionState.Accept
             });
             hide();
         } catch (ex) {
-            self.removeProcess(self.props.brick.id);
+            self.removeProcess(brickId);
             hide();
         }
     }
@@ -235,18 +240,20 @@ export default class BrickDetail extends React.Component<IProps, object> {
             return result;
 
         }
-
+        const selectedWinner: boolean = this.state.winner === "";
         return (
+
             <Modal
                 align={{}}
                 visible={this.state.modalIsOpen}
                 title={"Accept work:" + this.state.brick.title}
                 onOk={this.acceptWork}
+                okButtonProps={{ disabled: selectedWinner }}
                 onCancel={this.cancelModal}
             >
                 <div className="desc">
                     Please make sure that you are satisfied by the work the builder
-                          submits. By clicking the button "submit", your fund will be
+                          submits. By clicking the button "ok", your fund will be
                           transferred to your selected builder.
                 <br />  <br />
                 </div>
@@ -261,7 +268,16 @@ export default class BrickDetail extends React.Component<IProps, object> {
                             // value={this.props.brick.winner}
                             // tslint:disable-next-line:jsx-no-lambda
                             onChange={(item: any) => {
-                                this.state.winner = this.state.brick.winner = item.value;
+                                this.setState((prevState: any) => {
+                                    const brick = prevState.brick;
+                                    const winner = item.value;
+                                    // this.state.brick.winner = item.value;
+                                    return {
+                                        brick,
+                                        winner
+                                    }
+                                })
+                                // this.state.winner = this.state.brick.winner = item.value;
                             }}
                         />
                     </div>
@@ -286,7 +302,9 @@ export default class BrickDetail extends React.Component<IProps, object> {
             return p.id === brick.id;
         }) > -1;
 
-        let statusBar;
+        const statusBar = <span className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></span>
+
+        let winnerBar;
         let buttonGroup;
 
         if (brick.winner && brick.winner.nickName) {
@@ -294,26 +312,30 @@ export default class BrickDetail extends React.Component<IProps, object> {
             const githubUrl = Authentication.getGithubLink(brick.winner.key);
             const githubLink = <a href={githubUrl}> {brick.winner.nickName} </a>;
 
-            statusBar = <Card className="winner-wrapper" title="Winner" style={{ minWidth: 320 }} >
+            winnerBar = <Card className="winner-wrapper" title="Winner" style={{ minWidth: 320, marginBottom: '10px' }} >
                 <Meta avatar={<Avatar src={avatarSrc} />}
                     description={githubLink}
                 />
             </Card>;
-
-        } else {
-            statusBar = <span className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></span>
         }
 
         const startedTime = moment((brick.dateCreated as any) * 1000).fromNow();
+
+        const unexpired = ((brick.expired as any) * 1000 > new Date().getTime());
+        const expireLabel = unexpired ? ' Expires ' : ' Expired ';
         let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
-        expired = expired ? (" • Expired " + expired) : "";
+        expired = expired ? (" • " + expireLabel + expired) : "";
         const desc = "Opened " + startedTime + expired;
- 
+
         let avatar;
         const uriObj = parser(brick.url);
-        if (uriObj && uriObj.owner && uriObj.host === 'github.com') {
+        const isGitHubLink = uriObj && uriObj.owner && uriObj.host === 'github.com';
+
+        let gitIcon;
+        if (isGitHubLink) {
             const src = "https://avatars.githubusercontent.com/" + uriObj.owner;
             avatar = <Avatar src={src} />;
+            gitIcon = <i style={{ fontSize: '16px' }} className="fab fa-github" />;
         }
 
         if (isOpen) {
@@ -333,10 +355,10 @@ export default class BrickDetail extends React.Component<IProps, object> {
                         <Button.Group>
                             <Button htmlType="button" className="button ant-btn ant-btn-primary" onClick={this.startAcceptWork}>
                                 Accept Work
-              </Button>
+                            </Button>
                             <Button htmlType="button" className="button ant-btn" onClick={this.cancelWork}>
                                 Cancel Brick
-              </Button>
+                            </Button>
                         </Button.Group>
                         {this.renderOperations()}
                     </div>
@@ -344,7 +366,8 @@ export default class BrickDetail extends React.Component<IProps, object> {
                     buttonGroup = <div>
                         <Button htmlType="button" className="button ant-btn ant-btn-primary" onClick={this.cancelWork}>
                             Cancel Brick
-        </Button> </div>
+                        </Button>
+                    </div>
                 }
 
             } else {
@@ -352,7 +375,7 @@ export default class BrickDetail extends React.Component<IProps, object> {
                     processing = false; // should not processing before started.
                     buttonGroup = <a className="button ant-btn disabled is-success">
                         <i className="fas fa-globe" />&nbsp;&nbsp;Work&nbsp;Started&nbsp;</a>
-                } else {
+                } else if (unexpired) {
                     buttonGroup = <a className="button ant-btn ant-btn-primary"
                         onClick={this.startWork}  >
                         <i className="fas fa-wrench" />&nbsp;&nbsp;Start&nbsp;
@@ -366,7 +389,7 @@ export default class BrickDetail extends React.Component<IProps, object> {
                 <i className="fas fa-wrench" /> Not Available </a>
         }
 
-        if (processing) {
+        if (processing || !isOpen) {
             buttonGroup = null;
         }
 
@@ -379,11 +402,11 @@ export default class BrickDetail extends React.Component<IProps, object> {
         return (
             <div className="detail">
                 <h1>
-                    {avatar} <a href={brick.url} className="brick-title"> {brick.title} </a>
+                    {avatar} <a href={brick.url} target="_blank" className="brick-title"> {brick.title} </a> {gitIcon}
                 </h1>
 
                 <Row className="detail-meta">
-                    <Col style={{ paddingBottom: 16 }} md={12} sm={24}> 
+                    <Col style={{ paddingBottom: 16 }} md={12} sm={24}>
                         {statusBar}
                         &nbsp;
                         <Tag>
@@ -394,13 +417,15 @@ export default class BrickDetail extends React.Component<IProps, object> {
 
                     </Col>
                     <Col style={{ paddingBottom: 16 }} md={12} sm={24}>
-                        <Row type="flex" justify="end" align="middle"> 
+                        <Row type="flex" justify="end" align="middle">
                             <Col>
                                 {buttonGroup}
                             </Col>
                         </Row>
                     </Col>
                 </Row>
+
+                {winnerBar}
 
                 <div>
                     {desc}

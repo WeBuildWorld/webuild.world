@@ -17,3 +17,71 @@
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
 }
+
+
+.Modal {
+    /* position: absolute; */
+    top: 12rem;
+    border: 1px solid rgb(204, 204, 204);
+    background: rgb(255, 255, 255);
+    overflow: auto;
+    border-radius: 4px;
+    outline: none;
+    width: 600px;
+    height: 400px;
+    margin: 6rem auto;
+}
+
+h2 {
+    background: black;
+    color: white;
+    padding: 0.68rem;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.content {
+    padding: 1rem;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    max-height: 32px !important;
+    border-radius: 4px;
+}
+
+.text-right {
+    text-align: right
+}
+
+.desc-row {
+    margin: 15px 0;
+}
+
+.flex-layout {
+    padding: 15px 0;
+}
+
+.tag-list {
+    padding-top: 15px;
+}
+
+.winner-wrapper .ant-card-body {
+    padding: 12px 8px;
+}
+
+.winner-wrapper .ant-card-head-title {
+    padding: 8px 0;
+}
+
+.winner-wrapper .ant-card-head {
+    padding: 0 16px;
+    min-height: 32px;
+}
+
+.winner-wrapper .ant-card-meta-description {
+    line-height: 2;
+}

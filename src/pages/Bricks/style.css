@@ -35,15 +35,39 @@ h4.title {
     text-align: center;
 }
 
-.search-bar { 
+.search-bar {
     padding: 32px 0;
-    text-align: center; 
+    text-align: center;
 }
 
-.search-bar .ant-select{
+.search-bar .ant-select {
     max-width: 380px;
 }
 
-.ant-list-vertical .ant-list-item-meta-avatar{
+.ant-list-vertical .ant-list-item-meta-avatar {
     display: block;
+}
+
+@media screen and (max-width: 480px) {
+    .ant-list-item {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .ant-list-item-action {
+        margin-left: 12px;
+    }
+
+    .ant-list-vertical .ant-list-item-extra-wrap {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .ant-list-vertical .ant-list-item-main {
+        min-width: 220px;
+    }
+
+    .ant-list-vertical .ant-list-item-extra {
+        margin-left: 0;
+    }
 }

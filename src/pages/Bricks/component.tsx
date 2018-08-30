@@ -65,7 +65,7 @@ export default class Bricks extends React.Component<IProps, any> {
       if (!tags.includes(tag)) {
         tags.push(tag);
       }
-      
+
       this.refresh(tags); 
       return { filters: tags };
     });
@@ -86,8 +86,9 @@ export default class Bricks extends React.Component<IProps, any> {
   public renderItem(brick: any) {
 
     const started = moment((brick.dateCreated as any) * 1000).fromNow();
-    let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
-    expired = expired ? (" • Expired " + expired) : "";
+    const expireLabel = ((brick.expired as any) * 1000 > new Date().getTime()) ? ' Expires ' : ' Expired ';
+    let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : ''; 
+    expired = expired ? (" • " + expireLabel + expired) : "";
     const detailUrl = "/brick/" + brick.id;
     const desc = "Status " + BrickStatus[brick.status] + " • " + "Opened "
       + started + expired;

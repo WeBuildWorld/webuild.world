@@ -59,17 +59,17 @@ export class GitHubButton extends React.Component {
     public onSuccess(response: any) {
         const self = this;
         if (response && response.code) {
-            axios.post('login/oauth/access_token', {
+            axios.post('/login/oauth/access_token', {
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET,
                 "code": response.code,
                 "redirect_uri": REDIRECT_URL
             }).then((res) => {
-                axios.get('user?' + res.data).then((result) => {
+                axios.get('/user?' + res.data).then((result) => {
                     const data = result.data;
                     if (data) {
                         const user = {
-                            email: data.email,
+                            email: data.emsail,
                             githubId: data.id,
                             login: data.login,
                             name: data.name,
@@ -102,7 +102,7 @@ export class GitHubButton extends React.Component {
             visible={false}
             className="ant-btn ant-btn-primary"
             clientId={CLIENT_ID}
-            onFailure={this.onFakeSuccess}
+            // onFailure={this.onFakeSuccess}
             redirectUri={REDIRECT_URL}
             scope="user.email"
         />;
