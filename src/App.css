@@ -80,3 +80,7 @@ img.App-logo {
         transform: rotate(360deg);
     }
 }
+
+.unclickable{
+    cursor: auto !important;
+}

@@ -103,7 +103,7 @@ export default class Bricks extends React.Component<IProps, any> {
       <List.Item
         key={brick.id}
         extra={
-          <Tag color="#2db7f5">{brick.value} ETH <i className="fab fa-ethereum" /></Tag>
+          <Tag className="unclickable" color="#2db7f5">{brick.value} ETH <i className="fab fa-ethereum" /></Tag>
         }
       >
         <List.Item.Meta

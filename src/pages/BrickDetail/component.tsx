@@ -302,7 +302,7 @@ export default class BrickDetail extends React.Component<IProps, object> {
             return p.id === brick.id;
         }) > -1;
 
-        const statusBar = <span className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></span>
+        const statusBar = <span className="tags"><Tag className="unclickable" color="#dfdfdf">STATUS :</Tag> <Tag className="unclickable" color="#108ee9">{BrickStatus[brick.status]}</Tag></span>
 
         let winnerBar;
         let buttonGroup;
@@ -409,7 +409,7 @@ export default class BrickDetail extends React.Component<IProps, object> {
                     <Col style={{ paddingBottom: 16 }} md={12} sm={24}>
                         {statusBar}
                         &nbsp;
-                        <Tag>
+                        <Tag className="unclickable" >
                             {brick.value} ETH  <i className="fab fa-ethereum" />
                         </Tag>
 
