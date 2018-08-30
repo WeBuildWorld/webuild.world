@@ -7,6 +7,9 @@ import RpcService from "../../services/RpcService";
 import { ActionState, BrickStatus, IActionState, IBrick, IBrickState, ICredential } from "../../types";
 import "./style.css";
 
+import * as moment from 'moment';
+import parser from 'parse-github-url';
+
 const { Meta } = Card;
 
 export interface IProps {
@@ -301,6 +304,18 @@ export default class BrickDetail extends React.Component<IProps, object> {
             statusBar = <span className="tags"><Tag color="#dfdfdf">STATUS :</Tag> <Tag color="#108ee9">{BrickStatus[brick.status]}</Tag></span>
         }
 
+        const startedTime = moment((brick.dateCreated as any) * 1000).fromNow();
+        let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
+        expired = expired ? (" • Expired " + expired) : "";
+        const desc = "Opened " + startedTime + expired;
+ 
+        let avatar;
+        const uriObj = parser(brick.url);
+        if (uriObj && uriObj.owner && uriObj.host === 'github.com') {
+            const src = "https://avatars.githubusercontent.com/" + uriObj.owner;
+            avatar = <Avatar src={src} />;
+        }
+
         if (isOpen) {
             brick.builders = brick.builders || [];
             const started = brick.builders.some(
@@ -364,28 +379,32 @@ export default class BrickDetail extends React.Component<IProps, object> {
         return (
             <div className="detail">
                 <h1>
-                    <a href={brick.url} className="brick-title"> {brick.title} </a>
+                    {avatar} <a href={brick.url} className="brick-title"> {brick.title} </a>
                 </h1>
 
                 <Row className="detail-meta">
-                    <Col style={{ paddingBottom: 16 }} span={12}>
+                    <Col style={{ paddingBottom: 16 }} md={12} sm={24}> 
                         {statusBar}
                         &nbsp;
                         <Tag>
                             {brick.value} ETH  <i className="fab fa-ethereum" />
                         </Tag>
+
+                        {brick.numOfBuilders} Builders &nbsp;
+
                     </Col>
-                    <Col style={{ paddingBottom: 16 }} span={12}>
-                        <Row type="flex" justify="end" align="middle">
-                            <Col>
-                                {brick.numOfBuilders} Builders &nbsp;
-                            </Col>
+                    <Col style={{ paddingBottom: 16 }} md={12} sm={24}>
+                        <Row type="flex" justify="end" align="middle"> 
                             <Col>
                                 {buttonGroup}
                             </Col>
                         </Row>
                     </Col>
                 </Row>
+
+                <div>
+                    {desc}
+                </div>
 
                 <Divider style={{ marginBottom: 32 }} />
 

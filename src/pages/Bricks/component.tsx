@@ -3,6 +3,7 @@ import * as moment from "moment";
 import * as React from "react";
 import * as InfiniteScroll from 'react-infinite-scroller';
 
+import parser from 'parse-github-url';
 import config from "../../config";
 
 import { getBrick, getBricks, watchEvents } from "../../services/BrickService";
@@ -12,6 +13,7 @@ import Brick from "./_shared/Brick";
 import "./style.css";
 
 const pageSize = 10;
+const { Option } = Select;
 
 export interface IProps {
   brickCount: number;
@@ -43,6 +45,8 @@ export default class Bricks extends React.Component<IProps, any> {
     this.renderItem = this.renderItem.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.addFilter = this.addFilter.bind(this);
+    this.onDeselect = this.onDeselect.bind(this);
   }
 
   public componentDidMount() {
@@ -54,6 +58,27 @@ export default class Bricks extends React.Component<IProps, any> {
     this.dismiss();
   }
 
+  public addFilter(tag: string) {
+    this.setState((prevState: any) => {
+      const tags = prevState.filters;
+      if (!tags.includes(tag)) {
+        tags.push(tag);
+      }
+      return { filters: tags };
+    });
+  }
+
+  public onDeselect(event: any) {
+    this.setState((prevState: any) => {
+      const tags = prevState.filters;
+      const index = tags.indexOf(event);
+      if (index !== -1) {
+        tags.splice(index, 1);
+      }
+      return { filters: tags };
+    });
+  }
+
   public renderItem(brick: any) {
 
     const started = moment((brick.dateCreated as any) * 1000).fromNow();
@@ -62,6 +87,12 @@ export default class Bricks extends React.Component<IProps, any> {
     const detailUrl = "/brick/" + brick.id;
     const desc = "Status " + BrickStatus[brick.status] + " • " + "Opened "
       + started + expired;
+    let avatar;
+    const uriObj = parser(brick.url);
+    if (uriObj && uriObj.owner && uriObj.host === 'github.com') {
+      const src = "https://avatars.githubusercontent.com/" + uriObj.owner;
+      avatar = <Avatar src={src} />;
+    }
 
     return (
       <List.Item
@@ -71,7 +102,7 @@ export default class Bricks extends React.Component<IProps, any> {
         }
       >
         <List.Item.Meta
-          avatar={<Avatar src="https://avatars1.githubusercontent.com/u/5743338?v=4" />}
+          avatar={avatar}
           title={<a href={detailUrl}>{brick.title}</a>}
           description={desc}
         />
@@ -79,7 +110,8 @@ export default class Bricks extends React.Component<IProps, any> {
         <div>
           {brick.tags &&
             brick.tags.map((tag: string) => (
-              <Tag key={tag} color="#87d068">{tag}</Tag>
+              // tslint:disable-next-line:jsx-no-lambda
+              <Tag key={tag} onClick={() => { this.addFilter(tag) }} color="#87d068">{tag}</Tag>
             ))}
         </div>
 
@@ -120,9 +152,7 @@ export default class Bricks extends React.Component<IProps, any> {
 
   }
 
-  public filterChanged() {
-    //
-  }
+
 
   public render() {
 
@@ -131,6 +161,9 @@ export default class Bricks extends React.Component<IProps, any> {
     }
 
     const { filters } = this.state;
+    const children = filters.map((item: any) => {
+      return (<Option key={item}>{item}</Option>);
+    });
 
     return (
       <div className="bricks-infinite-container">
@@ -140,11 +173,13 @@ export default class Bricks extends React.Component<IProps, any> {
           <Select
             mode="tags"
             style={{ width: '100%' }}
-            onChange={this.filterChanged}
+            onDeselect={this.onDeselect}
+            onSelect={this.addFilter}
+            value={filters}
             tokenSeparators={[',']}
             placeholder="select tags"
           >
-            {filters}
+            {children}
           </Select>
         </div>
 

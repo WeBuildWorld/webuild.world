@@ -43,3 +43,7 @@ h4.title {
 .search-bar .ant-select{
     max-width: 380px;
 }
+
+.ant-list-vertical .ant-list-item-meta-avatar{
+    display: block;
+}
