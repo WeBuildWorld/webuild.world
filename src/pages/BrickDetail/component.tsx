@@ -397,10 +397,9 @@ export default class BrickDetail extends React.Component<IProps, object> {
             <Button type="primary" loading={true}>
                 Transaction Processing ...
     </Button>
-        </div> : null;
-
+        </div> : null; 
         return (
-            <div className="detail">
+            <div className="main-container detail">
                 <h1>
                     {avatar} <a href={brick.url} target="_blank" className="brick-title"> {brick.title} </a> {gitIcon}
                 </h1>

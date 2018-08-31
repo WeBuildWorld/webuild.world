@@ -12,7 +12,7 @@ import Brick from "./_shared/Brick";
 
 import "./style.css";
 
-const pageSize = 10;
+const pageSize = 5;
 const { Option } = Select;
 
 export interface IProps {
@@ -66,7 +66,7 @@ export default class Bricks extends React.Component<IProps, any> {
         tags.push(tag);
       }
 
-      this.refresh(tags); 
+      this.refresh(tags);
       return { filters: tags };
     });
   }
@@ -87,7 +87,7 @@ export default class Bricks extends React.Component<IProps, any> {
 
     const started = moment((brick.dateCreated as any) * 1000).fromNow();
     const expireLabel = ((brick.expired as any) * 1000 > new Date().getTime()) ? ' Expires ' : ' Expired ';
-    let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : ''; 
+    let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
     expired = expired ? (" • " + expireLabel + expired) : "";
     const detailUrl = "/brick/" + brick.id;
     const desc = "Status " + BrickStatus[brick.status] + " • " + "Opened "
@@ -159,19 +159,12 @@ export default class Bricks extends React.Component<IProps, any> {
 
   public refresh(tags: string[]) {
     this.setState({
+      hasMore: true,
       loading: true,
       start: 0
     });
 
     getBricks(0, pageSize, tags).then((res) => {
-      if (!res.bricks.length) {
-        message.warning('No more bricks');
-        this.setState({
-          hasMore: false,
-          loading: false,
-        });
-        return;
-      }
 
       const items = res.bricks;
       const start = pageSize;
@@ -197,44 +190,46 @@ export default class Bricks extends React.Component<IProps, any> {
     });
 
     return (
-      <div className="bricks-infinite-container">
-        {this.state.hash && this.renderNotification(this.state.hash!)}
+      <div className="main-container">
+        <div className="bricks-infinite-container">
+          {this.state.hash && this.renderNotification(this.state.hash!)}
 
-        <div className="search-bar">
-          <Select
-            mode="tags"
-            style={{ width: '100%' }}
-            onDeselect={this.onDeselect}
-            onSelect={this.addFilter}
-            value={filters}
-            tokenSeparators={[',']}
-            placeholder="select tags"
+          <div className="search-bar">
+            <Select
+              mode="tags"
+              style={{ width: '100%' }}
+              onDeselect={this.onDeselect}
+              onSelect={this.addFilter}
+              value={filters}
+              tokenSeparators={[',']}
+              placeholder="select tags"
+            >
+              {children}
+            </Select>
+          </div>
+
+          <InfiniteScroll
+            initialLoad={false}
+            pageStart={0}
+            loadMore={this.loadMore}
+            hasMore={!this.state.loading && this.state.hasMore}
+            useWindow={false}
           >
-            {children}
-          </Select>
+            <List
+              size="large"
+              rowKey="id"
+              itemLayout="vertical"
+              dataSource={this.props.bricks}
+              renderItem={this.renderItem}
+            >
+              {this.state.loading && this.state.hasMore && (
+                <div className="bricks-loading-container">
+                  <Spin />
+                </div>
+              )}
+            </List>
+          </InfiniteScroll>
         </div>
-
-        <InfiniteScroll
-          initialLoad={false}
-          pageStart={0}
-          loadMore={this.loadMore}
-          hasMore={!this.state.loading && this.state.hasMore}
-          useWindow={false}
-        >
-          <List
-            size="large"
-            rowKey="id"
-            itemLayout="vertical"
-            dataSource={this.props.bricks}
-            renderItem={this.renderItem}
-          >
-            {this.state.loading && this.state.hasMore && (
-              <div className="bricks-loading-container">
-                <Spin />
-              </div>
-            )}
-          </List>
-        </InfiniteScroll>
       </div>
     );
   }

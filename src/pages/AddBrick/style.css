@@ -3,8 +3,13 @@ div.add-brick {
 }
 
 .form-wrap {
-	padding: 20px;
+	padding: 20px 40px;
 }
 .date-time{
 	min-width: 200px;
+}
+
+.form-wrap-outer{
+	min-height: 100%;
+	height: auto;
 }

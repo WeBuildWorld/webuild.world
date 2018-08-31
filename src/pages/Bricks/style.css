@@ -18,13 +18,13 @@ h4.title {
 
 .greeting {
     text-align: center;
-    margin: 60px 0;
+    margin: 120px 0;
 }
 
 .bricks-infinite-container {
     border-radius: 0;
     overflow: auto;
-    padding: 8px 24px;
+    padding: 8px 40px;
     height: 100%;
 }
 

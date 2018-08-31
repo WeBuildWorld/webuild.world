@@ -102,139 +102,141 @@ export class AddBrickForm extends React.Component<any, any> {
         const { tags, inputVisible, inputValue } = this.state;
 
         return (
-            <Form className="form-wrap" layout="vertical" onSubmit={this.handleSubmit}>
-                <FormItem
-                    {...formItemLayout}
-                    label="GitHub Issue Link"
-                >
-                    {getFieldDecorator('url', {
-                        rules: [{
-                            // tslint:disable-next-line:object-literal-sort-keys
-                            required: true, message: 'Please input your github link!',
-                        }, {
-                            validator: this.validateLink,
-                        }],
-                    })(
-                        <Input prefix={<Icon type="link" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="Github Link" />
-                    )}
-                </FormItem>
+            <div className="main-container form-wrap-outer">
+                <Form className="form-wrap" layout="vertical" onSubmit={this.handleSubmit}>
+                    <FormItem
+                        {...formItemLayout}
+                        label="GitHub Issue Link"
+                    >
+                        {getFieldDecorator('url', {
+                            rules: [{
+                                // tslint:disable-next-line:object-literal-sort-keys
+                                required: true, message: 'Please input your github link!',
+                            }, {
+                                validator: this.validateLink,
+                            }],
+                        })(
+                            <Input prefix={<Icon type="link" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                placeholder="Github Link" />
+                        )}
+                    </FormItem>
 
-                <FormItem
-                    {...formItemLayout}
-                    label="Title">
-                    {getFieldDecorator('title', {
-                        rules: [{
-                            // tslint:disable-next-line:object-literal-sort-keys
-                            required: true, message: 'Please input title!',
-                        }],
-                    })(
-                        <Input
-                            prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="Title" />
-                    )}
-                </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label="Title">
+                        {getFieldDecorator('title', {
+                            rules: [{
+                                // tslint:disable-next-line:object-literal-sort-keys
+                                required: true, message: 'Please input title!',
+                            }],
+                        })(
+                            <Input
+                                prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                placeholder="Title" />
+                        )}
+                    </FormItem>
 
-                <FormItem
-                    {...formItemLayout}
-                    label="Expired">
-                    {getFieldDecorator('expired', {
-                        rules: [{
-                            // tslint:disable-next-line:object-literal-sort-keys
-                            required: true, message: 'Please set expired!',
-                        }],
-                    })(
-                        <DatePicker 
-                        className="date-time"
-                        showTime={true}
-                        format="YYYY-MM-DD HH:mm:ss" 
-                        placeholder="Select time" onChange={this.onExpiredChanged} />
-                        // <Input
-                        //     prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        //     placeholder="Title" />
-                    )}
-                </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label="Expired">
+                        {getFieldDecorator('expired', {
+                            rules: [{
+                                // tslint:disable-next-line:object-literal-sort-keys
+                                required: true, message: 'Please set expired!',
+                            }],
+                        })(
+                            <DatePicker
+                                className="date-time"
+                                showTime={true}
+                                format="YYYY-MM-DD HH:mm:ss"
+                                placeholder="Select time" onChange={this.onExpiredChanged} />
+                            // <Input
+                            //     prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            //     placeholder="Title" />
+                        )}
+                    </FormItem>
 
-                <FormItem
-                    {...formItemLayout}
-                    label="Tags">
-                    {getFieldDecorator('tags', {
-                        rules: [],
-                    })(
-                        <div>
-                            {tags.map((tag: any, index: number) => {
-                                const isLongTag = tag.length > 20;
-                                const tagElem = (
-                                    <Tag key={tag} closable={true}
-                                        // tslint:disable-next-line:jsx-no-lambda
-                                        afterClose={() => this.handleClose(tag)}>
-                                        {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-                                    </Tag>
-                                );
-                                return isLongTag ? <Tooltip title={tag} key={tag}>{tagElem}</Tooltip> : tagElem;
-                            })}
-                            {inputVisible && (
-                                <Input
-                                    ref={this.saveInputRef}
-                                    type="text"
-                                    size="small"
-                                    style={{ width: 78 }}
-                                    value={inputValue}
-                                    onChange={this.handleInputChange}
-                                    onBlur={this.handleInputConfirm}
-                                    onPressEnter={this.handleInputConfirm}
-                                />
-                            )}
-                            {!inputVisible && (
-                                <Tag
-                                    onClick={this.showInput}
-                                    style={{ background: '#fff', borderStyle: 'dashed' }}
-                                >
-                                    <Icon type="plus" /> New Tag
+                    <FormItem
+                        {...formItemLayout}
+                        label="Tags">
+                        {getFieldDecorator('tags', {
+                            rules: [],
+                        })(
+                            <div>
+                                {tags.map((tag: any, index: number) => {
+                                    const isLongTag = tag.length > 20;
+                                    const tagElem = (
+                                        <Tag key={tag} closable={true}
+                                            // tslint:disable-next-line:jsx-no-lambda
+                                            afterClose={() => this.handleClose(tag)}>
+                                            {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                                        </Tag>
+                                    );
+                                    return isLongTag ? <Tooltip title={tag} key={tag}>{tagElem}</Tooltip> : tagElem;
+                                })}
+                                {inputVisible && (
+                                    <Input
+                                        ref={this.saveInputRef}
+                                        type="text"
+                                        size="small"
+                                        style={{ width: 78 }}
+                                        value={inputValue}
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.handleInputConfirm}
+                                        onPressEnter={this.handleInputConfirm}
+                                    />
+                                )}
+                                {!inputVisible && (
+                                    <Tag
+                                        onClick={this.showInput}
+                                        style={{ background: '#fff', borderStyle: 'dashed' }}
+                                    >
+                                        <Icon type="plus" /> New Tag
                                 </Tag>
-                            )}
-                        </div>
-                    )}
-                </FormItem>
+                                )}
+                            </div>
+                        )}
+                    </FormItem>
 
-                <FormItem
-                    {...formItemLayout}
-                    label="Description"
-                >
-                    {getFieldDecorator('description', {
-                        rules: [{
-                            // tslint:disable-next-line:object-literal-sort-keys
-                            required: true, message: 'Please input description!',
-                        }],
-                    })(
-                        <TextArea placeholder="Brief Description" autosize={{ minRows: 4, maxRows: 8 }} rows={4} />
-                    )}
-                </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label="Description"
+                    >
+                        {getFieldDecorator('description', {
+                            rules: [{
+                                // tslint:disable-next-line:object-literal-sort-keys
+                                required: true, message: 'Please input description!',
+                            }],
+                        })(
+                            <TextArea placeholder="Brief Description" autosize={{ minRows: 4, maxRows: 8 }} rows={4} />
+                        )}
+                    </FormItem>
 
-                <FormItem
-                    {...formItemLayout}
-                    label="ETH Value">
-                    {getFieldDecorator('value', {
-                        rules: [{
-                            // tslint:disable-next-line:object-literal-sort-keys
-                            required: true, message: 'Please input ETH!',
-                        }, {
-                            validator: this.validateETH,
-                        }],
-                    })(
-                        <Input
-                            prefix={<i style={{ color: 'rgba(0,0,0,.25)' }} className="fab fa-ethereum" />}
-                            placeholder="ETH" />
-                    )}
-                </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label="ETH Value">
+                        {getFieldDecorator('value', {
+                            rules: [{
+                                // tslint:disable-next-line:object-literal-sort-keys
+                                required: true, message: 'Please input ETH!',
+                            }, {
+                                validator: this.validateETH,
+                            }],
+                        })(
+                            <Input
+                                prefix={<i style={{ color: 'rgba(0,0,0,.25)' }} className="fab fa-ethereum" />}
+                                placeholder="ETH" />
+                        )}
+                    </FormItem>
 
-                <FormItem
-                    wrapperCol={{ span: 12, offset: 0 }} >
-                    <Button type="primary" htmlType="submit">
-                        Add Your Brick
+                    <FormItem
+                        wrapperCol={{ span: 12, offset: 0 }} >
+                        <Button type="primary" htmlType="submit">
+                            Add Your Brick
           </Button>
-                </FormItem>
-            </Form>
+                    </FormItem>
+                </Form>
+            </div>
         );
     }
 }

@@ -18,21 +18,19 @@ class App extends React.Component {
     return (
       <Layout>
         <Router history={history}>
-          <div className="App">
+          <Content className="App">
             <Header style={{ position: 'fixed', zIndex: 1, width: '100%', padding: 0 }}>
               <Nav history={history}>
                 <NetworkStatus />
               </Nav>
             </Header>
-            <Content className="app-body main-container" style={{ paddingTop: 64 }}>
-              <Switch>
-                <Route exact={true} path="/" component={Bricks} />
-                <Route exact={true} path="/hash/:hash?" component={Bricks} />
-                <Route exact={true} path="/brick/:hash?" component={BrickDetail} />
-                <Route path="/add-brick" component={AddBrick} />
-              </Switch>
-            </Content>
-          </div>
+            <Switch>
+              <Route exact={true} path="/" component={Bricks} />
+              <Route exact={true} path="/hash/:hash?" component={Bricks} />
+              <Route exact={true} path="/brick/:hash?" component={BrickDetail} />
+              <Route path="/add-brick" component={AddBrick} />
+            </Switch>
+          </Content>
         </Router>
       </Layout>
     );
