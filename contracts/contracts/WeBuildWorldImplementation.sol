@@ -209,11 +209,41 @@ contract WeBuildWorldImplementation is Ownable, Provider {
             return true;
         } 
     }
+
+    function filterByAddress(
+        uint _brickId,  
+        address _owner,
+        address _builder
+        )
+        external view returns (bool) {
+
+        if(_owner != 0x0 && _owner != bricks[_brickId].owner){
+            return false;
+        }
+
+        if(_builder != 0x0){
+            for (uint j = 0; j < bricks[_brickId].numBuilders; j++) {
+                if (bricks[_brickId].builders[j].addr == _builder) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
     
-    function filterBrick(uint _brickId, bytes32[] _tags, uint _status, uint _started, uint _expired)external view returns (bool) {
-        Brick memory brick = bricks[_brickId]; 
-        bool satisfy = _matchedTags(_tags, brick.tags); 
-        // return satisfy;
+    function filterBrick(
+        uint _brickId, 
+        bytes32[] _tags, 
+        uint _status, 
+        uint _started,
+        uint _expired
+        )
+        external view returns (bool) {  
+        Brick memory brick = bricks[_brickId];  
+
+        bool satisfy = _matchedTags(_tags, brick.tags);  
 
         if(_started > 0){
             satisfy = brick.dateCreated >= _started;
@@ -223,7 +253,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
             satisfy = brick.expired >= _expired;
         }
  
-        return satisfy && (uint(brick.status) == _status 
+        return satisfy && (uint(brick.status) == _status
             || uint(BrickStatus.Cancelled) < _status 
             || uint(BrickStatus.Inactive) > _status);
     }

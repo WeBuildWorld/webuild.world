@@ -41,7 +41,22 @@ interface Provider {
         bytes32[] names
     );
 
-    function filterBrick(uint _brickId, bytes32[] _tags, uint _status, uint _started, uint _expired) external view returns (
+    function filterBrick(
+        uint _brickId, 
+        bytes32[] _tags, 
+        uint _status, 
+        uint _started,
+        uint _expired
+        ) external view returns (
       bool
     );
+
+
+    function filterByAddress( 
+        uint _brickId,
+        address _owner,
+        address _builder
+        ) external view returns (
+        bool
+    ); 
 }

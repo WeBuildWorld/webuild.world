@@ -9,6 +9,7 @@ import Nav from "./pages/_shared/Nav";
 import AddBrick from "./pages/AddBrick";
 import BrickDetail from "./pages/BrickDetail";
 import Bricks from "./pages/Bricks";
+import Dashboard from './pages/Dashboard';
 
 const { Header, Content } = Layout;
 
@@ -25,6 +26,7 @@ class App extends React.Component {
               </Nav>
             </Header>
             <Switch>
+              <Route path="/dashboard" component={Dashboard} /> 
               <Route exact={true} path="/" component={Bricks} />
               <Route exact={true} path="/hash/:hash?" component={Bricks} />
               <Route exact={true} path="/brick/:hash?" component={BrickDetail} />

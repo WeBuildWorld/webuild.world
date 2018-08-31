@@ -22,13 +22,48 @@ contract WeBuildWorld is Extendable {
     event BrickCancelled (uint _brickId);
     event WorkStarted (uint _brickId, address _builderAddress);
     event WorkAccepted (uint _brickId, address[] _winners);
-
-
+ 
     function () public payable {
         revert();
     }
 
-    function getBrickIds(uint _skip, uint _take, bytes32[] _tags, uint _status, uint _started, uint _expired) public view returns(uint[] brickIds) {
+    function getBrickIdsByAddress(
+        address _owner, 
+        address _builder) 
+        public view returns(uint[] brickIds) {
+   
+        address[] memory providers = getAllProviders();
+        uint[] memory temp; 
+        uint total = 0;
+
+        for (uint i = providers.length; i > 0; i--) {
+            Provider provider = Provider(providers[i-1]);
+            temp = provider.getBrickIds(); 
+            for (uint j = 0; j < temp.length; j++) {
+                bool exist = provider.filterByAddress(temp[j], _owner, _builder);
+                if(exist){
+                    // brickIds[taken] = temp[j];
+                    //result.push(temp[j]);
+                    total++;
+                }
+            }
+        }
+        brickIds = new uint[](total);
+        for(i = 0; i < total; i++){
+            brickIds[i] = temp[i];
+        }  
+    }
+
+    function getBrickIds(
+        uint _skip,
+        uint _take,
+        bytes32[] _tags, 
+        uint _status, 
+        uint _started, 
+        uint _expired
+        ) 
+        public view returns(uint[] brickIds) {
+
         address[] memory providers = getAllProviders();
         uint[] memory temp;
 
@@ -50,7 +85,6 @@ contract WeBuildWorld is Extendable {
                 }
                 
                 bool exist = provider.filterBrick(temp[j], _tags, _status, _started, _expired);
-                // exist = true;
                 if(exist){
                     if (counter >= _skip) { 
                         brickIds[taken] = temp[j];                     
