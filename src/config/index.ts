@@ -645,7 +645,7 @@ export default {
     }
   ],
   // CONTRACT_ADDRESS: "0xf6ae46afaa49a2e7963e5bcd210988ff539b8034",
-  CONTRACT_ADDRESS: "0xdfb8201a6d761be99e2f168782bdd546f58d6776",
+  CONTRACT_ADDRESS: "0x4c77dae972749a67d78c404c0b58f9e217871a15",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,

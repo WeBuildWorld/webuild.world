@@ -1,14 +1,11 @@
-import { Alert, Avatar, Card, Col, Divider, Row, Tabs } from "antd";
+import { Alert, Avatar, Col, Row, Tabs } from "antd";
 import * as React from "react";
 import { Authentication } from "../../services/Authentication";
-import { IBrick, IBrickState } from "../../types";
+import { IBrick, IBrickState,RoleType } from "../../types";
 import "./style.css";
 
-import Bricks from "./../../pages/Bricks";
+import BrickList from './../_shared/BrickList';
 
-import { getBricksByBuilder, getBricksByOwner } from "../../services/BrickService";
-
-import RpcService from "../../services/RpcService";
 
 
 export interface IProps {
@@ -27,44 +24,9 @@ export default class Dashboard extends React.Component<IProps, object> {
     public constructor(props: IProps) {
         super(props);
         this.tabsChanged = this.tabsChanged.bind(this);
-        this.refresh = this.refresh.bind(this);
     }
-
-    public refresh() {
-        this.setState({
-            hasMore: true,
-            loading: true,
-            start: 0
-        });
-
-        const account: string = RpcService.mainAccount; 
-
-        // tslint:disable-next-line:no-console
-        console.log('account', account);
-
-        getBricksByOwner(account).then((res) => {
-            if(res){
-                const items = res.bricks;  
-                this.setState({
-                    items,
-                    loading: false,
-                })
-            }
-      
-        });
-
-        getBricksByBuilder(account).then((res) => {
-            const items = res.bricks;
-
-            this.setState({
-                items,
-                loading: false,
-            })
-        });
-    }
-
+ 
     public componentDidMount() {
-        this.refresh();
         const user = Authentication.getCurrentUser();
         if (!user) {
             location.href = '/';
@@ -83,22 +45,22 @@ export default class Dashboard extends React.Component<IProps, object> {
     public render() {
 
         const githubUrl = 'https://github.com/' + this.state.login;
-
-        const account = RpcService.mainAccount; 
         
-        if(!account){
-           return (
-               <div className="main-container dashboard-wrap">    
-                     <Alert message="Metamask needed."
-                    description={
-                        <p>Here is <a target="_blank" href="https://metamask.io/">Metamask</a>.</p> 
-                    }
-                    type="warning"
-                    />
-                    </div>  )
-        }
+        // if(!account){
+        //    return (
+        //        <div className="main-container dashboard-wrap">   
+        //        account: {account} 
+        //              <Alert message="Metamask needed."
+        //             description={
+        //                 <p>Here is <a target="_blank" href="https://metamask.io/">Metamask</a>.</p> 
+        //             }
+        //             type="warning"
+        //             />
+        //             </div>  )
+        // }
+        
         return (
-            <div className="main-container dashboard-wrap">    
+            <div className="main-container dashboard-wrap">   
                 <Row>
                     <Col>
                         <Avatar size={64} src={this.state.avatar} />
@@ -110,10 +72,10 @@ export default class Dashboard extends React.Component<IProps, object> {
 
                 <Tabs defaultActiveKey="1" onChange={this.tabsChanged}>
                     <TabPane tab="My Bricks" key="1">
-                        <Bricks />
+                        <BrickList role={RoleType.Owner} />
                     </TabPane>
                     <TabPane tab="My Built" key="2">
-                        <Bricks />
+                        <BrickList role={RoleType.Builder} />
                     </TabPane>
                 </Tabs> 
        

@@ -47,18 +47,24 @@ export const trimZeroCode = (str: string) => {
   return str;
 }
 
-export const getBricksByOwner = async (owner: string) => {
+export const getBricksByOwner = async () => {
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS
   );
+
+  const address = rpcService.mainAccount;
+  if(!address){
+    return {
+      brickCount:0,
+      bricks:[]
+    };
+  }
+
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIdsByOwner(owner, cb)
+    contract.getBrickIdsByOwner(address, cb)
   );
 
-  // tslint:disable-next-line:no-console
-  console.log('owner ids:', ids);
-  
   ids = _(ids)
     .filter(id => id.toNumber() !== 0)
     .value();
@@ -74,13 +80,22 @@ export const getBricksByOwner = async (owner: string) => {
   };
 }
 
-export const getBricksByBuilder = async (builder: string) => {
+export const getBricksByBuilder = async () => {
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS
   );
+
+  const address = rpcService.mainAccount;
+  if(!address){
+    return {
+      brickCount:0,
+      bricks:[]
+    };
+  } 
+  
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIdsByBuilder(builder, cb)
+    contract.getBrickIdsByBuilder(address, cb)
   );
 
   // tslint:disable-next-line:no-console

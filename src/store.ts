@@ -63,13 +63,16 @@ watchEvents(async (brickId: any) => {
 	const dispatch = store.dispatch;
 	const brick = await getBrick(brickId);
 	const items = store.getState().reducer.app.bricks || [];
-	const bricks = [...items];
+	let bricks = [...items];
+	
 	const index = bricks.findIndex(
 		(item: any) => {
 			return item.id === brickId;
 		});
 	if (index > -1) {
 		bricks[index] = brick;
+	} else if (bricks.length === 0) {
+		bricks = [brick];
 	} else {
 		bricks.unshift(brick);
 	}

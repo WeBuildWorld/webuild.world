@@ -20,7 +20,7 @@ class App extends React.Component {
       <Layout>
         <Router history={history}>
           <Content className="App">
-            <Header style={{ position: 'fixed', zIndex: 1, width: '100%', padding: 0 }}>
+            <Header style={{ position: 'fixed', zIndex: 1001, width: '100%', padding: 0 }}>
               <Nav history={history}>
                 <NetworkStatus />
               </Nav>

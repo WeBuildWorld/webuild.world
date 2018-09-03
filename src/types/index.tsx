@@ -64,3 +64,9 @@ export enum ActionState {
   Accept,
   Cancel,
 }
+
+export enum RoleType {
+  Owner,
+  Builder
+}
+
