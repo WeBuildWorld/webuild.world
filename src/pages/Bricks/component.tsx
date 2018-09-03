@@ -40,7 +40,7 @@ export default class Bricks extends React.Component<IProps, any> {
   constructor(props: IProps) {
     super(props);
 
-    if((this.props as any).match){
+    if ((this.props as any).match) {
       this.state.hash = (this.props as any).match.params.hash;
     }
     this.dismiss = this.dismiss.bind(this);
@@ -171,6 +171,8 @@ export default class Bricks extends React.Component<IProps, any> {
       const items = res.bricks;
       const start = pageSize;
 
+      // tslint:disable-next-line:no-console
+      // console.log('items:',items);
       this.props.onBricksChanged(items);
       this.setState({
         items,

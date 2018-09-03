@@ -11,6 +11,8 @@ contract WeBuildWorld is Extendable {
 
     string public constant VERSION = "0.1";
     uint public constant DENOMINATOR = 10000;
+    enum AddressRole { Owner, Builder }
+
 
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
@@ -27,32 +29,48 @@ contract WeBuildWorld is Extendable {
         revert();
     }
 
-    function getBrickIdsByAddress(
-        address _owner, 
-        address _builder) 
-        public view returns(uint[] brickIds) {
-   
+    function getBrickIdsByOwner(address _owner) public view returns(uint[] brickIds) {
+        return _getBrickIdsByAddress(_owner, AddressRole.Owner);
+    }
+
+    function getBrickIdsByBuilder(address _builder) public view returns(uint[] brickIds) {
+        return _getBrickIdsByAddress(_builder, AddressRole.Builder);
+    }
+ 
+    function _getBrickIdsByAddress(
+        address _address,
+        AddressRole role
+      ) 
+        private view returns(uint[] brickIds) { 
         address[] memory providers = getAllProviders();
         uint[] memory temp; 
         uint total = 0;
+        uint index = 0; 
 
         for (uint i = providers.length; i > 0; i--) {
             Provider provider = Provider(providers[i-1]);
             total = total + provider.getBrickSize();  
         }
 
-        brickIds = new uint[](total);
-        for(i = 0; i < total; i++){
+        brickIds = new uint[](total);  
+    
+        for(i = 0; i < providers.length; i++){
             temp = provider.getBrickIds();
-            uint index = 0;
-            for (uint j = 0; j < temp.length; j++) {  
-                bool exist = provider.filterByAddress(temp[j], _owner, _builder); 
-                if(exist){ 
-                    brickIds[i+index] = temp[j]; 
+            for (uint j = 0; j < temp.length; j++) {
+                bool cond = true;
+                if(role == AddressRole.Owner){
+                    cond = provider.isBrickOwner(temp[j], _address);
+                }else{
+                    cond = provider.participated(temp[j], _address);
+                } 
+                if(cond){
+                    brickIds[index] = temp[j]; 
                     index++;
                 }
             }
         }
+
+        return brickIds;
     }
 
     function getBrickIds(

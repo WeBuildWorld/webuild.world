@@ -52,7 +52,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         revert();
     }    
 
-    function isBrickOwner(uint _brickId, address _address) external returns (bool success) {
+    function isBrickOwner(uint _brickId, address _address) external view returns (bool success) {
         return bricks[_brickId].owner == _address;
     }    
 
@@ -214,26 +214,19 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         } 
     }
 
-    function filterByAddress(
-        uint _brickId,  
-        address _owner,
+    function participated(
+        uint _brickId,   
         address _builder
         )
         external view returns (bool) {
-
-        if(_owner != 0x0 && _owner != bricks[_brickId].owner){
-            return false;
-        }
-
-        if(_builder != 0x0){
-            for (uint j = 0; j < bricks[_brickId].numBuilders; j++) {
-                if (bricks[_brickId].builders[j].addr == _builder) {
-                    return true;
-                }
+ 
+        for (uint j = 0; j < bricks[_brickId].numBuilders; j++) {
+            if (bricks[_brickId].builders[j].addr == _builder) {
+                return true;
             }
-            return false;
-        }
-        return true;
+        } 
+
+        return false;
     }
 
     

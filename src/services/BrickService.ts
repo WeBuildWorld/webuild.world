@@ -47,18 +47,22 @@ export const trimZeroCode = (str: string) => {
   return str;
 }
 
-export const getBircksByOwner = async (owner:string) => {
+export const getBricksByOwner = async (owner: string) => {
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS
   );
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIdsByAddress(owner, '0x0000000000000000000000000000000000000000', cb)
+    contract.getBrickIdsByOwner(owner, cb)
   );
 
+  // tslint:disable-next-line:no-console
+  console.log('owner ids:', ids);
+  
   ids = _(ids)
     .filter(id => id.toNumber() !== 0)
     .value();
+
 
   return {
     brickCount: ids.length,
@@ -70,14 +74,17 @@ export const getBircksByOwner = async (owner:string) => {
   };
 }
 
-export const getBircksByBuilder = async (builder:string) => {
+export const getBricksByBuilder = async (builder: string) => {
   const contract = rpcService.contract(
     Config.CONTRACT_ABI,
     Config.CONTRACT_ADDRESS
   );
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIdsByAddress('0x0000000000000000000000000000000000000000',builder, cb)
+    contract.getBrickIdsByBuilder(builder, cb)
   );
+
+  // tslint:disable-next-line:no-console
+  console.log('builders ids:', ids);
 
   ids = _(ids)
     .filter(id => id.toNumber() !== 0)
@@ -281,6 +288,10 @@ export function watchEvents(callback: any) {
   const events = contract.allEvents();
   events.watch((error: any, result: any) => {
     if (!error && callback) {
+
+      // tslint:disable-next-line:no-console
+      console.log('emit event result:', result);
+
       const brickId = result.args._brickId.toNumber();
       callback(brickId);
     }

@@ -320,13 +320,28 @@ export default {
         {
           "name": "_owner",
           "type": "address"
-        },
+        }
+      ],
+      "name": "getBrickIdsByOwner",
+      "outputs": [
+        {
+          "name": "brickIds",
+          "type": "uint256[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
         {
           "name": "_builder",
           "type": "address"
         }
       ],
-      "name": "getBrickIdsByAddress",
+      "name": "getBrickIdsByBuilder",
       "outputs": [
         {
           "name": "brickIds",
@@ -630,7 +645,7 @@ export default {
     }
   ],
   // CONTRACT_ADDRESS: "0xf6ae46afaa49a2e7963e5bcd210988ff539b8034",
-  CONTRACT_ADDRESS: "0x61eb5318ea072fa40a44d1b41929b40c778354f1",
+  CONTRACT_ADDRESS: "0xdfb8201a6d761be99e2f168782bdd546f58d6776",
   network: {
     kovan: KOVAN_RPC_URL,
     mainnet: MAINET_RPC_URL,

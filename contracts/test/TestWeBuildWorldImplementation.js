@@ -29,7 +29,7 @@ contract('WeBuildWord', function (accounts) {
 
   it("test filter by owner and builder.", async () => {
 
-    const txObj = await main.addBrick('brick2 title',
+    const txObj = await main.addBrick('brick1 title',
       'https://github.com/hello/mock/issue/100',
       new Date().getTime() / 1000,
       'mock1 brick description',
@@ -37,10 +37,25 @@ contract('WeBuildWord', function (accounts) {
         value: web3.toWei(1, "ether"),
         from: owner
       });
-    assert.ok(txObj, "success add brick.");
 
-    const address = await main.getBrickIdsByAddress(owner, '0x0000000000000000000000000000000000000000');
-    console.log('address:', address);
+    const txObj2 = await main.addBrick('brick2 title',
+      'https://github.com/hello/mock/issue/101',
+      new Date().getTime() / 1000,
+      'mock2 brick description',
+      ['mock', 'test'], {
+        value: web3.toWei(3, "ether"),
+        from: builder
+      });
+
+    assert.ok(txObj, "success add brick.");
+    assert.ok(txObj2, "success add brick.");
+
+    const idsRes1 = await main.getBrickIdsByOwner(owner);
+    console.log('ids:', idsRes1);
+
+    const idsRes2 = await main.getBrickIdsByBuilder(builder);
+    console.log('ids2:', idsRes2);
+  
 
   });
 
