@@ -97,7 +97,7 @@ export default class Bricks extends React.Component<any, any> {
           {brick.tags &&
             brick.tags.map((tag: string) => (
               // tslint:disable-next-line:jsx-no-lambda
-              <Tag key={tag} onClick={() => { this.addFilter(tag) }} color="#87d068">{tag}</Tag>
+              <Tag className="unclickable" key={tag} color="#87d068">{tag}</Tag>
             ))}
         </div>
 

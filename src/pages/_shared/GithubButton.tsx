@@ -40,6 +40,7 @@ export class GitHubButton extends React.Component {
     public logout() {
         Authentication.setCurrentUser(null);
         this.setState({ logged: false });
+        location.href = "/";
     }
 
     public onFakeSuccess(response: any) {
