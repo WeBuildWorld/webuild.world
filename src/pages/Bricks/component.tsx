@@ -40,7 +40,9 @@ export default class Bricks extends React.Component<IProps, any> {
   constructor(props: IProps) {
     super(props);
 
-    this.state.hash = (this.props as any).match.params.hash;
+    if((this.props as any).match){
+      this.state.hash = (this.props as any).match.params.hash;
+    }
     this.dismiss = this.dismiss.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.closeAlert = this.closeAlert.bind(this);

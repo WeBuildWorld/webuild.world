@@ -16,6 +16,7 @@ interface Provider {
     function cancel(uint _brickId) external returns (uint value);
     function startWork(uint _brickId, bytes32 _builderId, bytes32 _nickName, address _builderAddress) external returns(bool success);
     function getBrickIds() external view returns(uint[]);
+    function getBrickSize() external view returns(uint);
     function getBrick(uint _brickId) external view returns(
         string title,
         string url, 

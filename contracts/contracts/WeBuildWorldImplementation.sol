@@ -195,6 +195,10 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         return brickIds.keys();
     }    
 
+    function getBrickSize() external view returns(uint) {
+        return brickIds.getSize();
+    }
+
     function _matchedTags(bytes32[] _tags, bytes32[] _stack) private pure returns (bool){
         if(_tags.length > 0){
             for (uint i = 0; i < _tags.length; i++) {

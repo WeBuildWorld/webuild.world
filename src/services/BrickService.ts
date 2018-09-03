@@ -47,6 +47,52 @@ export const trimZeroCode = (str: string) => {
   return str;
 }
 
+export const getBircksByOwner = async (owner:string) => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  let ids: any[] = await Promisify<number[]>((cb: any) =>
+    contract.getBrickIdsByAddress(owner, '0x0000000000000000000000000000000000000000', cb)
+  );
+
+  ids = _(ids)
+    .filter(id => id.toNumber() !== 0)
+    .value();
+
+  return {
+    brickCount: ids.length,
+    bricks: (await Promise.all(
+      ids.map(async id => {
+        return await getBrick(id);
+      })
+    ))
+  };
+}
+
+export const getBircksByBuilder = async (builder:string) => {
+  const contract = rpcService.contract(
+    Config.CONTRACT_ABI,
+    Config.CONTRACT_ADDRESS
+  );
+  let ids: any[] = await Promisify<number[]>((cb: any) =>
+    contract.getBrickIdsByAddress('0x0000000000000000000000000000000000000000',builder, cb)
+  );
+
+  ids = _(ids)
+    .filter(id => id.toNumber() !== 0)
+    .value();
+
+  return {
+    brickCount: ids.length,
+    bricks: (await Promise.all(
+      ids.map(async id => {
+        return await getBrick(id);
+      })
+    ))
+  };
+}
+
 export const getBricks = async (start: number, length: number, tags: string[] = [],
   status: number = -1, started: number = 0, expired: number = 0) => {
   const contract = rpcService.contract(

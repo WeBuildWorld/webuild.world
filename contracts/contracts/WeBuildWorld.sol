@@ -38,20 +38,21 @@ contract WeBuildWorld is Extendable {
 
         for (uint i = providers.length; i > 0; i--) {
             Provider provider = Provider(providers[i-1]);
-            temp = provider.getBrickIds(); 
-            for (uint j = 0; j < temp.length; j++) {
-                bool exist = provider.filterByAddress(temp[j], _owner, _builder);
-                if(exist){
-                    // brickIds[taken] = temp[j];
-                    //result.push(temp[j]);
-                    total++;
+            total = total + provider.getBrickSize();  
+        }
+
+        brickIds = new uint[](total);
+        for(i = 0; i < total; i++){
+            temp = provider.getBrickIds();
+            uint index = 0;
+            for (uint j = 0; j < temp.length; j++) {  
+                bool exist = provider.filterByAddress(temp[j], _owner, _builder); 
+                if(exist){ 
+                    brickIds[i+index] = temp[j]; 
+                    index++;
                 }
             }
         }
-        brickIds = new uint[](total);
-        for(i = 0; i < total; i++){
-            brickIds[i] = temp[i];
-        }  
     }
 
     function getBrickIds(
