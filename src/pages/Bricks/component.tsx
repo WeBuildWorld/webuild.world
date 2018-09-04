@@ -224,7 +224,7 @@ export default class Bricks extends React.Component<IProps, any> {
             pageStart={0}
             loadMore={this.loadMore}
             hasMore={!this.state.loading && this.state.hasMore}
-            useWindow={false}
+            useWindow={true}
           >
             <List
               size="large"
