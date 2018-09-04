@@ -227,7 +227,7 @@ export default class Bricks extends React.Component<IProps, any> {
               renderItem={this.renderItem}
             >
               {this.state.loading && this.state.hasMore && (
-                <div className="bricks-loading-container">
+                <div className="bricks-loading-container refresh">
                   <Spin />
                 </div>
               )}
@@ -255,7 +255,7 @@ export default class Bricks extends React.Component<IProps, any> {
   }
 
   private getTxLink(hash: string): string | undefined {
-    return "https://" + config.networkName + ".etherscan.io/tx/" + hash;
+    return "https://" + config.defaultNetwork + ".etherscan.io/tx/" + hash;
   }
 
   private renderNothing() {

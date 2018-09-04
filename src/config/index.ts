@@ -645,14 +645,18 @@ export default {
     }
   ],
   // CONTRACT_ADDRESS: "0xf6ae46afaa49a2e7963e5bcd210988ff539b8034",
-  CONTRACT_ADDRESS: "0x4c77dae972749a67d78c404c0b58f9e217871a15",
-  network: {
-    kovan: KOVAN_RPC_URL,
-    mainnet: MAINET_RPC_URL,
-    rinkeby: RINKEBY_RPC_URL,
-    ropsten: ROPSTEN_RPC_URL
+  // CONTRACT_ADDRESS: "0x4c77dae972749a67d78c404c0b58f9e217871a15",
+  addresses: {
+    '1': '',
+    '3': '',
+    '4': '',
+    '42': '0x4c77dae972749a67d78c404c0b58f9e217871a15',
   },
-  networkName: "kovan",
-  // tslint:disable-next-line:object-literal-sort-keys
-  chainId: 42
+  defaultNetwork: "42",
+  network: {
+    '1': MAINET_RPC_URL,
+    '3': ROPSTEN_RPC_URL,
+    '4': RINKEBY_RPC_URL,
+    '42': KOVAN_RPC_URL,
+  }
 };

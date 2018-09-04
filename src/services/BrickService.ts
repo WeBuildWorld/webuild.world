@@ -48,10 +48,7 @@ export const trimZeroCode = (str: string) => {
 }
 
 export const getBricksByOwner = async () => {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
 
   const address = rpcService.mainAccount;
   if(!address){
@@ -81,11 +78,7 @@ export const getBricksByOwner = async () => {
 }
 
 export const getBricksByBuilder = async () => {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
-
+  const contract = rpcService.contract();
   const address = rpcService.mainAccount;
   if(!address){
     return {
@@ -97,10 +90,7 @@ export const getBricksByBuilder = async () => {
   let ids: any[] = await Promisify<number[]>((cb: any) =>
     contract.getBrickIdsByBuilder(address, cb)
   );
-
-  // tslint:disable-next-line:no-console
-  console.log('builders ids:', ids);
-
+ 
   ids = _(ids)
     .filter(id => id.toNumber() !== 0)
     .value();
@@ -117,10 +107,7 @@ export const getBricksByBuilder = async () => {
 
 export const getBricks = async (start: number, length: number, tags: string[] = [],
   status: number = -1, started: number = 0, expired: number = 0) => {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
   let ids: any[] = await Promisify<number[]>((cb: any) =>
     contract.getBrickIds(start, length, tags, status, started, expired, cb)
   );
@@ -163,10 +150,7 @@ const toBuilders = (items: any) => {
 
 export const getBrick = async (id: any): Promise<IBrick> => {
 
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
 
   const brickArr: any = await Promisify((cb: any) =>
     contract.getBrick(id, cb)
@@ -206,10 +190,7 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
     throw new Error("Metamask required");
   }
 
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
   const options = { value: rpcService.rpc.toWei(brick.value, "ether") };
   const tags: any[] = brick.tags;
   const hash = (await Promisify((cb: any) => {
@@ -231,10 +212,7 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
 export const cancel = async (
   brickId: number
 ): Promise<any> => {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
   const options = {};
   const result = await Promisify((cb: any) => {
     return contract.cancel(brickId, options, cb);
@@ -248,10 +226,7 @@ export const startWork = async (
   builderId: string,
   builderName: string
 ): Promise<any> => {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
   const options = {};
   const result = await Promisify((cb: any) => {
     return contract.startWork(brickId, builderId, builderName, options, cb);
@@ -261,10 +236,7 @@ export const startWork = async (
 };
 
 export const getBrickBuilders = async (brickId: number): Promise<any> => {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
   const options = {};
   const result = await Promisify((cb: any) => {
     return contract.getBrickBuilders(brickId, options, cb);
@@ -277,10 +249,7 @@ export const acceptWork = async (
   brickId: number,
   winnerWalletAddress: string
 ): Promise<any> => {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
   const options = {};
   const result = await Promisify((cb: any) => {
     return contract.accept(
@@ -296,10 +265,7 @@ export const acceptWork = async (
 };
 
 export function watchEvents(callback: any) {
-  const contract = rpcService.contract(
-    Config.CONTRACT_ABI,
-    Config.CONTRACT_ADDRESS
-  );
+  const contract = rpcService.contract();
   const events = contract.allEvents();
   events.watch((error: any, result: any) => {
     if (!error && callback) {
