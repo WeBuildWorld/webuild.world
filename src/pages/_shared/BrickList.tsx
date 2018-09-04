@@ -17,6 +17,7 @@ const { Option } = Select;
 export default class Bricks extends React.Component<any, any> {
 
   public state: any = {
+    empty: false,
     filters: [],
     hasMore: true,
     items: [],
@@ -36,7 +37,7 @@ export default class Bricks extends React.Component<any, any> {
   public componentDidMount() {
     setTimeout(() => {
       this.refresh([]);
-    }, 200); 
+    }, 200);
   }
 
 
@@ -118,7 +119,10 @@ export default class Bricks extends React.Component<any, any> {
       getBricksByOwner().then((res) => {
         const items = res.bricks;
         const start = pageSize;
+        const empty = res.brickCount === 0;
+
         this.setState({
+          empty,
           items,
           loading: false,
           start,
@@ -129,7 +133,10 @@ export default class Bricks extends React.Component<any, any> {
       getBricksByBuilder().then((res) => {
         const items = res.bricks;
         const start = pageSize;
+        const empty = res.brickCount === 0;
+
         this.setState({
+          empty,
           items,
           loading: false,
           start,
@@ -140,10 +147,12 @@ export default class Bricks extends React.Component<any, any> {
       getBricks(0, pageSize, tags).then((res) => {
         const items = res.bricks;
         const start = pageSize;
+        const empty = res.brickCount === 0;
         this.setState({
+          empty,
           items,
           loading: false,
-          start,
+          start
         })
       });
     }
@@ -178,10 +187,12 @@ export default class Bricks extends React.Component<any, any> {
   }
 
   private renderNothing() {
+    const { empty } = this.state;
+    const text = empty ? '' : "or it's being loaded";
     return (
       <div className="greeting">
-        <Button type="primary" loading={true}>
-          No bricks has been added yet or it's being loaded.
+        <Button className="unclickable ant-btn-loading" type="primary" loading={!empty}>
+          No bricks has been added yet {text}.
         </Button>
       </div>
     );

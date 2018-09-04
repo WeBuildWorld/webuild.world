@@ -51,10 +51,10 @@ export const getBricksByOwner = async () => {
   const contract = rpcService.contract();
 
   const address = rpcService.mainAccount;
-  if(!address){
+  if (!address) {
     return {
-      brickCount:0,
-      bricks:[]
+      brickCount: 0,
+      bricks: []
     };
   }
 
@@ -80,17 +80,17 @@ export const getBricksByOwner = async () => {
 export const getBricksByBuilder = async () => {
   const contract = rpcService.contract();
   const address = rpcService.mainAccount;
-  if(!address){
+  if (!address) {
     return {
-      brickCount:0,
-      bricks:[]
+      brickCount: 0,
+      bricks: []
     };
-  } 
-  
+  }
+
   let ids: any[] = await Promisify<number[]>((cb: any) =>
     contract.getBrickIdsByBuilder(address, cb)
   );
- 
+
   ids = _(ids)
     .filter(id => id.toNumber() !== 0)
     .value();
@@ -272,9 +272,11 @@ export function watchEvents(callback: any) {
 
       // tslint:disable-next-line:no-console
       console.log('emit event result:', result);
+      if (result.args && result.args._brickId) {
+        const brickId = result.args._brickId.toNumber();
+        callback(brickId);
+      } 
 
-      const brickId = result.args._brickId.toNumber();
-      callback(brickId);
     }
 
   });

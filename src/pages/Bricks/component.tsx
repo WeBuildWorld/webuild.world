@@ -31,6 +31,7 @@ export interface IProps {
 export default class Bricks extends React.Component<IProps, any> {
 
   public state: any = {
+    empty: false,
     filters: [],
     hasMore: true,
     items: [],
@@ -54,7 +55,9 @@ export default class Bricks extends React.Component<IProps, any> {
   }
 
   public componentDidMount() {
-    this.loadMore();
+    setTimeout(() => {
+      this.loadMore();
+    }, 500)
   }
 
   public closeAlert() {
@@ -141,6 +144,7 @@ export default class Bricks extends React.Component<IProps, any> {
       if (!res.bricks.length) {
         message.warning('No more bricks');
         this.setState({
+          empty:true,
           hasMore: false,
           loading: false,
         });
@@ -171,11 +175,13 @@ export default class Bricks extends React.Component<IProps, any> {
 
       const items = res.bricks;
       const start = pageSize;
+      const empty = res.brickCount === 0;
 
       // tslint:disable-next-line:no-console
       // console.log('items:',items);
       this.props.onBricksChanged(items);
       this.setState({
+        empty,
         items,
         loading: false,
         start,
@@ -261,11 +267,12 @@ export default class Bricks extends React.Component<IProps, any> {
   }
 
   private renderNothing() {
+    const { empty } = this.state;
+    const text = empty ? '' : "or it's being loaded";
     return (
-
       <div className="greeting">
-        <Button type="primary" loading={true}>
-          No bricks has been added yet or it's being loaded.
+        <Button className="unclickable ant-btn-loading" type="primary" loading={!empty}>
+          No bricks has been added yet {text}.
         </Button>
       </div>
     );
