@@ -1,4 +1,4 @@
-import { Alert, Avatar, Button, List, message, Select, Spin, Tag } from 'antd';
+import { Alert, Avatar, Button, Col, List, message, Radio, Row, Select, Spin, Tag } from 'antd';
 import * as moment from "moment";
 import * as React from "react";
 import * as InfiniteScroll from 'react-infinite-scroller';
@@ -15,6 +15,8 @@ import "./style.css";
 
 const pageSize = 5;
 const { Option } = Select;
+const RadioGroup = Radio.Group;
+
 
 export interface IProps {
   brickCount: number;
@@ -32,6 +34,7 @@ export default class Bricks extends React.Component<IProps, any> {
 
   public state: any = {
     empty: false,
+    filterStatus: BrickStatus.Open,
     filters: [],
     hasMore: true,
     items: [],
@@ -52,6 +55,8 @@ export default class Bricks extends React.Component<IProps, any> {
     this.addFilter = this.addFilter.bind(this);
     this.onDeselect = this.onDeselect.bind(this);
     this.refresh = this.refresh.bind(this);
+    this.changeBrickStatus = this.changeBrickStatus.bind(this);
+    this.renderList = this.renderList.bind(this);
   }
 
   public componentDidMount() {
@@ -68,11 +73,12 @@ export default class Bricks extends React.Component<IProps, any> {
   public addFilter(tag: string) {
     this.setState((prevState: any) => {
       const tags = prevState.filters;
+      const status = prevState.filterStatus;
       if (!tags.includes(tag)) {
         tags.push(tag);
       }
 
-      this.refresh(tags);
+      this.refresh(tags, status);
       return { filters: tags };
     });
   }
@@ -80,11 +86,12 @@ export default class Bricks extends React.Component<IProps, any> {
   public onDeselect(event: any) {
     this.setState((prevState: any) => {
       const tags = prevState.filters;
+      const status = prevState.filterStatus;
       const index = tags.indexOf(event);
       if (index !== -1) {
         tags.splice(index, 1);
       }
-      this.refresh(tags);
+      this.refresh(tags, status);
       return { filters: tags };
     });
   }
@@ -134,17 +141,18 @@ export default class Bricks extends React.Component<IProps, any> {
     let items = this.state.items || [];
     let start = this.state.start;
     const tags = this.state.filters;
+    const status = this.state.filterStatus;
 
     this.setState({
       loading: true,
     });
 
-    getBricks(start, pageSize, tags).then((res) => {
+    getBricks(start, pageSize, tags, status).then((res) => {
 
       if (!res.bricks.length) {
         message.warning('No more bricks');
         this.setState({
-          empty:true,
+          empty: true,
           hasMore: false,
           loading: false,
         });
@@ -164,14 +172,14 @@ export default class Bricks extends React.Component<IProps, any> {
 
   }
 
-  public refresh(tags: string[]) {
+  public refresh(tags: string[], status: number) {
     this.setState({
       hasMore: true,
       loading: true,
       start: 0
     });
 
-    getBricks(0, pageSize, tags).then((res) => {
+    getBricks(0, pageSize, tags, status).then((res) => {
 
       const items = res.bricks;
       const start = pageSize;
@@ -189,60 +197,101 @@ export default class Bricks extends React.Component<IProps, any> {
     });
   }
 
-  public render() {
+  public changeBrickStatus(e: any) {
 
-    if (this.state.items.length <= 0) {
-      return this.renderNothing();
-    }
+    this.setState((prevState: any) => {
+      const tags = prevState.filters;
+      const status = e.target.value;
+      this.refresh(tags, status);
+      return { filterStatus: status };
+    });
+
+  }
+
+  public render() {
 
     const { filters } = this.state;
     const children = filters.map((item: any) => {
       return (<Option key={item}>{item}</Option>);
     });
 
+    const radioStyle = {
+      display: 'block',
+      height: '30px',
+      lineHeight: '30px',
+    };
+
+    const noBricks = this.state.items.length <= 0;
+
     return (
-      <div className="main-container">
-        <div className="bricks-infinite-container">
-          {this.state.hash && this.renderNotification(this.state.hash!)}
+      <div className="main-container bricks-container">
+        <Row>
+          <Col span={4}>
+            <div className="filter-cols">
 
-          <div className="search-bar">
-            <Select
-              mode="tags"
-              style={{ width: '100%' }}
-              onDeselect={this.onDeselect}
-              onSelect={this.addFilter}
-              value={filters}
-              tokenSeparators={[',']}
-              placeholder="select tags"
-            >
-              {children}
-            </Select>
-          </div>
+              <RadioGroup onChange={this.changeBrickStatus} value={this.state.filterStatus}>
+                <Radio style={radioStyle} value={-1}>All</Radio>
+                <Radio style={radioStyle} value={BrickStatus.Open}>Open</Radio>
+                <Radio style={radioStyle} value={BrickStatus.Completed}>Completed</Radio>
+                <Radio style={radioStyle} value={BrickStatus.Canceled}>Canceled</Radio>
+              </RadioGroup>
+            </div>
+          </Col>
+          <Col span={20}>
+            <div className="bricks-infinite-container">
 
-          <InfiniteScroll
-            initialLoad={false}
-            pageStart={0}
-            loadMore={this.loadMore}
-            hasMore={!this.state.loading && this.state.hasMore}
-            useWindow={true}
-          >
-            <List
-              size="large"
-              rowKey="id"
-              itemLayout="vertical"
-              dataSource={this.props.bricks}
-              renderItem={this.renderItem}
-            >
-              {this.state.loading && this.state.hasMore && (
-                <div className="bricks-loading-container refresh">
-                  <Spin />
-                </div>
-              )}
-            </List>
-          </InfiniteScroll>
-        </div>
+
+
+              {this.state.hash && this.renderNotification(this.state.hash!)}
+
+              <div className="search-bar">
+                <Select
+                  mode="tags"
+                  style={{ width: '100%' }}
+                  onDeselect={this.onDeselect}
+                  onSelect={this.addFilter}
+                  value={filters}
+                  tokenSeparators={[',']}
+                  placeholder="select tags"
+                >
+                  {children}
+                </Select>
+              </div>
+              {noBricks ? this.renderNothing() : ""}
+              {noBricks ? "" : this.renderList()}
+            </div>
+          </Col>
+        </Row>
+
+
       </div>
     );
+  }
+
+  private renderList() {
+    return (
+      <InfiniteScroll
+        initialLoad={false}
+        pageStart={0}
+        loadMore={this.loadMore}
+        hasMore={!this.state.loading && this.state.hasMore}
+        useWindow={true}
+      >
+        <List
+          size="large"
+          rowKey="id"
+          itemLayout="vertical"
+          dataSource={this.props.bricks}
+          renderItem={this.renderItem}
+        >
+          {this.state.loading && this.state.hasMore && (
+            <div className="bricks-loading-container refresh">
+              <Spin />
+            </div>
+          )}
+        </List>
+      </InfiniteScroll>
+    )
   }
 
   private renderNotification(hash: string) {

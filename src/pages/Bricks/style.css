@@ -75,3 +75,10 @@ h4.title {
         margin-left: 0;
     }
 }
+
+.main-container.bricks-container{
+    max-width:100%;
+}
+.filter-cols{
+    padding:40px;
+}
