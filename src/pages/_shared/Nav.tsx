@@ -5,7 +5,6 @@ import logo from "../../logo.svg";
 import { enquireScreen, getLocalizedPathname } from './../../utils';
 import GitHubButton from "./GithubButton";
 
-
 import RpcService from "../../services/RpcService";
 import "./Nav.css";
 

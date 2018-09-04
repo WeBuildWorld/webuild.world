@@ -17,13 +17,14 @@ h4.title {
 }
 
 .greeting {
-    margin-top: 5rem;
+    text-align: center;
+    margin: 120px 0;
 }
 
 .bricks-infinite-container {
     border-radius: 0;
-    overflow: auto;
-    padding: 8px 24px;
+    /* overflow: auto; */
+    padding: 8px 40px;
     height: 100%;
 }
 
@@ -32,4 +33,52 @@ h4.title {
     bottom: 40px;
     width: 100%;
     text-align: center;
+}
+
+.bricks-loading-container.refresh {
+    bottom: 50%;
+}
+
+.search-bar {
+    padding: 32px 0;
+    text-align: center;
+}
+
+.search-bar .ant-select {
+    max-width: 380px;
+}
+
+.ant-list-vertical .ant-list-item-meta-avatar {
+    display: block;
+}
+
+@media screen and (max-width: 480px) {
+    .ant-list-item {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .ant-list-item-action {
+        margin-left: 12px;
+    }
+
+    .ant-list-vertical .ant-list-item-extra-wrap {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .ant-list-vertical .ant-list-item-main {
+        min-width: 220px;
+    }
+
+    .ant-list-vertical .ant-list-item-extra {
+        margin-left: 0;
+    }
+}
+
+.main-container.bricks-container{
+    max-width:100%;
+}
+.filter-cols{
+    padding:0 20px 20px 20px;
 }

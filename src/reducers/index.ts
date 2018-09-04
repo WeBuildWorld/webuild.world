@@ -1,7 +1,7 @@
 import {
   ADD_BRICK, CANCEL_BRICK, GET_BRICKS,
-  LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS,
-  LOGOUT, REMOVE_HASH, START_WORK, STORAGE_SAVE
+  GET_MORE_BRICKS, LOGIN_FAILURE, LOGIN_REQUEST,
+  LOGIN_SUCCESS, LOGOUT, ON_BRICKS_CHANGED, REMOVE_HASH, SET_ACCOUNT, START_WORK, STORAGE_SAVE
 } from "../constants";
 import { IStoreState } from "../types";
 
@@ -18,6 +18,11 @@ export default function (
     case STORAGE_SAVE: {
       break;
     }
+    case GET_MORE_BRICKS: {
+      return { ...state, ...{ bricks: state.bricks.concat(action.payload.bricks) } };
+    }
+    case ON_BRICKS_CHANGED:
+    case SET_ACCOUNT:
     case GET_BRICKS:
     case ADD_BRICK:
     case START_WORK:

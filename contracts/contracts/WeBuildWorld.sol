@@ -6,12 +6,14 @@ import "./libs/Extendable.sol";
 import "./Provider.sol";
 
 
-contract WeBuildWord is Extendable {
-    using SafeMath for uint256;	
+contract WeBuildWorld is Extendable {
+    using SafeMath for uint256;
 
     string public constant VERSION = "0.1";
     uint public constant DENOMINATOR = 10000;
-    
+    enum AddressRole { Owner, Builder }
+
+
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
         _;
@@ -22,15 +24,68 @@ contract WeBuildWord is Extendable {
     event BrickCancelled (uint _brickId);
     event WorkStarted (uint _brickId, address _builderAddress);
     event WorkAccepted (uint _brickId, address[] _winners);
-
-
+ 
     function () public payable {
         revert();
     }
 
-    function getBrickIds(uint _skip, uint _take) public view returns(uint[] brickIds) {
+    function getBrickIdsByOwner(address _owner) public view returns(uint[] brickIds) {
+        return _getBrickIdsByAddress(_owner, AddressRole.Owner);
+    }
+
+    function getBrickIdsByBuilder(address _builder) public view returns(uint[] brickIds) {
+        return _getBrickIdsByAddress(_builder, AddressRole.Builder);
+    }
+ 
+    function _getBrickIdsByAddress(
+        address _address,
+        AddressRole role
+      ) 
+        private view returns(uint[] brickIds) { 
+        address[] memory providers = getAllProviders();
+        uint[] memory temp; 
+        uint total = 0;
+        uint index = 0; 
+
+        for (uint i = providers.length; i > 0; i--) {
+            Provider provider = Provider(providers[i-1]);
+            total = total + provider.getBrickSize();  
+        }
+
+        brickIds = new uint[](total);  
+    
+        for(i = 0; i < providers.length; i++){
+            temp = provider.getBrickIds();
+            for (uint j = 0; j < temp.length; j++) {
+                bool cond = true;
+                if(role == AddressRole.Owner){
+                    cond = provider.isBrickOwner(temp[j], _address);
+                }else{
+                    cond = provider.participated(temp[j], _address);
+                } 
+                if(cond){
+                    brickIds[index] = temp[j]; 
+                    index++;
+                }
+            }
+        }
+
+        return brickIds;
+    }
+
+    function getBrickIds(
+        uint _skip,
+        uint _take,
+        bytes32[] _tags, 
+        uint _status, 
+        uint _started, 
+        uint _expired
+        ) 
+        public view returns(uint[] brickIds) {
+
         address[] memory providers = getAllProviders();
         uint[] memory temp;
+
         brickIds = new uint[](_take);
         uint counter = 0; 
         uint taken = 0;
@@ -43,27 +98,31 @@ contract WeBuildWord is Extendable {
             Provider provider = Provider(providers[i-1]);
             temp = provider.getBrickIds();
             
-            for (uint j = 0; j < temp.length; j++) {
+            for (uint j = 0; j < temp.length; j++) { 
                 if (taken >= _take) {
                     break;
                 }
-                if (counter >= _skip) {
-                    brickIds[taken] = temp[j];
-                    taken++;
+                
+                bool exist = provider.filterBrick(temp[j], _tags, _status, _started, _expired);
+                if(exist){
+                    if (counter >= _skip) { 
+                        brickIds[taken] = temp[j];                     
+                        taken++;
+                    }
+                    counter++;
                 }
-                counter++;
             }
         }
 
         return brickIds;
     }
 
-    function addBrick(string _title, string _url, string _description, bytes32[] _tags) 
+    function addBrick(string _title, string _url, uint _expired, string _description, bytes32[] _tags) 
         public payable
         returns (uint id)
     {
         id = getId();
-        require(getProvider(id).addBrick(id, _title, _url, _description, _tags, msg.value));
+        require(getProvider(id).addBrick(id, _title, _url, _expired, _description, _tags, msg.value));
         emit BrickAdded(id);
     }
 
@@ -119,7 +178,8 @@ contract WeBuildWord is Extendable {
         uint value,
         uint dateCreated,
         uint dateCompleted,
-        uint32 status      
+        uint expired,
+        uint32 status
     ) {
         return getProvider(_brickId).getBrick(_brickId);
     }

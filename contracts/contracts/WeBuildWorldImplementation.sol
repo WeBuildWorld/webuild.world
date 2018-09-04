@@ -7,7 +7,7 @@ import "solidity-utils/contracts/lib/Dictionary.sol";
 import "./Provider.sol";
 
 
-contract WeBuildWordImplementation is Ownable, Provider {
+contract WeBuildWorldImplementation is Ownable, Provider {
     using SafeMath for uint256;	
     using Dictionary for Dictionary.Data;
 
@@ -29,6 +29,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         uint value;
         uint dateCreated;
         uint dateCompleted;
+        uint expired;
         uint32 numBuilders;
         BrickStatus status;
         address[] winners;
@@ -51,11 +52,11 @@ contract WeBuildWordImplementation is Ownable, Provider {
         revert();
     }    
 
-    function isBrickOwner(uint _brickId, address _address) external returns (bool success) {
+    function isBrickOwner(uint _brickId, address _address) external view returns (bool success) {
         return bricks[_brickId].owner == _address;
     }    
 
-    function addBrick(uint _brickId, string _title, string _url, string _description, bytes32[] _tags, uint _value) 
+    function addBrick(uint _brickId, string _title, string _url, uint _expired, string _description, bytes32[] _tags, uint _value) 
         external onlyMain
         returns (bool success)
     {
@@ -76,6 +77,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
             // solhint-disable-next-line 
             dateCreated: now,
             dateCompleted: 0,
+            expired:_expired,
             numBuilders: 0,
             winners: new address[](0)
         });
@@ -164,6 +166,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         require(_builderAddress != 0x0);
         require(bricks[_brickId].status == BrickStatus.Active);
         require(_brickId >= 0);
+        require(bricks[_brickId].expired >= now);
 
         bool included = false;
 
@@ -192,6 +195,66 @@ contract WeBuildWordImplementation is Ownable, Provider {
         return brickIds.keys();
     }    
 
+    function getBrickSize() external view returns(uint) {
+        return brickIds.getSize();
+    }
+
+    function _matchedTags(bytes32[] _tags, bytes32[] _stack) private pure returns (bool){
+        if(_tags.length > 0){
+            for (uint i = 0; i < _tags.length; i++) {
+                for(uint j = 0; j < _stack.length; j++){
+                    if(_tags[i] == _stack[j]){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }else{
+            return true;
+        } 
+    }
+
+    function participated(
+        uint _brickId,   
+        address _builder
+        )
+        external view returns (bool) {
+ 
+        for (uint j = 0; j < bricks[_brickId].numBuilders; j++) {
+            if (bricks[_brickId].builders[j].addr == _builder) {
+                return true;
+            }
+        } 
+
+        return false;
+    }
+
+    
+    function filterBrick(
+        uint _brickId, 
+        bytes32[] _tags, 
+        uint _status, 
+        uint _started,
+        uint _expired
+        )
+        external view returns (bool) {  
+        Brick memory brick = bricks[_brickId];  
+
+        bool satisfy = _matchedTags(_tags, brick.tags);  
+
+        if(_started > 0){
+            satisfy = brick.dateCreated >= _started;
+        }
+        
+        if(_expired > 0){
+            satisfy = brick.expired >= _expired;
+        }
+ 
+        return satisfy && (uint(brick.status) == _status
+            || uint(BrickStatus.Cancelled) < _status 
+            || uint(BrickStatus.Inactive) > _status);
+    }
+
     function getBrick(uint _brickId) external view returns (
         string title,
         string url,
@@ -199,6 +262,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
         uint value,
         uint dateCreated,
         uint dateCompleted,
+        uint expired,
         uint32 status
     ) {
         Brick memory brick = bricks[_brickId];
@@ -209,6 +273,7 @@ contract WeBuildWordImplementation is Ownable, Provider {
             brick.value,
             brick.dateCreated,
             brick.dateCompleted,
+            brick.expired,
             uint32(brick.status)
         );
     }

@@ -1,22 +1,29 @@
-import { Alert, Avatar, Button, Card, Icon, List, message, Spin } from 'antd';
+import { Alert, Avatar, Button, Col, List, message, Radio, Row, Select, Spin, Tag } from 'antd';
+import * as moment from "moment";
 import * as React from "react";
 import * as InfiniteScroll from 'react-infinite-scroller';
 
-import config from "../../config";
-import { IBrick } from "../../types";
-import Brick from "./_shared/Brick";
+import parser from 'parse-github-url';
+import RpcService from '../../services/RpcService';
 
-import update from 'react-addons-update';
+import { getBricks } from "../../services/BrickService";
+import { BrickStatus, IBrick } from "../../types";
 
-import { getBrick, getBricks } from "../../services/BrickService";
+
 import "./style.css";
 
-const pageSize = 10;
+
+const pageSize = 5;
+const { Option } = Select;
+const RadioGroup = Radio.Group;
+
 
 export interface IProps {
   brickCount: number;
   bricks?: IBrick[];
   getBricks?: (start?: number, length?: number) => void;
+  getMoreBricks?: (start?: number, length?: number) => void;
+  onBricksChanged?: (bricks: IBrick[]) => void;
   startWork?: (brickId: number) => Promise<any>;
   acceptWork?: (brickId: number, winner: string) => Promise<any>;
   cancelBrick?: (brickId: number) => Promise<void>;
@@ -26,6 +33,9 @@ export interface IProps {
 export default class Bricks extends React.Component<IProps, any> {
 
   public state: any = {
+    empty: false,
+    filterStatus: BrickStatus.Open,
+    filters: [],
     hasMore: true,
     items: [],
     loading: false,
@@ -35,28 +45,24 @@ export default class Bricks extends React.Component<IProps, any> {
   constructor(props: IProps) {
     super(props);
 
-    this.state.hash = (this.props as any).match.params.hash;
-    this.props.removeHash();
+    if ((this.props as any).match) {
+      this.state.hash = (this.props as any).match.params.hash;
+    }
     this.dismiss = this.dismiss.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
     this.loadMore = this.loadMore.bind(this);
-    this.pullBrick = this.pullBrick.bind(this);
-  }
-
-  public componentWillMount() {
-    // const interval = setInterval(this.props.getBricks!, 1000);
-    // this.setState({ interval });
-    // this.props.getBricks(0, pageSize);
-    // this.handleInfiniteOnLoad();
+    this.addFilter = this.addFilter.bind(this);
+    this.onDeselect = this.onDeselect.bind(this);
+    this.refresh = this.refresh.bind(this);
+    this.changeBrickStatus = this.changeBrickStatus.bind(this);
+    this.renderList = this.renderList.bind(this);
   }
 
   public componentDidMount() {
-    this.loadMore();
-  }
-
-  public componentWillUnmount() {
-    clearInterval(this.state.interval);
+    setTimeout(() => {
+      this.loadMore();
+    }, 500)
   }
 
   public closeAlert() {
@@ -64,62 +70,89 @@ export default class Bricks extends React.Component<IProps, any> {
     this.dismiss();
   }
 
-  public async pullBrick(id: any): Promise<void> {
-    const brick = await getBrick(id);
-    const newItems = [...this.state.items];
-    const index = this.state.items.findIndex((item: IBrick) => item.id === brick.id);
-    newItems[index] = brick;
+  public addFilter(tag: string) {
+    this.setState((prevState: any) => {
+      const tags = prevState.filters;
+      const status = prevState.filterStatus;
+      if (!tags.includes(tag)) {
+        tags.push(tag);
+      }
 
-    // tslint:disable-next-line:no-console
-    // console.log('brick', brick.id);
-    
-    this.setState({
-      items: newItems
-    })
+      this.refresh(tags, status);
+      return { filters: tags };
+    });
   }
 
-  public renderItem(item: any) {
+  public onDeselect(event: any) {
+    this.setState((prevState: any) => {
+      const tags = prevState.filters;
+      const status = prevState.filterStatus;
+      const index = tags.indexOf(event);
+      if (index !== -1) {
+        tags.splice(index, 1);
+      }
+      this.refresh(tags, status);
+      return { filters: tags };
+    });
+  }
+
+  public renderItem(brick: any) {
+
+    const started = moment((brick.dateCreated as any) * 1000).fromNow();
+    const expireLabel = ((brick.expired as any) * 1000 > new Date().getTime()) ? ' Expires ' : ' Expired ';
+    let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
+    expired = expired ? (" • " + expireLabel + expired) : "";
+    const detailUrl = "/brick/" + brick.id;
+    const desc = "Status " + BrickStatus[brick.status] + " • " + "Opened "
+      + started + expired;
+    let avatar;
+    const uriObj = parser(brick.url);
+    if (uriObj && uriObj.owner && uriObj.host === 'github.com') {
+      const src = "https://avatars.githubusercontent.com/" + uriObj.owner;
+      avatar = <Avatar src={src} />;
+    }
 
     return (
       <List.Item
-        key={item.id}
-        extra={<div />}
+        key={brick.id}
+        extra={
+          <Tag className="unclickable" color="#2db7f5">{brick.value} ETH <i className="fab fa-ethereum" /></Tag>
+        }
       >
         <List.Item.Meta
-          description={
-            <Brick
-              brick={item}
-              key={item.id}
-              // tslint:disable-next-line:jsx-no-lambda
-              startWork={id => this.props.startWork!(id)}
-              // tslint:disable-next-line:jsx-no-lambda
-              acceptWork={(id, winner) => this.props.acceptWork!(id, winner)}
-              // tslint:disable-next-line:jsx-no-lambda
-              cancelBrick={id => this.props.cancelBrick!(id)}
-              // tslint:disable-next-line:jsx-no-lambda
-              pullBrick={id => this.pullBrick(id)}
-            />
-          }
+          avatar={avatar}
+          title={<a href={detailUrl}>{brick.title}</a>}
+          description={desc}
         />
-        {/* <ListContent data={item} /> */}
+
+        <div>
+          {brick.tags &&
+            brick.tags.map((tag: string) => (
+              // tslint:disable-next-line:jsx-no-lambda
+              <Tag key={tag} onClick={() => { this.addFilter(tag) }} color="#87d068">{tag}</Tag>
+            ))}
+        </div>
+
       </List.Item>
     )
   }
 
-
   public loadMore() {
     let items = this.state.items || [];
     let start = this.state.start;
+    const tags = this.state.filters;
+    const status = this.state.filterStatus;
 
     this.setState({
       loading: true,
     });
 
-    getBricks(start, pageSize).then((res) => {
+    getBricks(start, pageSize, tags, status).then((res) => {
 
       if (!res.bricks.length) {
         message.warning('No more bricks');
         this.setState({
+          empty: true,
           hasMore: false,
           loading: false,
         });
@@ -129,6 +162,7 @@ export default class Bricks extends React.Component<IProps, any> {
       items = items.concat(res.bricks);
       start = start + pageSize;
 
+      this.props.onBricksChanged(items);
       this.setState({
         items,
         loading: false,
@@ -138,39 +172,124 @@ export default class Bricks extends React.Component<IProps, any> {
 
   }
 
+  public refresh(tags: string[], status: number) {
+    this.setState({
+      hasMore: true,
+      loading: true,
+      start: 0
+    });
+
+    getBricks(0, pageSize, tags, status).then((res) => {
+
+      const items = res.bricks;
+      const start = pageSize;
+      const empty = res.brickCount === 0;
+
+      // tslint:disable-next-line:no-console
+      // console.log('items:',items);
+      this.props.onBricksChanged(items);
+      this.setState({
+        empty,
+        items,
+        loading: false,
+        start,
+      })
+    });
+  }
+
+  public changeBrickStatus(e: any) {
+
+    this.setState((prevState: any) => {
+      const tags = prevState.filters;
+      const status = e.target.value;
+      this.refresh(tags, status);
+      return { filterStatus: status };
+    });
+
+  }
+
   public render() {
 
-    if (this.state.items.length <= 0) {
-      return this.renderNothing();
-    }
+    const { filters } = this.state;
+    const children = filters.map((item: any) => {
+      return (<Option key={item}>{item}</Option>);
+    });
+
+    const radioStyle = {
+      display: 'block',
+      height: '30px',
+      lineHeight: '30px',
+    };
+
+    const noBricks = this.state.items.length <= 0;
 
     return (
-      <div className="bricks-infinite-container">
-        {this.state.hash && this.renderNotification(this.state.hash!)}
+      <div className="main-container bricks-container">
+        <Row>
+          <Col sm={0} md={4}> 
+            <div className="filter-cols">
+            <div className="search-bar">
+                <Select
+                  mode="tags"
+                  style={{ width: '100%' }}
+                  onDeselect={this.onDeselect}
+                  onSelect={this.addFilter}
+                  value={filters}
+                  tokenSeparators={[',']}
+                  placeholder="select tags"
+                >
+                  {children}
+                </Select>
+            </div>
 
-        <InfiniteScroll
-          initialLoad={false}
-          pageStart={0}
-          loadMore={this.loadMore}
-          hasMore={!this.state.loading && this.state.hasMore}
-          useWindow={false}
-        >
-          <List
-            size="large"
-            rowKey="id"
-            itemLayout="vertical"
-            dataSource={this.state.items}
-            renderItem={this.renderItem}
-          >
-            {this.state.loading && this.state.hasMore && (
-              <div className="bricks-loading-container">
-                <Spin />
-              </div>
-            )}
-          </List>
-        </InfiniteScroll>
+              <RadioGroup onChange={this.changeBrickStatus} value={this.state.filterStatus}>
+                <Radio style={radioStyle} value={-1}>All</Radio>
+                <Radio style={radioStyle} value={BrickStatus.Open}>Open</Radio>
+                <Radio style={radioStyle} value={BrickStatus.Completed}>Completed</Radio>
+                <Radio style={radioStyle} value={BrickStatus.Canceled}>Canceled</Radio>
+              </RadioGroup>
+            </div>
+          </Col>
+          <Col sm={24} md={20}>
+            <div className="bricks-infinite-container"> 
+              {this.state.hash && this.renderNotification(this.state.hash!)}
+
+         
+              {noBricks ? this.renderNothing() : ""}
+              {noBricks ? "" : this.renderList()}
+            </div>
+          </Col>
+        </Row>
+
+
       </div>
     );
+  }
+
+  private renderList() {
+    return (
+      <InfiniteScroll
+        initialLoad={false}
+        pageStart={0}
+        loadMore={this.loadMore}
+        hasMore={!this.state.loading && this.state.hasMore}
+        useWindow={true}
+      >
+        <List
+          size="large"
+          rowKey="id"
+          itemLayout="vertical"
+          dataSource={this.props.bricks}
+          renderItem={this.renderItem}
+        >
+          {this.state.loading && this.state.hasMore && (
+            <div className="bricks-loading-container refresh">
+              <Spin />
+            </div>
+          )}
+        </List>
+      </InfiniteScroll>
+    )
   }
 
   private renderNotification(hash: string) {
@@ -190,14 +309,19 @@ export default class Bricks extends React.Component<IProps, any> {
   }
 
   private getTxLink(hash: string): string | undefined {
-    return "https://" + config.networkName + ".etherscan.io/tx/" + hash;
+    const name = RpcService.getNetWorkName();
+    return "https://" + name + ".etherscan.io/tx/" + hash;
   }
 
   private renderNothing() {
+    const { empty } = this.state;
+    const text = empty ? '' : "or it's being loaded";
     return (
-      <p className="greeting">
-        No bricks has been added yet or it's being loaded.
-      </p>
+      <div className="greeting">
+        <Button className="unclickable ant-btn-loading" type="primary" loading={!empty}>
+          No bricks has been added yet {text}.
+        </Button>
+      </div>
     );
   }
 

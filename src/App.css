@@ -7,7 +7,6 @@ body {
 
 .App {
     text-align: center;
-    height: 100%;
 }
 
 #root,
@@ -27,6 +26,10 @@ body {
     background-color: white;
     border: 1px solid #e8e8e8;
     padding-bottom: 50px;
+    padding-top: 64px;
+    max-width: 1170px;
+    margin: 0 auto;
+    text-align: left;
 }
 
 img.App-logo {
@@ -69,5 +72,35 @@ img.App-logo {
     }
     to {
         transform: rotate(360deg);
+    }
+}
+
+.unclickable{
+    cursor: auto !important;
+}
+ 
+.ant-layout-footer{
+    padding-bottom:30px;
+}
+
+.ant-layout-footer .links{
+    text-align:center;
+}
+
+
+@media screen and (max-width: 480px) {
+     .ant-layout-footer {
+         padding: 20px 10px;
+     }
+    
+    .ant-layout-footer .links a {
+        margin: 20px 4px;
+    }
+    .detail{
+        min-height: 600px !important;
+    }
+
+    .bricks-infinite-container{
+        padding: 8px 15px;
     }
 }
