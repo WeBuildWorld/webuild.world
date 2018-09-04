@@ -226,8 +226,22 @@ export default class Bricks extends React.Component<IProps, any> {
     return (
       <div className="main-container bricks-container">
         <Row>
-          <Col sm={0} md={4}>
+          <Col sm={0} md={4}> 
             <div className="filter-cols">
+            <div className="search-bar">
+                <Select
+                  mode="tags"
+                  style={{ width: '100%' }}
+                  onDeselect={this.onDeselect}
+                  onSelect={this.addFilter}
+                  value={filters}
+                  tokenSeparators={[',']}
+                  placeholder="select tags"
+                >
+                  {children}
+                </Select>
+            </div>
+
               <RadioGroup onChange={this.changeBrickStatus} value={this.state.filterStatus}>
                 <Radio style={radioStyle} value={-1}>All</Radio>
                 <Radio style={radioStyle} value={BrickStatus.Open}>Open</Radio>
@@ -240,19 +254,7 @@ export default class Bricks extends React.Component<IProps, any> {
             <div className="bricks-infinite-container"> 
               {this.state.hash && this.renderNotification(this.state.hash!)}
 
-              <div className="search-bar">
-                <Select
-                  mode="tags"
-                  style={{ width: '100%' }}
-                  onDeselect={this.onDeselect}
-                  onSelect={this.addFilter}
-                  value={filters}
-                  tokenSeparators={[',']}
-                  placeholder="select tags"
-                >
-                  {children}
-                </Select>
-              </div>
+         
               {noBricks ? this.renderNothing() : ""}
               {noBricks ? "" : this.renderList()}
             </div>

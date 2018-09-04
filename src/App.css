@@ -99,4 +99,8 @@ img.App-logo {
     .detail{
         min-height: 600px !important;
     }
+
+    .bricks-infinite-container{
+        padding: 8px 15px;
+    }
 }
