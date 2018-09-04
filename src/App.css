@@ -79,3 +79,24 @@ img.App-logo {
     cursor: auto !important;
 }
  
+.ant-layout-footer{
+    padding-bottom:30px;
+}
+
+.ant-layout-footer .links{
+    text-align:center;
+}
+
+
+@media screen and (max-width: 480px) {
+     .ant-layout-footer {
+         padding: 20px 10px;
+     }
+    
+    .ant-layout-footer .links a {
+        margin: 20px 4px;
+    }
+    .detail{
+        min-height: 600px !important;
+    }
+}

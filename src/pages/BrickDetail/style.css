@@ -1,5 +1,6 @@
 .detail {
     padding: 84px 40px 20px; 
+    min-height:800px;
 }
 
 .tags .ant-tag {
