@@ -658,5 +658,11 @@ export default {
     '3': ROPSTEN_RPC_URL,
     '4': RINKEBY_RPC_URL,
     '42': KOVAN_RPC_URL,
+  },
+  networkNames:{
+    '1': 'mainnet',
+    '3': 'ropsten',
+    '4': 'rinkeby',
+    '42': 'kovan',
   }
 };

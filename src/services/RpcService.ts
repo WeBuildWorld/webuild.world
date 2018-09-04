@@ -34,12 +34,13 @@ class RpcService {
     return !!this.mainAccount;
   }
 
+  public getNetWorkName() {
+    return config.networkNames[this.rpc.version.network];
+  }
+
   public contract(): any {
     const abi: any = config.CONTRACT_ABI;
-    const address = config.addresses[this.rpc.version.network]; 
-
-    // tslint:disable-next-line:no-console
-    console.log('address', address);
+    const address = config.addresses[this.rpc.version.network];
     return this.rpc.eth.contract(abi).at(address);
   }
 

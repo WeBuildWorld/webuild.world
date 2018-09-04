@@ -1,16 +1,17 @@
-import { Alert, Avatar, Button, Card, Icon, List, message, Select, Spin, Tag } from 'antd';
+import { Alert, Avatar, Button, List, message, Select, Spin, Tag } from 'antd';
 import * as moment from "moment";
 import * as React from "react";
 import * as InfiniteScroll from 'react-infinite-scroller';
 
 import parser from 'parse-github-url';
-import config from "../../config";
+import RpcService from '../../services/RpcService';
 
-import { getBrick, getBricks } from "../../services/BrickService";
+import { getBricks } from "../../services/BrickService";
 import { BrickStatus, IBrick } from "../../types";
-import Brick from "./_shared/Brick";
+
 
 import "./style.css";
+
 
 const pageSize = 5;
 const { Option } = Select;
@@ -255,7 +256,8 @@ export default class Bricks extends React.Component<IProps, any> {
   }
 
   private getTxLink(hash: string): string | undefined {
-    return "https://" + config.defaultNetwork + ".etherscan.io/tx/" + hash;
+    const name = RpcService.getNetWorkName();
+    return "https://" + name + ".etherscan.io/tx/" + hash;
   }
 
   private renderNothing() {
