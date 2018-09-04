@@ -179,7 +179,7 @@ contract WeBuildWorld is Extendable {
         uint dateCreated,
         uint dateCompleted,
         uint expired,
-        uint32 status
+        uint status
     ) {
         return getProvider(_brickId).getBrick(_brickId);
     }

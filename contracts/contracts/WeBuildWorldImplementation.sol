@@ -3,7 +3,7 @@ pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "solidity-utils/contracts/lib/Dictionary.sol";
+import "./libs/Dictionary.sol";
 import "./Provider.sol";
 
 
@@ -27,9 +27,9 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         bytes32[] tags;
         address owner;
         uint value;
-        uint dateCreated;
-        uint dateCompleted;
-        uint expired;
+        uint32 dateCreated;
+        uint32 dateCompleted;
+        uint32 expired;
         uint32 numBuilders;
         BrickStatus status;
         address[] winners;
@@ -56,7 +56,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         return bricks[_brickId].owner == _address;
     }    
 
-    function addBrick(uint _brickId, string _title, string _url, uint _expired, string _description, bytes32[] _tags, uint _value) 
+    function addBrick(uint _brickId, string _title, string _url, uint32 _expired, string _description, bytes32[] _tags, uint _value) 
         external onlyMain
         returns (bool success)
     {
@@ -75,16 +75,16 @@ contract WeBuildWorldImplementation is Ownable, Provider {
             status: BrickStatus.Active,
             value: _value,
             // solhint-disable-next-line 
-            dateCreated: now,
+            dateCreated: uint32(now),
             dateCompleted: 0,
-            expired:_expired,
+            expired: _expired,
             numBuilders: 0,
             winners: new address[](0)
         });
 
         // only add when it's new
         if (bricks[_brickId].owner == 0x0) {
-            brickIds.insertBeginning(_brickId, "");
+            brickIds.insertBeginning(_brickId, 0);
         }
         bricks[_brickId] = brick;
 
@@ -139,7 +139,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         bricks[_brickId].status = BrickStatus.Completed;
         bricks[_brickId].winners = _winners;
         // solhint-disable-next-line
-        bricks[_brickId].dateCompleted = now;
+        bricks[_brickId].dateCompleted = uint32(now);
 
         if (_value > 0) {
             bricks[_brickId].value = bricks[_brickId].value.add(_value);
@@ -260,10 +260,10 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         string url,
         address owner,
         uint value,
-        uint dateCreated,
-        uint dateCompleted,
-        uint expired,
-        uint32 status
+        uint32 dateCreated,
+        uint32 dateCompleted,
+        uint32 expired,
+        uint status
     ) {
         Brick memory brick = bricks[_brickId];
         return (
@@ -274,7 +274,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
             brick.dateCreated,
             brick.dateCompleted,
             brick.expired,
-            uint32(brick.status)
+            uint(brick.status)
         );
     }
     
