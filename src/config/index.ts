@@ -652,7 +652,7 @@ const defaultConfig = {
   addresses: {
     "1": "0x0a64fe0b2587c31c511ae81c7b4c2cf8bb3b3cc6", // implementation: 0x65e871cd0e132e14b3bd9569199dcb436c752b2f
     "3": "0x20e3ef00bd74a3ac14704f45a12372cb999a8eac", // implementation: 0x32389232995be175465ff6c692a0c43c14d3813f
-    "4": "",
+    "4": "0xbd794584d753f2c11d13f50f7c786e21d7bc6b2b", // implementation: 0x7d77fd5825c51269541df282d3643a5a9fe5dcae
     "42": "0x4c77dae972749a67d78c404c0b58f9e217871a15"
   },
   defaultNetwork: "42",
