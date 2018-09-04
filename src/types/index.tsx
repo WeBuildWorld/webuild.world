@@ -7,6 +7,7 @@ export interface IStoreState {
   hash?: string;
   loggedIn?: boolean;
   loggingIn?: boolean;
+  account?:string;
 }
 
 export interface ICredential {

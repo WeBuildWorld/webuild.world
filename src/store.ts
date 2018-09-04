@@ -12,6 +12,7 @@ import reduxThunk from 'redux-thunk';
 
 // import { composeWithDevTools } from 'redux-devtools-extension';
 import { getBrick, watchEvents } from "./services/BrickService";
+import rpcService from "./services/RpcService";
 
 // import { Hour } from './helpers/formatter';
 import app from './reducers';
@@ -64,7 +65,7 @@ watchEvents(async (brickId: any) => {
 	const brick = await getBrick(brickId);
 	const items = store.getState().reducer.app.bricks || [];
 	let bricks = [...items];
-	
+
 	const index = bricks.findIndex(
 		(item: any) => {
 			return item.id === brickId;
@@ -87,5 +88,17 @@ watchEvents(async (brickId: any) => {
 		type: constants.ON_BRICKS_CHANGED
 	});
 });
+
+setInterval(() => {
+	const dispatch = store.dispatch;
+	const account = rpcService.mainAccount;
+	if (account) {
+		const payload = { account };
+		dispatch({
+			payload,
+			type: constants.SET_ACCOUNT
+		});
+	}
+}, 1000)
 
 export { store, history, mergeProps };

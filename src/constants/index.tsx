@@ -10,6 +10,9 @@ export type ON_BRICKS_CHANGED = typeof ON_BRICKS_CHANGED;
 export const ADD_BRICK = "ADD_BRICK";
 export type ADD_BRICK = typeof ADD_BRICK;
 
+export const SET_ACCOUNT = "SET_ACCOUNT";
+export type SET_ACCOUNT = typeof SET_ACCOUNT;
+
 export const START_WORK = "START_WORK";
 export type START_WORK = typeof START_WORK;
 

@@ -6,7 +6,7 @@ import * as InfiniteScroll from 'react-infinite-scroller';
 import parser from 'parse-github-url';
 import config from "../../config";
 
-import { getBrick, getBricks, getBricksByBuilder, getBricksByOwner, watchEvents } from "../../services/BrickService";
+import { getBrick, getBricks, getBricksByBuilder, getBricksByOwner } from "../../services/BrickService";
 import { BrickStatus, IBrick, RoleType } from "../../types";
 
 import "./BrickList.css";

@@ -11,8 +11,9 @@ export function mapStateToProps({
         reducer: { app: IStoreState };
     }) {
     return {
+        account:reducer.app.account,
         brickCount: reducer.app.brickCount,
-        bricks: reducer.app.bricks
+        bricks: reducer.app.bricks,
     };
 }
 
