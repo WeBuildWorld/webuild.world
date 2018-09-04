@@ -22,10 +22,10 @@ interface Provider {
         string url, 
         address owner,
         uint value,
-        uint dateCreated,
-        uint dateCompleted, 
-        uint expired,
-        uint32 status
+        uint32 dateCreated,
+        uint32 dateCompleted, 
+        uint32 expired,
+        uint status
     );
 
     function getBrickDetail(uint _brickId) external view returns(
