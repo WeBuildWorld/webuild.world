@@ -650,7 +650,7 @@ const defaultConfig = {
   // CONTRACT_ADDRESS: "0xf6ae46afaa49a2e7963e5bcd210988ff539b8034",
   // CONTRACT_ADDRESS: "0x4c77dae972749a67d78c404c0b58f9e217871a15",
   addresses: {
-    "1": "",
+    "1": "0x0a64fe0b2587c31c511ae81c7b4c2cf8bb3b3cc6", // implementation:  0x65e871cd0e132e14b3bd9569199dcb436c752b2f
     "3": "",
     "4": "",
     "42": "0x4c77dae972749a67d78c404c0b58f9e217871a15"
