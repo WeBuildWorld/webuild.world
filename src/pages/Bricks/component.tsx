@@ -226,9 +226,8 @@ export default class Bricks extends React.Component<IProps, any> {
     return (
       <div className="main-container bricks-container">
         <Row>
-          <Col span={4}>
+          <Col sm={0} md={4}>
             <div className="filter-cols">
-
               <RadioGroup onChange={this.changeBrickStatus} value={this.state.filterStatus}>
                 <Radio style={radioStyle} value={-1}>All</Radio>
                 <Radio style={radioStyle} value={BrickStatus.Open}>Open</Radio>
@@ -237,11 +236,8 @@ export default class Bricks extends React.Component<IProps, any> {
               </RadioGroup>
             </div>
           </Col>
-          <Col span={20}>
-            <div className="bricks-infinite-container">
-
-
-
+          <Col sm={24} md={20}>
+            <div className="bricks-infinite-container"> 
               {this.state.hash && this.renderNotification(this.state.hash!)}
 
               <div className="search-bar">
