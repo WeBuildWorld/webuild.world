@@ -5,7 +5,7 @@ import axios from "axios";
 import GitHubLogin from 'react-github-login';
 import { ICredential, IStoreState } from "../../types";
 
-import { Avatar, Dropdown, Icon, Menu } from "antd";
+import { Avatar, Divider, Dropdown, Icon, Menu } from "antd";
 import { LOGIN_REQUEST, LOGIN_SUCCESS } from "../../constants";
 import { Authentication } from "../../services/Authentication";
 const CLIENT_ID = "36d1aa5652f688cde83b";
@@ -20,7 +20,7 @@ export class GitHubButton extends React.Component {
 
         const user = Authentication.getCurrentUser();
         if (user) {
-            this.state = { logged: true, avatar: user.avatar_url };
+            this.state = { logged: true, name: user.name, avatar: user.avatar_url };
         } else {
             this.state = { logged: false, avatar: "" };
         }
@@ -40,32 +40,33 @@ export class GitHubButton extends React.Component {
     public logout() {
         Authentication.setCurrentUser(null);
         this.setState({ logged: false });
+        location.href = "/";
     }
 
     public onFakeSuccess(response: any) {
-
-        const data: ICredential = {
-            email: 'vellengs@qq.com',
-            githubId: '5743338',
-            login: 'vellengs',
-            name: 'viking',
-        };
-
-        Authentication.setCurrentUser(data);
-        const user = Authentication.getCurrentUser();
-        this.setState({ logged: true, avatar: user.avatar_url, email: user.email });
+        if (location.host === 'localhost:3000') {
+            const data: ICredential = {
+                email: 'vellengs@qq.com',
+                githubId: '5743338',
+                login: 'vellengs',
+                name: 'viking',
+            };
+            Authentication.setCurrentUser(data);
+            const user = Authentication.getCurrentUser();
+            this.setState({ logged: true, name: user.name, avatar: user.avatar_url, email: user.email });
+        }
     }
 
     public onSuccess(response: any) {
         const self = this;
         if (response && response.code) {
-            axios.post('login/oauth/access_token', {
+            axios.post('/login/oauth/access_token', {
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET,
                 "code": response.code,
                 "redirect_uri": REDIRECT_URL
             }).then((res) => {
-                axios.get('user?' + res.data).then((result) => {
+                axios.get('/user?' + res.data).then((result) => {
                     const data = result.data;
                     if (data) {
                         const user = {
@@ -75,7 +76,12 @@ export class GitHubButton extends React.Component {
                             name: data.name,
                         };
                         Authentication.setCurrentUser(user);
-                        self.setState({ logged: true, avatar: data.avatar_url, email: user.email });
+                        self.setState({
+                            avatar: data.avatar_url,
+                            email: user.email,
+                            logged: true,
+                            name: user.name,
+                        });
                     }
                 });
             });
@@ -86,28 +92,38 @@ export class GitHubButton extends React.Component {
 
         const menu = (
             <Menu>
-                <Menu.Item key="0">
-                    <a href="javascript:;" onClick={this.logout} >logout</a>
+                <Menu.Item>
+                    Signed in as <b>{this.state.name}</b>
                 </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="1">
+                    <a href="/dashboard" >Dashboard</a>
+                </Menu.Item>
+                <Menu.Item key="2">
+                    <a href="javascript:;" onClick={this.logout} >Sign Out</a>
+                </Menu.Item>
+
             </Menu>
         );
-        const image = <Dropdown overlay={menu} trigger={['click']}>
-            <a className="ant-dropdown-link" href="#">
-                <Avatar shape="square" src={this.state.avatar} /> <Icon type="down" />
-            </a>
-        </Dropdown>
+        const profileMenu =
+            <Dropdown overlay={menu} trigger={['click']}>
+                <a className="ant-dropdown-link" href="#">
+                    <Avatar shape="square" src={this.state.avatar} />
+                    <Icon type="down" />
+                </a>
+            </Dropdown>
 
         const button = <GitHubLogin
             onSuccess={this.onSuccess}
             visible={false}
             className="ant-btn ant-btn-primary"
             clientId={CLIENT_ID}
-            // onFailure={this.onFakeSuccess}
+            onFailure={this.onFakeSuccess}
             redirectUri={REDIRECT_URL}
             scope="user.email"
         />;
 
-        return (this.state.logged ? image : button);
+        return (this.state.logged ? profileMenu : button);
     }
 }
 

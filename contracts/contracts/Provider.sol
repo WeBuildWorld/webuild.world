@@ -2,8 +2,8 @@ pragma solidity 0.4.24;
 
 
 interface Provider {
-    function isBrickOwner(uint _brickId, address _address) external returns (bool success);
-    function addBrick(uint _brickId, string _title, string _url, string _description, bytes32[] _tags, uint _value)
+    function isBrickOwner(uint _brickId, address _address) external view returns (bool success);
+    function addBrick(uint _brickId, string _title, string _url, uint _expired, string _description, bytes32[] _tags, uint _value)
         external returns (bool success);
     function changeBrick(
         uint _brickId,
@@ -16,14 +16,16 @@ interface Provider {
     function cancel(uint _brickId) external returns (uint value);
     function startWork(uint _brickId, bytes32 _builderId, bytes32 _nickName, address _builderAddress) external returns(bool success);
     function getBrickIds() external view returns(uint[]);
+    function getBrickSize() external view returns(uint);
     function getBrick(uint _brickId) external view returns(
         string title,
         string url, 
         address owner,
         uint value,
-        uint dateCreated,
-        uint dateCompleted, 
-        uint32 status
+        uint32 dateCreated,
+        uint32 dateCompleted, 
+        uint32 expired,
+        uint status
     );
 
     function getBrickDetail(uint _brickId) external view returns(
@@ -39,4 +41,22 @@ interface Provider {
         bytes32[] keys,
         bytes32[] names
     );
+
+    function filterBrick(
+        uint _brickId, 
+        bytes32[] _tags, 
+        uint _status, 
+        uint _started,
+        uint _expired
+        ) external view returns (
+      bool
+    );
+
+
+    function participated( 
+        uint _brickId,
+        address _builder
+        ) external view returns (
+        bool
+    ); 
 }

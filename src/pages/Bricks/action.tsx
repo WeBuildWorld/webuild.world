@@ -16,9 +16,35 @@ export type BrickAction = IGetBricks;
 export function retrieveBricks(start: number, length: number) {
   return async (dispatch: any): Promise<IGetBricks> => {
     const payload = await getBricks(start, length);
+
     return dispatch({
       payload,
       type: constants.GET_BRICKS
+    });
+  };
+}
+
+export function retrieveMoreBricks(start: number, length: number) {
+  return async (dispatch: any): Promise<IGetBricks> => {
+    const payload = await getBricks(start, length);
+
+    return dispatch({
+      payload,
+      type: constants.GET_MORE_BRICKS
+    });
+  };
+}
+
+export function onBricksChanged(bricks: IBrick[]) {
+  return async (dispatch: any) => {
+    const payload = {
+      brickCount: bricks.length,
+      bricks,
+    }
+
+    return dispatch({
+      payload,
+      type: constants.ON_BRICKS_CHANGED
     });
   };
 }

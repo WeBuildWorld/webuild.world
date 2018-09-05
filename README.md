@@ -1,3 +1,6 @@
+[![pipeline status](https://gitlab.com/webuild.world/WeBuild.World/badges/develop/pipeline.svg)](https://gitlab.com/webuild.world/WeBuild.World/commits/develop)
+
+
 # We Build World
 
 We Build World (WBW) is a project focus on building the crypto world by community, and for community.

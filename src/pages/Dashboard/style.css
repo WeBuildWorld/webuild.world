@@ -1,0 +1,15 @@
+.dashboard-wrap {
+    padding: 40px;
+    padding-top: 104px;
+    min-height:100%;
+    height:auto;
+} 
+
+.dashboard-wrap .main-container {
+    padding:0;
+    border:0;
+} 
+
+.dashboard-wrap .main-container .bricks-infinite-container{
+    padding:8px 20px;
+}

@@ -22,3 +22,13 @@ declare module 'react-select' {
 
 
 }
+
+declare module 'react-addons-update' {
+	const update: any;
+	export default update;
+}
+
+declare  module 'parse-github-url'{
+	const parser: any;
+	export default parser;
+}

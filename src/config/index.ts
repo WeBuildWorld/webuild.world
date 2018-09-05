@@ -1,526 +1,678 @@
+import development from "./development";
+import production from "./production";
+
 const MAINET_RPC_URL = "https://mainnet.infura.io/aJZ5aKsYEChL8ve7kFzC";
 const ROPSTEN_RPC_URL = "https://ropsten.infura.io/aJZ5aKsYEChL8ve7kFzC";
 const KOVAN_RPC_URL = "https://kovan.infura.io/aJZ5aKsYEChL8ve7kFzC";
 const RINKEBY_RPC_URL = "https://rinkeby.infura.io/aJZ5aKsYEChL8ve7kFzC";
 
-export default {
+const defaultConfig = {
   CONTRACT_ABI: [
     {
-      "constant": false,
-      "inputs": [
+      constant: false,
+      inputs: [
         {
-          "name": "_address",
-          "type": "address"
+          name: "_address",
+          type: "address"
         }
       ],
-      "name": "upgradeProvider",
-      "outputs": [
+      name: "upgradeProvider",
+      outputs: [
         {
-          "name": "",
-          "type": "bool"
+          name: "",
+          type: "bool"
         }
       ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [
+      constant: true,
+      inputs: [
         {
-          "name": "_version",
-          "type": "uint256"
+          name: "_version",
+          type: "uint256"
         }
       ],
-      "name": "getProviderDetails",
-      "outputs": [
+      name: "getProviderDetails",
+      outputs: [
         {
-          "name": "_start",
-          "type": "uint256"
+          name: "_start",
+          type: "uint256"
         },
         {
-          "name": "_end",
-          "type": "uint256"
+          name: "_end",
+          type: "uint256"
         },
         {
-          "name": "_address",
-          "type": "address"
+          name: "_address",
+          type: "address"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [
+      constant: true,
+      inputs: [
         {
-          "name": "_id",
-          "type": "uint256"
+          name: "_id",
+          type: "uint256"
         }
       ],
-      "name": "getProviderById",
-      "outputs": [
+      name: "getProviderById",
+      outputs: [
         {
-          "name": "",
-          "type": "address"
+          name: "",
+          type: "address"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "getAllProviders",
-      "outputs": [
+      constant: true,
+      inputs: [],
+      name: "getAllProviders",
+      outputs: [
         {
-          "name": "addresses",
-          "type": "address[]"
+          name: "addresses",
+          type: "address[]"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "getCurrentProvider",
-      "outputs": [
+      constant: true,
+      inputs: [],
+      name: "getCurrentProvider",
+      outputs: [
         {
-          "name": "",
-          "type": "address"
+          name: "",
+          type: "address"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": false,
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      constant: false,
+      inputs: [],
+      name: "renounceOwnership",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
+      constant: true,
+      inputs: [],
+      name: "owner",
+      outputs: [
         {
-          "name": "",
-          "type": "address"
+          name: "",
+          type: "address"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "DENOMINATOR",
-      "outputs": [
+      constant: true,
+      inputs: [],
+      name: "DENOMINATOR",
+      outputs: [
         {
-          "name": "",
-          "type": "uint256"
+          name: "",
+          type: "uint256"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "currentVersion",
-      "outputs": [
+      constant: true,
+      inputs: [],
+      name: "currentVersion",
+      outputs: [
         {
-          "name": "",
-          "type": "uint16"
+          name: "",
+          type: "uint16"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": false,
-      "inputs": [
+      constant: false,
+      inputs: [
         {
-          "name": "_newId",
-          "type": "uint256"
+          name: "_newId",
+          type: "uint256"
         }
       ],
-      "name": "resetCurrentIdTo",
-      "outputs": [
+      name: "resetCurrentIdTo",
+      outputs: [
         {
-          "name": "success",
-          "type": "bool"
+          name: "success",
+          type: "bool"
         }
       ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "currentId",
-      "outputs": [
+      constant: true,
+      inputs: [],
+      name: "currentId",
+      outputs: [
         {
-          "name": "",
-          "type": "uint256"
+          name: "",
+          type: "uint256"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": false,
-      "inputs": [
+      constant: false,
+      inputs: [
         {
-          "name": "_newOwner",
-          "type": "address"
+          name: "_newOwner",
+          type: "address"
         }
       ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      name: "transferOwnership",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "VERSION",
-      "outputs": [
+      constant: true,
+      inputs: [],
+      name: "VERSION",
+      outputs: [
         {
-          "name": "",
-          "type": "string"
+          name: "",
+          type: "string"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "fallback"
+      payable: true,
+      stateMutability: "payable",
+      type: "fallback"
     },
     {
-      "anonymous": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "indexed": true,
-          "name": "previousOwner",
-          "type": "address"
+          indexed: false,
+          name: "_brickId",
+          type: "uint256"
         }
       ],
-      "name": "OwnershipRenounced",
-      "type": "event"
+      name: "BrickAdded",
+      type: "event"
     },
     {
-      "anonymous": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "indexed": true,
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "newOwner",
-          "type": "address"
+          indexed: false,
+          name: "_brickId",
+          type: "uint256"
         }
       ],
-      "name": "OwnershipTransferred",
-      "type": "event"
+      name: "BrickUpdated",
+      type: "event"
     },
     {
-      "constant": true,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "name": "_skip",
-          "type": "uint256"
-        },
-        {
-          "name": "_take",
-          "type": "uint256"
+          indexed: false,
+          name: "_brickId",
+          type: "uint256"
         }
       ],
-      "name": "getBrickIds",
-      "outputs": [
-        {
-          "name": "brickIds",
-          "type": "uint256[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      name: "BrickCancelled",
+      type: "event"
     },
     {
-      "constant": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "name": "_title",
-          "type": "string"
+          indexed: false,
+          name: "_brickId",
+          type: "uint256"
         },
         {
-          "name": "_url",
-          "type": "string"
-        },
-        {
-          "name": "_description",
-          "type": "string"
-        },
-        {
-          "name": "_tags",
-          "type": "bytes32[]"
+          indexed: false,
+          name: "_builderAddress",
+          type: "address"
         }
       ],
-      "name": "addBrick",
-      "outputs": [
-        {
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
+      name: "WorkStarted",
+      type: "event"
     },
     {
-      "constant": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "name": "_brickId",
-          "type": "uint256"
+          indexed: false,
+          name: "_brickId",
+          type: "uint256"
         },
         {
-          "name": "_title",
-          "type": "string"
-        },
-        {
-          "name": "_url",
-          "type": "string"
-        },
-        {
-          "name": "_description",
-          "type": "string"
-        },
-        {
-          "name": "_tags",
-          "type": "bytes32[]"
+          indexed: false,
+          name: "_winners",
+          type: "address[]"
         }
       ],
-      "name": "changeBrick",
-      "outputs": [
-        {
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
+      name: "WorkAccepted",
+      type: "event"
     },
     {
-      "constant": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "name": "_brickId",
-          "type": "uint256"
-        },
-        {
-          "name": "_winners",
-          "type": "address[]"
-        },
-        {
-          "name": "_weights",
-          "type": "uint256[]"
+          indexed: true,
+          name: "previousOwner",
+          type: "address"
         }
       ],
-      "name": "accept",
-      "outputs": [
-        {
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
+      name: "OwnershipRenounced",
+      type: "event"
     },
     {
-      "constant": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "name": "_brickId",
-          "type": "uint256"
+          indexed: true,
+          name: "previousOwner",
+          type: "address"
+        },
+        {
+          indexed: true,
+          name: "newOwner",
+          type: "address"
         }
       ],
-      "name": "cancel",
-      "outputs": [
-        {
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      name: "OwnershipTransferred",
+      type: "event"
     },
     {
-      "constant": false,
-      "inputs": [
+      constant: true,
+      inputs: [
         {
-          "name": "_brickId",
-          "type": "uint256"
-        },
-        {
-          "name": "_builderId",
-          "type": "bytes32"
-        },
-        {
-          "name": "_nickName",
-          "type": "bytes32"
+          name: "_owner",
+          type: "address"
         }
       ],
-      "name": "startWork",
-      "outputs": [
+      name: "getBrickIdsByOwner",
+      outputs: [
         {
-          "name": "success",
-          "type": "bool"
+          name: "brickIds",
+          type: "uint256[]"
         }
       ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [
+      constant: true,
+      inputs: [
         {
-          "name": "_brickId",
-          "type": "uint256"
+          name: "_builder",
+          type: "address"
         }
       ],
-      "name": "getBrick",
-      "outputs": [
+      name: "getBrickIdsByBuilder",
+      outputs: [
         {
-          "name": "title",
-          "type": "string"
-        },
-        {
-          "name": "url",
-          "type": "string"
-        },
-        {
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "name": "value",
-          "type": "uint256"
-        },
-        {
-          "name": "dateCreated",
-          "type": "uint256"
-        },
-        {
-          "name": "dateCompleted",
-          "type": "uint256"
-        },
-        {
-          "name": "status",
-          "type": "uint32"
+          name: "brickIds",
+          type: "uint256[]"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [
+      constant: true,
+      inputs: [
         {
-          "name": "_brickId",
-          "type": "uint256"
+          name: "_skip",
+          type: "uint256"
+        },
+        {
+          name: "_take",
+          type: "uint256"
+        },
+        {
+          name: "_tags",
+          type: "bytes32[]"
+        },
+        {
+          name: "_status",
+          type: "uint256"
+        },
+        {
+          name: "_started",
+          type: "uint256"
+        },
+        {
+          name: "_expired",
+          type: "uint256"
         }
       ],
-      "name": "getBrickDetail",
-      "outputs": [
+      name: "getBrickIds",
+      outputs: [
         {
-          "name": "tags",
-          "type": "bytes32[]"
-        },
-        {
-          "name": "description",
-          "type": "string"
-        },
-        {
-          "name": "builders",
-          "type": "uint32"
-        },
-        {
-          "name": "winners",
-          "type": "address[]"
+          name: "brickIds",
+          type: "uint256[]"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     },
     {
-      "constant": true,
-      "inputs": [
+      constant: false,
+      inputs: [
         {
-          "name": "_brickId",
-          "type": "uint256"
+          name: "_title",
+          type: "string"
+        },
+        {
+          name: "_url",
+          type: "string"
+        },
+        {
+          name: "_expired",
+          type: "uint256"
+        },
+        {
+          name: "_description",
+          type: "string"
+        },
+        {
+          name: "_tags",
+          type: "bytes32[]"
         }
       ],
-      "name": "getBrickBuilders",
-      "outputs": [
+      name: "addBrick",
+      outputs: [
         {
-          "name": "addresses",
-          "type": "address[]"
-        },
-        {
-          "name": "dates",
-          "type": "uint256[]"
-        },
-        {
-          "name": "keys",
-          "type": "bytes32[]"
-        },
-        {
-          "name": "names",
-          "type": "bytes32[]"
+          name: "id",
+          type: "uint256"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      payable: true,
+      stateMutability: "payable",
+      type: "function"
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        },
+        {
+          name: "_title",
+          type: "string"
+        },
+        {
+          name: "_url",
+          type: "string"
+        },
+        {
+          name: "_description",
+          type: "string"
+        },
+        {
+          name: "_tags",
+          type: "bytes32[]"
+        }
+      ],
+      name: "changeBrick",
+      outputs: [
+        {
+          name: "success",
+          type: "bool"
+        }
+      ],
+      payable: true,
+      stateMutability: "payable",
+      type: "function"
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        },
+        {
+          name: "_winners",
+          type: "address[]"
+        },
+        {
+          name: "_weights",
+          type: "uint256[]"
+        }
+      ],
+      name: "accept",
+      outputs: [
+        {
+          name: "success",
+          type: "bool"
+        }
+      ],
+      payable: true,
+      stateMutability: "payable",
+      type: "function"
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        }
+      ],
+      name: "cancel",
+      outputs: [
+        {
+          name: "success",
+          type: "bool"
+        }
+      ],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        },
+        {
+          name: "_builderId",
+          type: "bytes32"
+        },
+        {
+          name: "_nickName",
+          type: "bytes32"
+        }
+      ],
+      name: "startWork",
+      outputs: [
+        {
+          name: "success",
+          type: "bool"
+        }
+      ],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        }
+      ],
+      name: "getBrick",
+      outputs: [
+        {
+          name: "title",
+          type: "string"
+        },
+        {
+          name: "url",
+          type: "string"
+        },
+        {
+          name: "owner",
+          type: "address"
+        },
+        {
+          name: "value",
+          type: "uint256"
+        },
+        {
+          name: "dateCreated",
+          type: "uint256"
+        },
+        {
+          name: "dateCompleted",
+          type: "uint256"
+        },
+        {
+          name: "expired",
+          type: "uint256"
+        },
+        {
+          name: "status",
+          type: "uint256"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        }
+      ],
+      name: "getBrickDetail",
+      outputs: [
+        {
+          name: "tags",
+          type: "bytes32[]"
+        },
+        {
+          name: "description",
+          type: "string"
+        },
+        {
+          name: "builders",
+          type: "uint32"
+        },
+        {
+          name: "winners",
+          type: "address[]"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: "_brickId",
+          type: "uint256"
+        }
+      ],
+      name: "getBrickBuilders",
+      outputs: [
+        {
+          name: "addresses",
+          type: "address[]"
+        },
+        {
+          name: "dates",
+          type: "uint256[]"
+        },
+        {
+          name: "keys",
+          type: "bytes32[]"
+        },
+        {
+          name: "names",
+          type: "bytes32[]"
+        }
+      ],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
     }
   ],
-  // CONTRACT_ADDRESS: "0xbabb3faec25ff0dc5c34fe9e202d815a49594b41",
-  CONTRACT_ADDRESS: "0x51EC288D994b037e7b94a263793Be80e49BAE0cb",
-  network: {
-    kovan: KOVAN_RPC_URL,
-    mainnet: MAINET_RPC_URL,
-    rinkeby: RINKEBY_RPC_URL,
-    ropsten: ROPSTEN_RPC_URL
+  // CONTRACT_ADDRESS: "0xf6ae46afaa49a2e7963e5bcd210988ff539b8034",
+  // CONTRACT_ADDRESS: "0x4c77dae972749a67d78c404c0b58f9e217871a15",
+  addresses: {
+    "1": "0x0a64fe0b2587c31c511ae81c7b4c2cf8bb3b3cc6", // implementation: 0x65e871cd0e132e14b3bd9569199dcb436c752b2f
+    "3": "0x20e3ef00bd74a3ac14704f45a12372cb999a8eac", // implementation: 0x32389232995be175465ff6c692a0c43c14d3813f
+    "4": "0xbd794584d753f2c11d13f50f7c786e21d7bc6b2b", // implementation: 0x7d77fd5825c51269541df282d3643a5a9fe5dcae
+    "42": "0x4c77dae972749a67d78c404c0b58f9e217871a15"
   },
-  networkName: "kovan",
-  // tslint:disable-next-line:object-literal-sort-keys
-  chainId: 42
+  defaultNetwork: "42",
+  network: {
+    "1": MAINET_RPC_URL,
+    "3": ROPSTEN_RPC_URL,
+    "4": RINKEBY_RPC_URL,
+    "42": KOVAN_RPC_URL
+  },
+  networkNames: {
+    "1": "mainnet",
+    "3": "ropsten",
+    "4": "rinkeby",
+    "42": "kovan"
+  }
 };
+
+const env = process.env.NODE_ENV || "development";
+const config = env === "development" ? development : production;
+
+const mergedConfig = { ...defaultConfig, ...config };
+
+export default mergedConfig;

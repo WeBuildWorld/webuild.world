@@ -1,11 +1,13 @@
 export interface IStoreState {
   bricks: IBrick[];
   brickCount: number;
+  history?: any;
   user?: ICredential;
   networkStatus?: any;
   hash?: string;
   loggedIn?: boolean;
   loggingIn?: boolean;
+  account?:string;
 }
 
 export interface ICredential {
@@ -29,6 +31,7 @@ export interface IBrick {
   tags?: string[];
   dateCreated?: Date | number;
   dateCompleted?: Date | number;
+  expired?: Date | number;
   winner?: IBuilder;
 }
 
@@ -45,3 +48,26 @@ export interface IBuilder {
   dateStarted?: number;
   key?: string;
 }
+
+
+export interface IActionState {
+  id: any,
+  process: ActionState
+}
+
+export interface IBrickState {
+  [key: string]: any,
+  brick?: IBrick
+}
+
+export enum ActionState {
+  StartWork,
+  Accept,
+  Cancel,
+}
+
+export enum RoleType {
+  Owner,
+  Builder
+}
+

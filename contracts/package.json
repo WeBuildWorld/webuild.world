@@ -13,7 +13,6 @@
   "dependencies": {
     "sol-merger": "^0.1.2",
     "solhint": "^1.2.1",
-    "solidity-utils": "https://github.com/sagivo/solidity-utils.git",
     "zeppelin-solidity": "^1.10.0"
   },
   "devDependencies": {
@@ -21,6 +20,6 @@
     "run-with-testrpc": "^0.3.0",
     "solc": "^0.4.24",
     "solidity-coverage": "^0.5.0",
-    "truffle": "^4.1.11"
+    "truffle": "^4.1.14"
   }
 }

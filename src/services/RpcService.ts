@@ -8,9 +8,15 @@ class RpcService {
 
   public constructor() {
     if (!rpcConnection) {
+
       rpcConnection =
         (window as any).web3 ||
-        new Web3(new Web3.providers.HttpProvider(config.network[config.networkName]));
+        new Web3();
+
+      rpcConnection.setProvider(new Web3.providers.HttpProvider(config.network[config.defaultNetwork]));
+      rpcConnection.version.getNetwork((error, networkId) => {
+        rpcConnection.setProvider(new Web3.providers.HttpProvider(config.network[networkId]));
+      });
     }
     this.web3 = rpcConnection;
   }
@@ -28,7 +34,13 @@ class RpcService {
     return !!this.mainAccount;
   }
 
-  public contract(abi: any, address: string): any {
+  public getNetWorkName() {
+    return config.networkNames[this.rpc.version.network];
+  }
+
+  public contract(): any {
+    const abi: any = config.CONTRACT_ABI;
+    const address = config.addresses[this.rpc.version.network];
     return this.rpc.eth.contract(abi).at(address);
   }
 
