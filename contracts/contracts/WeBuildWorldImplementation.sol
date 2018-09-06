@@ -24,6 +24,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         string title;
         string url;
         string description;
+        bool token;
         bytes32[] tags;
         address owner;
         uint value;
@@ -48,27 +49,48 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         _;
     }
 
+    modifier onlyNewBrick(uint _brickId) {
+        require(bricks[_brickId].owner == 0x0 || bricks[_brickId].owner == tx.origin);
+        _;
+    }
+
+
     function () public payable {
         revert();
     }    
 
     function isBrickOwner(uint _brickId, address _address) external view returns (bool success) {
         return bricks[_brickId].owner == _address;
-    }    
+    }   
 
-    function addBrick(uint _brickId, string _title, string _url, uint _expired, string _description, bytes32[] _tags, uint _value) 
-        external onlyMain
+    // only add when it's new
+    function _storeBrick(uint _brickId, Brick brick) private {
+        if (bricks[_brickId].owner == 0x0) {
+            brickIds.insertBeginning(_brickId, "");
+        }
+        bricks[_brickId] = brick;
+    } 
+
+    function addBrick(
+        uint _brickId, 
+        string _title, 
+        string _url, 
+        uint _expired, 
+        string _description, 
+        bytes32[] _tags, 
+        uint _value, 
+        bool _token)
+        external onlyMain onlyNewBrick(_brickId)
         returns (bool success)
     {
         // greater than 0.01 eth
         require(_value >= 10 ** 16);
-        // solhint-disable-next-line
-        require(bricks[_brickId].owner == 0x0 || bricks[_brickId].owner == tx.origin);
-
+  
         Brick memory brick = Brick({
             title: _title,
             url: _url,
-            description: _description,   
+            description: _description,
+            token: _token,
             tags: _tags,
             // solhint-disable-next-line
             owner: tx.origin,
@@ -82,12 +104,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
             winners: new address[](0)
         });
 
-        // only add when it's new
-        if (bricks[_brickId].owner == 0x0) {
-            brickIds.insertBeginning(_brickId, "");
-        }
-        bricks[_brickId] = brick;
-
+        _storeBrick(_brickId, brick);
         return true;
     }
 

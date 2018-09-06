@@ -4,6 +4,7 @@ pragma solidity ^0.4.23;
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./libs/Extendable.sol";
 import "./Provider.sol";
+import "./libs/HumanStandardToken.sol";
 
 
 contract WeBuildWorld is Extendable {
@@ -12,7 +13,7 @@ contract WeBuildWorld is Extendable {
     string public constant VERSION = "0.1";
     uint public constant DENOMINATOR = 10000;
     enum AddressRole { Owner, Builder }
-
+    mapping(uint=>HumanStandardToken) tokenContracts; 
 
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
@@ -117,12 +118,26 @@ contract WeBuildWorld is Extendable {
         return brickIds;
     }
 
-    function addBrick(string _title, string _url, uint _expired, string _description, bytes32[] _tags) 
+    function addBrick(
+        string _title, 
+        string _url, 
+        uint _expired, 
+        string _description, 
+        bytes32[] _tags, 
+        bool _token, 
+        address _tokenContract,
+        uint _value) 
         public payable
         returns (uint id)
     {
         id = getId();
-        require(getProvider(id).addBrick(id, _title, _url, _expired, _description, _tags, msg.value));
+        if(_token){
+            require(msg.value == 0 && _value >= 10 ** 16);
+            tokenContracts[id] = HumanStandardToken(_tokenContract);
+            require(tokenContracts[id].transferFrom(msg.sender, this, _value));
+        }
+        require(getProvider(id).addBrick(id, _title, _url, _expired, _description, _tags, _token?_value:msg.value, _token));
+
         emit BrickAdded(id);
     }
 
@@ -137,16 +152,32 @@ contract WeBuildWorld is Extendable {
     }
 
     // msg.value is tip.
-    function accept(uint _brickId, address[] _winners, uint[] _weights) 
+    function accept(
+        uint _brickId, 
+        address[] _winners, 
+        uint[] _weights,
+        bool _token, 
+        address _tokenContract,
+        uint _value
+        ) 
         public onlyBrickOwner(_brickId) 
         payable
         returns (bool success) 
     {
-        uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, msg.value);
+        if(_token){
+            require(HumanStandardToken(_tokenContract).transferFrom(msg.sender, this , _value));
+        }
+
+        uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, _token? _value: msg.value);
         require(total > 0);
         for (uint i=0; i < _winners.length; i++) {
-            _winners[i].transfer(total.mul(_weights[i]).div(DENOMINATOR));    
-        }     
+
+            if(_token){
+                require(tokenContracts[_brickId].transfer(_winners[i], total.mul(_weights[i]).div(DENOMINATOR)));
+            }else{
+                _winners[i].transfer(total.mul(_weights[i]).div(DENOMINATOR));    
+            }
+        }
 
         emit WorkAccepted(_brickId, _winners);
         return true;   
