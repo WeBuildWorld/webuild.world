@@ -4,7 +4,7 @@ pragma solidity ^0.4.23;
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./libs/Extendable.sol";
 import "./Provider.sol";
-import "./libs/HumanStandardToken.sol";
+import "./libs/ERC20Extended.sol";
 
 
 contract WeBuildWorld is Extendable {
@@ -13,7 +13,7 @@ contract WeBuildWorld is Extendable {
     string public constant VERSION = "0.1";
     uint public constant DENOMINATOR = 10000;
     enum AddressRole { Owner, Builder }
-    mapping(uint=>HumanStandardToken) tokenContracts; 
+    mapping(uint=>ERC20Extended) tokenContracts; 
 
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
@@ -123,20 +123,31 @@ contract WeBuildWorld is Extendable {
         string _url, 
         uint _expired, 
         string _description, 
-        bytes32[] _tags, 
-        bool _token, 
+        bytes32[] _tags,
         address _tokenContract,
         uint _value) 
         public payable
         returns (uint id)
     {
         id = getId();
-        if(_token){
+        bool token = (_tokenContract != 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
+       
+        if(token){
             require(msg.value == 0 && _value >= 10 ** 16);
-            tokenContracts[id] = HumanStandardToken(_tokenContract);
-            require(tokenContracts[id].transferFrom(msg.sender, this, _value));
+            tokenContracts[id] = ERC20Extended(_tokenContract);
+            require(tokenContracts[id].balanceOf(address(msg.sender))>= _value);
+            require(tokenContracts[id].transferFrom(msg.sender, address(this), _value));
         }
-        require(getProvider(id).addBrick(id, _title, _url, _expired, _description, _tags, _token?_value:msg.value, _token));
+
+        require(getProvider(id).addBrick(
+            id,
+            _title,
+            _url,
+            _expired,
+            _description,
+            _tags,
+            token?_value:msg.value,
+            token));
 
         emit BrickAdded(id);
     }
@@ -165,7 +176,7 @@ contract WeBuildWorld is Extendable {
         returns (bool success) 
     {
         if(_token){
-            require(HumanStandardToken(_tokenContract).transferFrom(msg.sender, this , _value));
+            require(ERC20Extended(_tokenContract).transferFrom(msg.sender, this , _value));
         }
 
         uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, _token? _value: msg.value);
