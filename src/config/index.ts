@@ -413,6 +413,18 @@ export default {
         {
           "name": "_tags",
           "type": "bytes32[]"
+        },
+        {
+          "name": "_token",
+          "type": "bool"
+        },
+        {
+          "name": "_tokenContract",
+          "type": "address"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
         }
       ],
       "name": "addBrick",
@@ -475,6 +487,18 @@ export default {
         {
           "name": "_weights",
           "type": "uint256[]"
+        },
+        {
+          "name": "_token",
+          "type": "bool"
+        },
+        {
+          "name": "_tokenContract",
+          "type": "address"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
         }
       ],
       "name": "accept",
@@ -650,7 +674,7 @@ export default {
     '1': '',
     '3': '',
     '4': '',
-    '42': '0x4c77dae972749a67d78c404c0b58f9e217871a15',
+    '42': '0x3c8de66bdcac4bdac9f8f323bc21a6846bb28b3b',
   },
   defaultNetwork: "42",
   network: {
@@ -659,10 +683,16 @@ export default {
     '4': RINKEBY_RPC_URL,
     '42': KOVAN_RPC_URL,
   },
-  networkNames:{
+  networkNames: {
     '1': 'mainnet',
     '3': 'ropsten',
     '4': 'rinkeby',
     '42': 'kovan',
+  },
+  tokenAddresses:{
+    '1': '',
+    '3': '',
+    '4': '',
+    '42': '0xc4375b7de8af5a38a93548eb8453a498222c4ff2',
   }
 };

@@ -7,7 +7,7 @@ export interface IStoreState {
   hash?: string;
   loggedIn?: boolean;
   loggingIn?: boolean;
-  account?:string;
+  account?: string;
 }
 
 export interface ICredential {
@@ -33,6 +33,7 @@ export interface IBrick {
   dateCompleted?: Date | number;
   expired?: Date | number;
   winner?: IBuilder;
+  isPaysToken?: boolean;
 }
 
 export enum BrickStatus {

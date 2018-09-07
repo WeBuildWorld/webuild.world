@@ -38,6 +38,10 @@ class RpcService {
     return config.networkNames[this.rpc.version.network];
   }
 
+  public getTokenContractAddress() {
+    return config.tokenAddresses[this.rpc.version.network];
+  }
+
   public contract(): any {
     const abi: any = config.CONTRACT_ABI;
     const address = config.addresses[this.rpc.version.network];

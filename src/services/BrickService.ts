@@ -193,14 +193,22 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
   const contract = rpcService.contract();
   const options = { value: rpcService.rpc.toWei(brick.value, "ether") };
   const tags: any[] = brick.tags;
-  const hash = (await Promisify((cb: any) => {
+  const tokenContract = rpcService.getTokenContractAddress();
 
+  const isPaysToken = true;
+  // brick.isPaysToken === true;
+
+  const hash = (await Promisify((cb: any) => {
+    options.value = '0';
     return contract.addBrick(
       brick.title,
       brick.url || "",
       brick.expired.valueOf() / 1000,
       brick.description || "",
       tags,
+      isPaysToken,
+      tokenContract,
+      rpcService.rpc.toWei(0.02, "ether"),
       options,
       cb
     );
@@ -275,7 +283,7 @@ export function watchEvents(callback: any) {
       if (result.args && result.args._brickId) {
         const brickId = result.args._brickId.toNumber();
         callback(brickId);
-      } 
+      }
 
     }
 
