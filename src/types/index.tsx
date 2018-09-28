@@ -50,15 +50,14 @@ export interface IBuilder {
   key?: string;
 }
 
-
 export interface IActionState {
-  id: any,
-  process: ActionState
+  id: any;
+  process: ActionState;
 }
 
 export interface IBrickState {
-  [key: string]: any,
-  brick?: IBrick
+  [key: string]: any;
+  brick?: IBrick;
 }
 
 export enum ActionState {
@@ -69,6 +68,5 @@ export enum ActionState {
 
 export enum RoleType {
   Owner,
-  Builder
+  Builder,
 }
-

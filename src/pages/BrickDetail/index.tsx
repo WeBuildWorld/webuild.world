@@ -1,12 +1,12 @@
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
-import { IBrick, IStoreState } from "../../types";
-import * as actions from "./action";
-import BrickDetail from "./component";
+import { IBrick, IStoreState } from '../../types';
+import * as actions from './action';
+import BrickDetail from './component';
 
 export function mapStateToProps({
-    reducer
+    reducer,
 }: {
         reducer: { app: IStoreState };
     }) {
@@ -25,5 +25,5 @@ export function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 export default connect<any>(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(BrickDetail);

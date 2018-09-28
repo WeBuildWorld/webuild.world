@@ -1,6 +1,6 @@
 import { IStoreState } from './types';
 
-import * as constants from "./constants";
+import * as constants from './constants';
 
 import createHistory from 'history/createBrowserHistory';
 import { routerMiddleware, routerReducer } from 'react-router-redux';
@@ -11,8 +11,8 @@ import { createLogger } from 'redux-logger';
 import reduxThunk from 'redux-thunk';
 
 // import { composeWithDevTools } from 'redux-devtools-extension';
-import { getBrick, watchEvents } from "./services/BrickService";
-import rpcService from "./services/RpcService";
+import { getBrick, watchEvents } from './services/BrickService';
+import rpcService from './services/RpcService';
 
 // import { Hour } from './helpers/formatter';
 import app from './reducers';
@@ -24,32 +24,31 @@ const loggerMiddleware = createLogger();
 // const storageMiddleware = storage.createMiddleware(engine);
 
 export interface IAppState {
-	app: IStoreState;
+    app: IStoreState;
 }
 
 export interface IStore {
-	reducer: IAppState;
-	router: any;
+    reducer: IAppState;
+    router: any;
 }
 
 const reducer = combineReducers<IAppState>({
-	app,
+    app,
 });
 
 const store = createStore<IStore, any, any, any>(
-	combineReducers({
-		reducer,
-		router: routerReducer,
-	}),
-	// composeWithDevTools(
-	applyMiddleware(
-		// storageMiddleware,
-		// loggerMiddleware,
-		reduxThunk.withExtraArgument(middleware),
-	),
-	// ),
+    combineReducers({
+        reducer,
+        router: routerReducer,
+    }),
+    // composeWithDevTools(
+    applyMiddleware(
+        // storageMiddleware,
+        // loggerMiddleware,
+        reduxThunk.withExtraArgument(middleware),
+    ),
+    // ),
 );
-
 
 // const load = storage.createLoader(engine);
 // tslint:disable-next-line:no-console
@@ -57,48 +56,48 @@ const store = createStore<IStore, any, any, any>(
 
 // Required when merge Own Props with reducer props
 const mergeProps = (stateProps: any, dispatchProps: any, ownProps: any) => {
-	return { ...ownProps, ...dispatchProps, ...stateProps };
+    return { ...ownProps, ...dispatchProps, ...stateProps };
 };
 
 watchEvents(async (brickId: any) => {
-	const dispatch = store.dispatch;
-	const brick = await getBrick(brickId);
-	const items = store.getState().reducer.app.bricks || [];
-	let bricks = [...items];
+    const dispatch = store.dispatch;
+    const brick = await getBrick(brickId);
+    const items = store.getState().reducer.app.bricks || [];
+    let bricks = [...items];
 
-	const index = bricks.findIndex(
-		(item: any) => {
-			return item.id === brickId;
-		});
-	if (index > -1) {
-		bricks[index] = brick;
-	} else if (bricks.length === 0) {
-		bricks = [brick];
-	} else {
-		bricks.unshift(brick);
-	}
+    const index = bricks.findIndex(
+        (item: any) => {
+            return item.id === brickId;
+        });
+    if (index > -1) {
+        bricks[index] = brick;
+    } else if (bricks.length === 0) {
+        bricks = [brick];
+    } else {
+        bricks.unshift(brick);
+    }
 
-	const payload = {
-		brickCount: bricks.length,
-		bricks,
-	}
+    const payload = {
+        brickCount: bricks.length,
+        bricks,
+    };
 
-	dispatch({
-		payload,
-		type: constants.ON_BRICKS_CHANGED
-	});
+    dispatch({
+        payload,
+        type: constants.ON_BRICKS_CHANGED,
+    });
 });
 
 setInterval(() => {
-	const dispatch = store.dispatch;
-	const account = rpcService.mainAccount;
-	if (account) {
-		const payload = { account };
-		dispatch({
-			payload,
-			type: constants.SET_ACCOUNT
-		});
-	}
-}, 1000)
+    const dispatch = store.dispatch;
+    const account = rpcService.mainAccount;
+    if (account) {
+        const payload = { account };
+        dispatch({
+            payload,
+            type: constants.SET_ACCOUNT,
+        });
+    }
+}, 1000);
 
 export { store, history, mergeProps };

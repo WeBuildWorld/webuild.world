@@ -1,5 +1,5 @@
-import * as Web3 from "web3";
-import config from "../config";
+import * as Web3 from 'web3';
+import config from '../config';
 
 let rpcConnection: Web3;
 
@@ -42,6 +42,16 @@ class RpcService {
     return config.tokenAddresses[this.rpc.version.network];
   }
 
+  public getTokenContract() {
+    const abi: any = config.TOKEN_ABI;
+    const address = config.tokenAddresses[this.rpc.version.network];
+    return this.rpc.eth.contract(abi).at(address);
+  }
+
+  public getCurrentContractAddress() {
+    return config.addresses[this.rpc.version.network];
+  }
+
   public contract(): any {
     const abi: any = config.CONTRACT_ABI;
     const address = config.addresses[this.rpc.version.network];
@@ -57,7 +67,7 @@ class RpcService {
   }
 
   public async getGasLimit(): Promise<number> {
-    const block = await this.rpc.eth.getBlock("latest");
+    const block = await this.rpc.eth.getBlock('latest');
     const gasLimit = block.gasLimit;
 
     return gasLimit;

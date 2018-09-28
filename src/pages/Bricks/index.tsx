@@ -1,17 +1,17 @@
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { IBrick, IStoreState } from "../../types";
-import * as actions from "./action";
-import Bricks, { IProps } from "./component";
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { IBrick, IStoreState } from '../../types';
+import * as actions from './action';
+import Bricks, { IProps } from './component';
 
 export function mapStateToProps({
-  reducer
+  reducer,
 }: {
     reducer: { app: IStoreState };
   }) {
   return {
     brickCount: reducer.app.brickCount,
-    bricks: reducer.app.bricks
+    bricks: reducer.app.bricks,
   };
 }
 
@@ -37,5 +37,5 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.BrickAction>) {
 
 export default connect<IProps>(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Bricks);

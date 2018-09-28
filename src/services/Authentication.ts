@@ -1,4 +1,4 @@
-import { ICredential } from "../types";
+import { ICredential } from '../types';
 
 const STORAGE_KEY = '_user';
 const AVATAR_TEMPLATE = 'https://avatars1.githubusercontent.com/u/{id}?v=4';

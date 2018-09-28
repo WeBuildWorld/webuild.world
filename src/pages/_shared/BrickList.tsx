@@ -1,15 +1,15 @@
 import { Alert, Avatar, Button, Card, Icon, List, message, Select, Spin, Tag } from 'antd';
-import * as moment from "moment";
-import * as React from "react";
+import * as moment from 'moment';
+import * as React from 'react';
 import * as InfiniteScroll from 'react-infinite-scroller';
 
 import parser from 'parse-github-url';
-import config from "../../config";
+import config from '../../config';
 
-import { getBrick, getBricks, getBricksByBuilder, getBricksByOwner } from "../../services/BrickService";
-import { BrickStatus, IBrick, RoleType } from "../../types";
+import { getBrick, getBricks, getBricksByBuilder, getBricksByOwner } from '../../services/BrickService';
+import { BrickStatus, IBrick, RoleType } from '../../types';
 
-import "./BrickList.css";
+import './BrickList.css';
 
 const pageSize = 5;
 const { Option } = Select;
@@ -23,7 +23,7 @@ export default class Bricks extends React.Component<any, any> {
     items: [],
     loading: false,
     start: 0,
-  }
+  };
 
   constructor(props: any) {
     super(props);
@@ -39,7 +39,6 @@ export default class Bricks extends React.Component<any, any> {
       this.refresh([]);
     }, 200);
   }
-
 
   public addFilter(tag: string) {
     this.setState((prevState: any) => {
@@ -70,14 +69,14 @@ export default class Bricks extends React.Component<any, any> {
     const started = moment((brick.dateCreated as any) * 1000).fromNow();
     const expireLabel = ((brick.expired as any) * 1000 > new Date().getTime()) ? ' Expires ' : ' Expired ';
     let expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
-    expired = expired ? (" • " + expireLabel + expired) : "";
-    const detailUrl = "/brick/" + brick.id;
-    const desc = "Status " + BrickStatus[brick.status] + " • " + "Opened "
+    expired = expired ? (' • ' + expireLabel + expired) : '';
+    const detailUrl = '/brick/' + brick.id;
+    const desc = 'Status ' + BrickStatus[brick.status] + ' • ' + 'Opened '
       + started + expired;
     let avatar;
     const uriObj = parser(brick.url);
     if (uriObj && uriObj.owner && uriObj.host === 'github.com') {
-      const src = "https://avatars.githubusercontent.com/" + uriObj.owner;
+      const src = 'https://avatars.githubusercontent.com/' + uriObj.owner;
       avatar = <Avatar src={src} />;
     }
 
@@ -85,8 +84,7 @@ export default class Bricks extends React.Component<any, any> {
       <List.Item
         key={brick.id}
         extra={
-          <Tag className="unclickable" color="#2db7f5">{brick.value} ETH <i className="fab fa-ethereum" /></Tag>
-        }
+          <Tag className="unclickable" color="#2db7f5">{brick.value} ETH <i className="fab fa-ethereum" /></Tag>}
       >
         <List.Item.Meta
           avatar={avatar}
@@ -103,15 +101,14 @@ export default class Bricks extends React.Component<any, any> {
         </div>
 
       </List.Item>
-    )
+    );
   }
-
 
   public refresh(tags: string[]) {
     this.setState({
       hasMore: true,
       loading: true,
-      start: 0
+      start: 0,
     });
 
     if (this.props.role === RoleType.Owner) {
@@ -126,7 +123,7 @@ export default class Bricks extends React.Component<any, any> {
           items,
           loading: false,
           start,
-        })
+        });
       });
 
     } else if (this.props.role === RoleType.Builder) {
@@ -140,7 +137,7 @@ export default class Bricks extends React.Component<any, any> {
           items,
           loading: false,
           start,
-        })
+        });
       });
 
     } else {
@@ -152,8 +149,8 @@ export default class Bricks extends React.Component<any, any> {
           empty,
           items,
           loading: false,
-          start
-        })
+          start,
+        });
       });
     }
   }
@@ -188,7 +185,7 @@ export default class Bricks extends React.Component<any, any> {
 
   private renderNothing() {
     const { empty } = this.state;
-    const text = empty ? '' : "or it's being loaded";
+    const text = empty ? '' : 'or it\'s being loaded';
     return (
       <div className="greeting">
         <Button className="unclickable ant-btn-loading" type="primary" loading={!empty}>

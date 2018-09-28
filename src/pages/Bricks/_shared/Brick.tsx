@@ -1,12 +1,11 @@
-import { Avatar, Button, Card, Col, Divider, Dropdown, Icon, Menu, message, Modal, Row, Spin, Tag } from "antd";
-import * as moment from "moment";
-import * as React from "react";
-import Select, { components } from "react-select";
-import { Authentication } from "../../../services/Authentication";
-import RpcService from "../../../services/RpcService";
-import { ActionState, BrickStatus, IActionState, IBrick, IBrickState } from "../../../types";
-import "./Brick.css";
-
+import { Avatar, Button, Card, Col, Divider, Dropdown, Icon, Menu, message, Modal, Row, Spin, Tag } from 'antd';
+import * as moment from 'moment';
+import * as React from 'react';
+import Select, { components } from 'react-select';
+import { Authentication } from '../../../services/Authentication';
+import RpcService from '../../../services/RpcService';
+import { ActionState, BrickStatus, IActionState, IBrick, IBrickState } from '../../../types';
+import './Brick.css';
 
 export interface IProps {
   brick: IBrick;
@@ -19,7 +18,7 @@ export default class Brick extends React.Component<IProps, object> {
   public state: IBrickState = {
     modalIsOpen: false,
     processes: [],
-    winner: "",
+    winner: '',
   };
 
   public constructor(props: IProps) {
@@ -30,7 +29,6 @@ export default class Brick extends React.Component<IProps, object> {
     this.cancelModal = this.cancelModal.bind(this);
     this.cancelWork = this.cancelWork.bind(this);
   }
-
 
   public checkLoggedIn() {
     const user = Authentication.getCurrentUser();
@@ -66,7 +64,7 @@ export default class Brick extends React.Component<IProps, object> {
         },
       });
       return false;
-    } {
+    } else {
       return true;
     }
   }
@@ -83,7 +81,7 @@ export default class Brick extends React.Component<IProps, object> {
         await this.props.startWork(this.props.brick.id);
         this.processingBrick({
           id: this.props.brick.id,
-          process: ActionState.StartWork
+          process: ActionState.StartWork,
         });
         hide();
       } catch (ex) {
@@ -128,7 +126,7 @@ export default class Brick extends React.Component<IProps, object> {
           await self.props.cancelBrick(self.props.brick.id);
           self.processingBrick({
             id: self.props.brick.id,
-            process: ActionState.Cancel
+            process: ActionState.Cancel,
           });
           hide();
         } catch (ex) {
@@ -154,7 +152,7 @@ export default class Brick extends React.Component<IProps, object> {
       await self.props.acceptWork(self.props.brick.id, self.state.winner);
       self.processingBrick({
         id: self.props.brick.id,
-        process: ActionState.Accept
+        process: ActionState.Accept,
       });
       hide();
     } catch (ex) {
@@ -173,12 +171,12 @@ export default class Brick extends React.Component<IProps, object> {
     const getAvatar = (id: any) => {
       const src = Authentication.getAvatarFromId(parseInt(id, 10));
       return <img className="avatar float-left mr-1" src={src} />;
-    }
+    };
 
-    const options = this.props.brick.builders!.map(builder => ({
+    const options = this.props.brick.builders!.map((builder) => ({
       label: builder.nickName + '(' + builder.walletAddress + ')', // builder.nickName
       name: builder.key,
-      value: builder.walletAddress
+      value: builder.walletAddress,
     }));
 
     const SingleValue = ({ data, children, ...props }: any) => {
@@ -188,7 +186,7 @@ export default class Brick extends React.Component<IProps, object> {
           {avatarEle} {children}
         </components.SingleValue>
       );
-    }
+    };
 
     const MenuList = (props: any) => {
       return (
@@ -207,13 +205,13 @@ export default class Brick extends React.Component<IProps, object> {
 
       return result;
 
-    }
+    };
 
     return (
       <Modal
         align={{}}
         visible={this.state.modalIsOpen}
-        title={"Accept work:" + this.props.brick.title}
+        title={'Accept work:' + this.props.brick.title}
         onOk={this.acceptWork}
         onCancel={this.cancelModal}
       >
@@ -252,7 +250,7 @@ export default class Brick extends React.Component<IProps, object> {
     const { brick } = this.props;
     const started = moment((brick.dateCreated as any) * 1000).fromNow();
     const expired = brick.expired > 0 ? moment((brick.expired as any) * 1000).fromNow() : '';
-    const detailUrl = "/brick/" + brick.id;
+    const detailUrl = '/brick/' + brick.id;
     return (
       <div>
         <Row>
@@ -266,7 +264,7 @@ export default class Brick extends React.Component<IProps, object> {
         <Row>
           <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
             <span> Status {BrickStatus[brick.status]}</span> •
-            <span> Opened {started}</span> {expired ? (<span> • Expired {expired}</span>) : ""}
+            <span> Opened {started}</span> {expired ? (<span> • Expired {expired}</span>) : ''}
           </Col>
           {/* <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
            </Col> */}
@@ -275,13 +273,13 @@ export default class Brick extends React.Component<IProps, object> {
         <Row>
           <Col>
             {brick.tags &&
-              brick.tags.map(tag => (
+              brick.tags.map((tag) => (
                 <Tag key={tag} color="#87d068">{tag}</Tag>
               ))}
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 
 }

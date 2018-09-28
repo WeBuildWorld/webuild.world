@@ -6,7 +6,7 @@ const Promisify = <T>(inner: any): Promise<T> =>
       } else {
         resolve(res);
       }
-    })
+    }),
   );
 
 export default Promisify;

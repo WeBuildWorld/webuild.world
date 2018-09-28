@@ -1,18 +1,18 @@
 import {
   ADD_BRICK, CANCEL_BRICK, GET_BRICKS,
   GET_MORE_BRICKS, LOGIN_FAILURE, LOGIN_REQUEST,
-  LOGIN_SUCCESS, LOGOUT, ON_BRICKS_CHANGED, REMOVE_HASH, SET_ACCOUNT, START_WORK, STORAGE_SAVE
-} from "../constants";
-import { IStoreState } from "../types";
+  LOGIN_SUCCESS, LOGOUT, ON_BRICKS_CHANGED, REMOVE_HASH, SET_ACCOUNT, START_WORK, STORAGE_SAVE,
+} from '../constants';
+import { IStoreState } from '../types';
 
 const defaultState: IStoreState = {
   brickCount: 0,
-  bricks: []
+  bricks: [],
 };
 
-export default function (
+export default function(
   state: IStoreState = defaultState,
-  action: any
+  action: any,
 ): IStoreState {
   switch (action.type) {
     case STORAGE_SAVE: {

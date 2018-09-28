@@ -1,6 +1,6 @@
-import * as constants from "../../constants";
-import { addBrick } from "../../services/BrickService";
-import { IBrick } from "../../types";
+import * as constants from '../../constants';
+import { addBrick } from '../../services/BrickService';
+import { IBrick } from '../../types';
 
 export interface IAddBrick {
   type: constants.ADD_BRICK;
@@ -13,7 +13,7 @@ export function postBrick(brick: IBrick) {
     const hash = await addBrick(brick);
     return dispatch({
       payload: { hash },
-      type: constants.ADD_BRICK
+      type: constants.ADD_BRICK,
     });
   };
 }

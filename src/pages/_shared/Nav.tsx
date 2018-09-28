@@ -1,18 +1,16 @@
 import { Button, Col, Icon, Menu, Modal, Popover, Row } from 'antd';
-import { History } from "history";
-import * as React from "react";
-import logo from "../../logo.svg";
+import { History } from 'history';
+import * as React from 'react';
+import logo from '../../logo.svg';
 import { enquireScreen, getLocalizedPathname } from './../../utils';
-import GitHubButton from "./GithubButton";
+import GitHubButton from './GithubButton';
 
-import RpcService from "../../services/RpcService";
-import "./Nav.css";
+import RpcService from '../../services/RpcService';
+import './Nav.css';
 
 interface IProps {
   history?: History | undefined;
 }
-
-
 
 // tslint:disable-next-line:no-console
 // const onSuccess = (response) => console.log(response);
@@ -40,35 +38,33 @@ export default class Nav extends React.Component<IProps, any> {
     if (!RpcService.hasMainAccount()) {
       Modal.warn({
         title: 'Metamask needed.',
-        // tslint:disable-next-line:object-literal-sort-keys
         content: (
           <div>
             <p>Here is <a target="_blank" href="https://metamask.io/">Metamask</a>.</p>
           </div>
         ),
-        // tslint:disable-next-line:no-empty
         onOk() { },
       });
       return;
     }
-    this.props.history!.push("/add-brick");
+    this.props.history!.push('/add-brick');
   }
 
   public home() {
-    this.props.history!.push("/");
+    this.props.history!.push('/');
   }
 
   public handleShowMenu() {
     this.setState({
       menuVisible: true,
     });
-  };
+  }
 
   public onMenuVisibleChange(visible: boolean) {
     this.setState({
       menuVisible: visible,
     });
-  };
+  }
 
   public render() {
     const { menuVisible, menuMode } = this.state;

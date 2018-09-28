@@ -1,21 +1,21 @@
 import { Button, Card, Form, message } from 'antd';
-import * as React from "react";
+import * as React from 'react';
 
-import { IBrick } from "../../types";
+import { IBrick } from '../../types';
 import AddBrickForm from './_shared/AddBrickForm';
 // import { IBrick } from '../../types';
-import "./style.css";
+import './style.css';
 
 export interface IProps {
   addBrick?: (brick: IBrick) => void;
-  form?: any,
+  form?: any;
   hash?: string;
 }
 export interface IState {
   brick: IBrick;
   validations: IValidationStatus;
   confirmDirty?: any;
-  inputVisible?: false,
+  inputVisible?: false;
 }
 
 type UncertainType<T> = T | undefined;
@@ -27,23 +27,22 @@ interface IValidationStatus {
   value: UncertainType<boolean>;
 }
 
-
 export default class Bricks extends React.Component<IProps, IState> {
   public state = {
     brick: {
-      description: "",
-      owner: "",
+      description: '',
+      owner: '',
       status: 0,
-      title: "",
-      url: "",
-      value: 0
+      title: '',
+      url: '',
+      value: 0,
     },
-    validations: {} as IValidationStatus
+    validations: {} as IValidationStatus,
   }; // tslint:disable-next-line:object-literal-sort-keys
 
   public URL_REGEXP = new RegExp(
-    "https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}",
-    "i"
+    'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}',
+    'i',
   );
 
   public VALIDATION_RULES = {
@@ -51,7 +50,7 @@ export default class Bricks extends React.Component<IProps, IState> {
     // tslint:disable-next-line:object-literal-sort-keys
     title: () => !!this.state.brick.title,
     description: () => !!this.state.brick.description,
-    value: () => !isNaN(this.state.brick.value) && this.state.brick.value > 0.01
+    value: () => !isNaN(this.state.brick.value) && this.state.brick.value > 0.01,
   };
 
   public constructor(props: IProps) {
@@ -65,7 +64,7 @@ export default class Bricks extends React.Component<IProps, IState> {
 
   public componentDidUpdate(prevProps: IProps) {
     if (this.props.hash) {
-      const url = "/hash/" + this.props.hash;
+      const url = '/hash/' + this.props.hash;
       (this.props as any).history.push(url);
     }
   }
@@ -73,7 +72,7 @@ export default class Bricks extends React.Component<IProps, IState> {
   public setBrickState(
     event:
       | React.FormEvent<HTMLInputElement>
-      | React.FormEvent<HTMLTextAreaElement>
+      | React.FormEvent<HTMLTextAreaElement>,
   ) {
     const field = event.currentTarget.name;
     const value = event.currentTarget.value;
@@ -97,7 +96,7 @@ export default class Bricks extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <AddBrickForm onSubmit={this.formSubmitted} />)
+      <AddBrickForm onSubmit={this.formSubmitted} />);
   }
 
   public async componentWillReceiveProps(props: IProps) {
@@ -106,8 +105,8 @@ export default class Bricks extends React.Component<IProps, IState> {
   }
 
   private addBrick() {
-    const validated = ["url", "title", "description", "value"].every(
-      this.validate
+    const validated = ['url', 'title', 'description', 'value'].every(
+      this.validate,
     );
     this.forceUpdate();
     if (validated) {
@@ -120,11 +119,11 @@ export default class Bricks extends React.Component<IProps, IState> {
     return this.state.validations[field];
   }
 
-  private getClassName(val: UncertainType<boolean>, className = "input") {
+  private getClassName(val: UncertainType<boolean>, className = 'input') {
     if (val === undefined) {
       return className;
     }
 
-    return className + " " + (val ? " is-success" : " is-danger");
+    return className + ' ' + (val ? ' is-success' : ' is-danger');
   }
 }

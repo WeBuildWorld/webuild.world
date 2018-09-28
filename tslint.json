@@ -1,9 +1,38 @@
 {
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
-  "linterOptions": {
-    "exclude": [
-      "config/**/*.js",
-      "node_modules/**/*.ts"
+  "extends": [
+    "tslint:recommended",
+    "tslint-react"
+  ],
+  "rulesDirectory": [
+    "node_modules/tslint-lines-between-class-members"
+  ],
+  "rules": {
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ],
+    "object-literal-sort-keys": false,
+    "no-empty": false,
+    "lines-between-class-members": false,
+    "ordered-imports": false,
+    "member-ordering": false,
+    "variable-name": false,
+    "jsx-no-multiline-js": false,
+    "jsx-wrap-multiline": false,
+    "jsx-no-lambda": false,
+    "jsx-boolean-value": false,
+    "no-console": false,
+    "interface-name": false,
+    "max-classes-per-file": false,
+    "max-line-length": false,
+    "jsx-no-string-ref": false,
+    "no-shadowed-variable": false,
+    "no-debugger": false,
+    "jsx-alignment": false,
+    "no-unused-expression": [
+      true,
+      "allow-fast-null-checks"
     ]
   }
 }

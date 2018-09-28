@@ -15,8 +15,16 @@ contract WeBuildWorld is Extendable {
     enum AddressRole { Owner, Builder }
     mapping(uint=>ERC20Extended) tokenContracts; 
 
+    // TODO whitelist;
+    mapping(address => boolean) public allowedTokens;
+
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
+        _;
+    }
+
+    modifier isTokenAllowed(address _tokenAddress) {
+        require(allowedTokens[_tokenAddress], "Token is not allowed");
         _;
     }
 
@@ -28,6 +36,11 @@ contract WeBuildWorld is Extendable {
  
     function () public payable {
         revert();
+    }
+
+    function setAllowedTokens(address _tokenAddress, bool _allowed) public onlyOwner returns (bool) {
+        allowedTokens[_tokenAddresses] = allowed;
+        return true;
     }
 
     function getBrickIdsByOwner(address _owner) public view returns(uint[] brickIds) {
@@ -127,19 +140,21 @@ contract WeBuildWorld is Extendable {
         address _tokenContract,
         uint _value) 
         public payable
+        isTokenAllowed(_tokenContract)
         returns (uint id)
     {
         id = getId();
         bool token = (_tokenContract != 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
        
         if(token){
-            require(msg.value == 0 && _value >= 10 ** 16);
+            require(msg.value == 0 && _value >= 10 ** 16, "Invalid amount");
             tokenContracts[id] = ERC20Extended(_tokenContract);
-            require(tokenContracts[id].balanceOf(address(msg.sender))>= _value);
-            require(tokenContracts[id].transferFrom(msg.sender, address(this), _value));
+            require(tokenContracts[id].balanceOf(msg.sender) >= _value, "Insufficent balance.");
+            require(tokenContracts[id].transferFrom(msg.sender, address(this), _value), "Transfer failed");
         }
 
-        require(getProvider(id).addBrick(
+        require(
+            getProvider(id).addBrick(
             id,
             _title,
             _url,
@@ -147,7 +162,8 @@ contract WeBuildWorld is Extendable {
             _description,
             _tags,
             token?_value:msg.value,
-            token));
+            token), 
+            "Failed to create a brick");
 
         emit BrickAdded(id);
     }

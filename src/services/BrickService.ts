@@ -1,9 +1,7 @@
-import * as _ from "lodash";
-import * as moment from "moment";
-import Config from "../config";
-import Promisify from "../helpers/Promisify";
-import { IBrick, IBuilder } from "../types";
-import rpcService from "./RpcService";
+import * as _ from 'lodash';
+import Promisify from '../helpers/Promisify';
+import { IBrick, IBuilder } from '../types';
+import rpcService from './RpcService';
 
 export const toBrick = (obj: any): IBrick => {
 
@@ -22,8 +20,8 @@ export const toBrick = (obj: any): IBrick => {
     tags: obj.tags,
     title: obj.title,
     url: obj.url,
-    value: rpcService.rpc.fromWei(obj.value.toString(), "ether"),
-    winner: null
+    value: rpcService.rpc.fromWei(obj.value.toString(), 'ether'),
+    winner: null,
   } as IBrick;
 
   if (obj.winners) {
@@ -45,7 +43,7 @@ export const trimZeroCode = (str: string) => {
   }
 
   return str;
-}
+};
 
 export const getBricksByOwner = async () => {
   const contract = rpcService.contract();
@@ -54,28 +52,27 @@ export const getBricksByOwner = async () => {
   if (!address) {
     return {
       brickCount: 0,
-      bricks: []
+      bricks: [],
     };
   }
 
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIdsByOwner(address, cb)
+    contract.getBrickIdsByOwner(address, cb),
   );
 
   ids = _(ids)
-    .filter(id => id.toNumber() !== 0)
+    .filter((id) => id.toNumber() !== 0)
     .value();
-
 
   return {
     brickCount: ids.length,
     bricks: (await Promise.all(
-      ids.map(async id => {
+      ids.map(async (id) => {
         return await getBrick(id);
-      })
-    ))
+      }),
+    )),
   };
-}
+};
 
 export const getBricksByBuilder = async () => {
   const contract = rpcService.contract();
@@ -83,37 +80,37 @@ export const getBricksByBuilder = async () => {
   if (!address) {
     return {
       brickCount: 0,
-      bricks: []
+      bricks: [],
     };
   }
 
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIdsByBuilder(address, cb)
+    contract.getBrickIdsByBuilder(address, cb),
   );
 
   ids = _(ids)
-    .filter(id => id.toNumber() !== 0)
+    .filter((id) => id.toNumber() !== 0)
     .value();
 
   return {
     brickCount: ids.length,
     bricks: (await Promise.all(
-      ids.map(async id => {
+      ids.map(async (id) => {
         return await getBrick(id);
-      })
-    ))
+      }),
+    )),
   };
-}
+};
 
 export const getBricks = async (start: number, length: number, tags: string[] = [],
-  status: number = -1, started: number = 0, expired: number = 0) => {
+                                status: number = -1, started: number = 0, expired: number = 0) => {
   const contract = rpcService.contract();
   let ids: any[] = await Promisify<number[]>((cb: any) =>
-    contract.getBrickIds(start, length, tags, status, started, expired, cb)
+    contract.getBrickIds(start, length, tags, status, started, expired, cb),
   );
 
   ids = _(ids)
-    .filter(id => id.toNumber() !== 0)
+    .filter((id) => id.toNumber() !== 0)
     // .drop(start)
     // .take(length)
     .value();
@@ -121,10 +118,10 @@ export const getBricks = async (start: number, length: number, tags: string[] = 
   return {
     brickCount: ids.length,
     bricks: (await Promise.all(
-      ids.map(async id => {
+      ids.map(async (id) => {
         return await getBrick(id);
-      })
-    ))
+      }),
+    )),
   };
 };
 
@@ -141,7 +138,7 @@ const toBuilders = (items: any) => {
       dateStarted: items[1][i].toNumber(),
       key: githubIdAndUserName,
       nickName: rpcService.rpc.toAscii(items[3][i]),
-      walletAddress: items[0][i]
+      walletAddress: items[0][i],
     } as IBuilder);
   }
 
@@ -153,11 +150,11 @@ export const getBrick = async (id: any): Promise<IBrick> => {
   const contract = rpcService.contract();
 
   const brickArr: any = await Promisify((cb: any) =>
-    contract.getBrick(id, cb)
+    contract.getBrick(id, cb),
   );
 
   const brickDetailArr: any = await Promisify((cb: any) =>
-    contract.getBrickDetail(id, cb)
+    contract.getBrickDetail(id, cb),
   );
 
   const result: any = {
@@ -173,8 +170,8 @@ export const getBrick = async (id: any): Promise<IBrick> => {
     tags: brickDetailArr[0],
     description: brickDetailArr[1],
     numOfBuilders: brickDetailArr[2],
-    winners: brickDetailArr[3]
-  }
+    winners: brickDetailArr[3],
+  };
   result.id = id;
   if (result.tags && result.tags.length) {
     result.tags = result.tags.map((tag: any) => rpcService.rpc.toAscii(tag));
@@ -183,34 +180,40 @@ export const getBrick = async (id: any): Promise<IBrick> => {
   result.builders = await getBrickBuilders(id);
   return toBrick(result);
 
-}
+};
 
 export const addBrick = async (brick: IBrick): Promise<any> => {
   if (!rpcService.mainAccount) {
-    throw new Error("Metamask required");
+    throw new Error('Metamask required');
   }
 
   const contract = rpcService.contract();
-  const options = { value: rpcService.rpc.toWei(brick.value, "ether") };
+  const options = { value: rpcService.rpc.toWei(brick.value, 'ether') };
   const tags: any[] = brick.tags;
-  const tokenContract = rpcService.getTokenContractAddress();
 
-  const isPaysToken = true;
-  // brick.isPaysToken === true;
+  const currentContractAddress = rpcService.getCurrentContractAddress();
+  const tokenContractAddress = rpcService.getTokenContractAddress();
+
+  options.value = '0';
+  const value = rpcService.rpc.toWei(1, 'ether');
+  const tokenContract = rpcService.getTokenContract();
+
+  await Promisify((cb: any) => {
+    return tokenContract.approve(currentContractAddress, value, { value: 0 }, cb);
+  });
 
   const hash = (await Promisify((cb: any) => {
-    options.value = '0';
+    // options.value = '0';
     return contract.addBrick(
       brick.title,
-      brick.url || "",
+      brick.url || '',
       brick.expired.valueOf() / 1000,
-      brick.description || "",
+      brick.description || '',
       tags,
-      isPaysToken,
-      tokenContract,
-      rpcService.rpc.toWei(0.02, "ether"),
+      tokenContractAddress,
+      value,
       options,
-      cb
+      cb,
     );
   }));
 
@@ -218,7 +221,7 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
 };
 
 export const cancel = async (
-  brickId: number
+  brickId: number,
 ): Promise<any> => {
   const contract = rpcService.contract();
   const options = {};
@@ -232,7 +235,7 @@ export const cancel = async (
 export const startWork = async (
   brickId: number,
   builderId: string,
-  builderName: string
+  builderName: string,
 ): Promise<any> => {
   const contract = rpcService.contract();
   const options = {};
@@ -255,7 +258,7 @@ export const getBrickBuilders = async (brickId: number): Promise<any> => {
 
 export const acceptWork = async (
   brickId: number,
-  winnerWalletAddress: string
+  winnerWalletAddress: string,
 ): Promise<any> => {
   const contract = rpcService.contract();
   const options = {};
@@ -265,7 +268,7 @@ export const acceptWork = async (
       [winnerWalletAddress],
       [10000], // all
       options,
-      cb
+      cb,
     );
   });
 

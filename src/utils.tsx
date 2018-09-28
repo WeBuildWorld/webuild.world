@@ -107,3 +107,12 @@ export function enquireScreen(cb: any) {
     });
     /* eslint-enable no-unused-expressions */
 }
+
+export function loadJSONP(path: string, callback: (res: any) => void) {
+    const callbackName = 'jsonp_' + new Date().getTime();
+    window[callbackName] = callback;
+    const head = document.getElementsByTagName('head')[0];
+    const el = document.createElement('script');
+    el.src = path + '&callback=' + callbackName;
+    head.insertBefore(el, head.firstChild);
+}

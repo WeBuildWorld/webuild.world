@@ -1,12 +1,10 @@
-import { Alert, Avatar, Col, Row, Tabs } from "antd";
-import * as React from "react";
-import { Authentication } from "../../services/Authentication";
-import { IBrick, IBrickState, RoleType } from "../../types";
-import "./style.css";
+import { Alert, Avatar, Col, Row, Tabs } from 'antd';
+import * as React from 'react';
+import { Authentication } from '../../services/Authentication';
+import { IBrick, IBrickState, RoleType } from '../../types';
+import './style.css';
 
 import BrickList from './../_shared/BrickList';
-
-
 
 export interface IProps {
     brick: IBrick;
@@ -19,7 +17,7 @@ export default class Dashboard extends React.Component<IProps, object> {
         hash: '',
         modalIsOpen: false,
         processes: [],
-        winner: "",
+        winner: '',
     };
 
     public constructor(props: IProps) {
@@ -36,8 +34,8 @@ export default class Dashboard extends React.Component<IProps, object> {
 
         setTimeout(() => {
             this.setState({
-                inited: true
-            })
+                inited: true,
+            });
         }, 1000);
     }
 
@@ -63,7 +61,7 @@ export default class Dashboard extends React.Component<IProps, object> {
                         }
                         type="warning"
                     />
-                </div>)
+                </div>);
         }
 
         return (
@@ -87,7 +85,7 @@ export default class Dashboard extends React.Component<IProps, object> {
                 </Tabs>
 
             </div>
-        )
+        );
     }
 
 }

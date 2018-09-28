@@ -17,9 +17,9 @@ const formItemLayout = {
 const { TextArea } = Input;
 
 const URL_REGEXP = new RegExp(
-    "https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}",
-    "i"
-)
+    'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}',
+    'i',
+);
 
 export class AddBrickForm extends React.Component<any, any> {
 
@@ -54,6 +54,7 @@ export class AddBrickForm extends React.Component<any, any> {
         }
         callback();
     }
+
     public handleSubmit(e: any) {
         e.preventDefault();
         const self = this;
@@ -84,7 +85,7 @@ export class AddBrickForm extends React.Component<any, any> {
         this.setState({
             inputValue: '',
             inputVisible: false,
-            tags
+            tags,
         });
     }
 
@@ -95,7 +96,6 @@ export class AddBrickForm extends React.Component<any, any> {
     public onExpiredChanged() {
         //
     }
-
 
     public render() {
         const { getFieldDecorator } = this.props.form;
@@ -117,7 +117,7 @@ export class AddBrickForm extends React.Component<any, any> {
                             }],
                         })(
                             <Input prefix={<Icon type="link" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                placeholder="Github Link" />
+                                placeholder="Github Link" />,
                         )}
                     </FormItem>
 
@@ -132,7 +132,7 @@ export class AddBrickForm extends React.Component<any, any> {
                         })(
                             <Input
                                 prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                placeholder="Title" />
+                                placeholder="Title" />,
                         )}
                     </FormItem>
 
@@ -149,7 +149,7 @@ export class AddBrickForm extends React.Component<any, any> {
                                 className="date-time"
                                 showTime={true}
                                 format="YYYY-MM-DD HH:mm:ss"
-                                placeholder="Select time" onChange={this.onExpiredChanged} />
+                                placeholder="Select time" onChange={this.onExpiredChanged} />,
                             // <Input
                             //     prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
                             //     placeholder="Title" />
@@ -194,7 +194,7 @@ export class AddBrickForm extends React.Component<any, any> {
                                         <Icon type="plus" /> New Tag
                                 </Tag>
                                 )}
-                            </div>
+                            </div>,
                         )}
                     </FormItem>
 
@@ -208,7 +208,7 @@ export class AddBrickForm extends React.Component<any, any> {
                                 required: true, message: 'Please input description!',
                             }],
                         })(
-                            <TextArea placeholder="Brief Description" autosize={{ minRows: 4, maxRows: 8 }} rows={4} />
+                            <TextArea placeholder="Brief Description" autosize={{ minRows: 4, maxRows: 8 }} rows={4} />,
                         )}
                     </FormItem>
 
@@ -225,7 +225,7 @@ export class AddBrickForm extends React.Component<any, any> {
                         })(
                             <Input
                                 prefix={<i style={{ color: 'rgba(0,0,0,.25)' }} className="fab fa-ethereum" />}
-                                placeholder="ETH" />
+                                placeholder="ETH" />,
                         )}
                     </FormItem>
 
@@ -240,6 +240,5 @@ export class AddBrickForm extends React.Component<any, any> {
         );
     }
 }
-
 
 export default Form.create()(AddBrickForm);

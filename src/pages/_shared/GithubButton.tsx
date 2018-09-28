@@ -1,20 +1,21 @@
-import * as React from "react";
-import { connect } from "react-redux";
+import * as React from 'react';
+import { connect } from 'react-redux';
 
-import axios from "axios";
+import axios from 'axios';
 import GitHubLogin from 'react-github-login';
-import { ICredential, IStoreState } from "../../types";
+import { ICredential, IStoreState } from '../../types';
 
-import { Avatar, Divider, Dropdown, Icon, Menu } from "antd";
-import { LOGIN_REQUEST, LOGIN_SUCCESS } from "../../constants";
-import { Authentication } from "../../services/Authentication";
-const CLIENT_ID = "36d1aa5652f688cde83b";
-const CLIENT_SECRET = "c33eb8e1c3633fa7061eb58abf246fcd1446131d";
-const REDIRECT_URL = "https://webuild.world";
+import { Avatar, Divider, Dropdown, Icon, Menu } from 'antd';
+import { LOGIN_REQUEST, LOGIN_SUCCESS } from '../../constants';
+import { Authentication } from '../../services/Authentication';
+const CLIENT_ID = '36d1aa5652f688cde83b';
+const CLIENT_SECRET = 'c33eb8e1c3633fa7061eb58abf246fcd1446131d';
+const REDIRECT_URL = 'https://webuild.world';
 
 export class GitHubButton extends React.Component {
 
     public state: any;
+
     constructor(props: any) {
         super(props);
 
@@ -22,7 +23,7 @@ export class GitHubButton extends React.Component {
         if (user) {
             this.state = { logged: true, name: user.name, avatar: user.avatar_url };
         } else {
-            this.state = { logged: false, avatar: "" };
+            this.state = { logged: false, avatar: '' };
         }
 
         this.handleClick = this.handleClick.bind(this);
@@ -40,7 +41,7 @@ export class GitHubButton extends React.Component {
     public logout() {
         Authentication.setCurrentUser(null);
         this.setState({ logged: false });
-        location.href = "/";
+        location.href = '/';
     }
 
     public onFakeSuccess(response: any) {
@@ -61,10 +62,10 @@ export class GitHubButton extends React.Component {
         const self = this;
         if (response && response.code) {
             axios.post('/login/oauth/access_token', {
-                "client_id": CLIENT_ID,
-                "client_secret": CLIENT_SECRET,
-                "code": response.code,
-                "redirect_uri": REDIRECT_URL
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                code: response.code,
+                redirect_uri: REDIRECT_URL,
             }).then((res) => {
                 axios.get('/user?' + res.data).then((result) => {
                     const data = result.data;
@@ -111,7 +112,7 @@ export class GitHubButton extends React.Component {
                     <Avatar shape="square" src={this.state.avatar} />
                     <Icon type="down" />
                 </a>
-            </Dropdown>
+            </Dropdown>;
 
         const button = <GitHubLogin
             onSuccess={this.onSuccess}
@@ -128,7 +129,7 @@ export class GitHubButton extends React.Component {
 }
 
 export function mapStateToProps({
-    reducer
+    reducer,
 }: {
         reducer: { app: IStoreState };
     }) {
@@ -145,19 +146,19 @@ export const userLoginRequest = (loggingIn: boolean) => {
     return async (dispatch: any): Promise<void> => {
         return dispatch({
             payload: { loggingIn },
-            type: LOGIN_REQUEST
+            type: LOGIN_REQUEST,
         });
     };
-}
+};
 
 export const userLoginSuccess = (user: ICredential, loggedIn: boolean) => {
     return async (dispatch: any): Promise<void> => {
         return dispatch({
             payload: { user, loggedIn },
-            type: LOGIN_SUCCESS
+            type: LOGIN_SUCCESS,
         });
     };
-}
+};
 
 export function mapDispatchToProps(dispatch: any) {
     return {
@@ -168,5 +169,5 @@ export function mapDispatchToProps(dispatch: any) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(GitHubButton);
