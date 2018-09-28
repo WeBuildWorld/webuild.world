@@ -76,10 +76,20 @@ export default class Bricks extends React.Component<IProps, any> {
   public loadGitIssues() {
     loadJSONP('https://api.github.com/repos/WeBuildWorld/webuild.world/issues?state=all', (res) => {
       // console.log('res:', res.data);
-      this.setState({
-        issues: res.data,
+
+      const data = res.data.map((item: any) => {
+        return {
+          title: item.title,
+          url: item.html_url,
+          avatar: item.user.avatar_url,
+          desc: item.body,
+        };
       });
-      console.log('res:', res.data);
+
+      this.setState({
+        issues: data,
+      });
+      console.log('res:', data);
     });
   }
 
@@ -279,9 +289,9 @@ export default class Bricks extends React.Component<IProps, any> {
               renderItem={(item: any) => (
                 <List.Item>
                   <List.Item.Meta
-                    avatar={<Avatar src={item.user.avatar_url} />}
-                    title={<a href={item.url}>{item.title}</a>}
-                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                    avatar={<Avatar src={item.avatar} />}
+                    title={<a target="_blank" href={item.url}>{item.title}</a>}
+                    description={item.desc}
                   />
                 </List.Item>
               )}
