@@ -193,23 +193,21 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
   const tags: any[] = brick.tags;
 
   const currentContractAddress = rpcService.getCurrentContractAddress();
-  const tokenContractAddress = rpcService.getTokenContractAddress();
+  let tokenContractAddress = rpcService.getTokenContractAddress();
+  const value = rpcService.rpc.toWei(brick.value, 'ether');
 
   if (brick.currency !== 'ETH') {
     options.value = '0';
+    const tokenContract = rpcService.getTokenContract();
+    await Promisify((cb: any) => {
+      return tokenContract.approve(currentContractAddress, value, { value: 0 }, cb);
+    });
   } else {
-    options.value = brick.value as string;
+    options.value = rpcService.rpc.toWei(brick.value, 'ether');
+    tokenContractAddress = '0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
   }
 
-  const value = rpcService.rpc.toWei(1, 'ether');
-  const tokenContract = rpcService.getTokenContract();
-
-  await Promisify((cb: any) => {
-    return tokenContract.approve(currentContractAddress, value, { value: 0 }, cb);
-  });
-
   const hash = (await Promisify((cb: any) => {
-    // options.value = '0';
     return contract.addBrick(
       brick.title,
       brick.url || '',
