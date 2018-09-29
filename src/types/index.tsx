@@ -33,6 +33,7 @@ export interface IBrick {
   dateCompleted?: Date | number;
   expired?: Date | number;
   winner?: IBuilder;
+  currency?: string;
   isPaysToken?: boolean;
 }
 

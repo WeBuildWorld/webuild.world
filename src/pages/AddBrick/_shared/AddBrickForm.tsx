@@ -1,8 +1,9 @@
-import { Button, DatePicker, Form, Icon, Input, Row, Tag, Tooltip } from 'antd';
+import { Button, DatePicker, Form, Icon, Input, Row, Tag, Tooltip, Radio } from 'antd';
 import * as  React from 'react';
 import { IProps, IState } from '../component';
 
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 const formItemLayout = {
     labelCol: {
         sm: { span: 24 },
@@ -11,6 +12,17 @@ const formItemLayout = {
     wrapperCol: {
         sm: { span: 24 },
         xs: { span: 24 },
+    },
+};
+
+const inlineLayout = {
+    labelCol: {
+        sm: { span: 12 },
+        xs: { span: 12 },
+    },
+    wrapperCol: {
+        sm: { span: 12 },
+        xs: { span: 12 },
     },
 };
 
@@ -27,7 +39,7 @@ export class AddBrickForm extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
-        this.state = this.state || { tags: [] };
+        this.state = this.state || { tags: [], currency: 'ETH' };
         this.validateLink = this.validateLink.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateETH = this.validateETH.bind(this);
@@ -36,6 +48,7 @@ export class AddBrickForm extends React.Component<any, any> {
         this.handleClose = this.handleClose.bind(this);
         this.handleInputConfirm = this.handleInputConfirm.bind(this);
         this.onExpiredChanged = this.onExpiredChanged.bind(this);
+        this.onCurrencyChange = this.onCurrencyChange.bind(this);
 
     }
     public saveInputRef = (input: any) => this.input = input;
@@ -95,6 +108,12 @@ export class AddBrickForm extends React.Component<any, any> {
 
     public onExpiredChanged() {
         //
+    }
+
+    public onCurrencyChange(e: any) {
+        this.setState({
+            currency: e.target.value,
+        });
     }
 
     public render() {
@@ -214,18 +233,34 @@ export class AddBrickForm extends React.Component<any, any> {
 
                     <FormItem
                         {...formItemLayout}
-                        label="ETH Value">
+                        label="Currency">
+                        {getFieldDecorator('currency', {
+                            initialValue: this.state.currency,
+                            rules: [
+                                { required: true, message: `Please input ${this.state.currency}!` },
+                            ],
+                        })(
+                            <RadioGroup onChange={this.onCurrencyChange} >
+                                <Radio value={'ETH'}>ETH</Radio>
+                                <Radio value={'DAI'}>DAI</Radio>
+                            </RadioGroup>,
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        {...formItemLayout}
+                        label={`${this.state.currency} Value`}>
                         {getFieldDecorator('value', {
                             rules: [{
                                 // tslint:disable-next-line:object-literal-sort-keys
-                                required: true, message: 'Please input ETH!',
+                                required: true, message: `Please input ${this.state.currency}!`,
                             }, {
                                 validator: this.validateETH,
                             }],
                         })(
                             <Input
                                 prefix={<i style={{ color: 'rgba(0,0,0,.25)' }} className="fab fa-ethereum" />}
-                                placeholder="ETH" />,
+                                placeholder={this.state.currency} />,
                         )}
                     </FormItem>
 

@@ -102,8 +102,9 @@ export const getBricksByBuilder = async () => {
   };
 };
 
-export const getBricks = async (start: number, length: number, tags: string[] = [],
-                                status: number = -1, started: number = 0, expired: number = 0) => {
+export const getBricks = async (
+  start: number, length: number, tags: string[] = [],
+  status: number = -1, started: number = 0, expired: number = 0) => {
   const contract = rpcService.contract();
   let ids: any[] = await Promisify<number[]>((cb: any) =>
     contract.getBrickIds(start, length, tags, status, started, expired, cb),
@@ -194,7 +195,10 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
   const currentContractAddress = rpcService.getCurrentContractAddress();
   const tokenContractAddress = rpcService.getTokenContractAddress();
 
-  options.value = '0';
+  if (brick.currency !== 'ETH') {
+    options.value = '0';
+  }
+
   const value = rpcService.rpc.toWei(1, 'ether');
   const tokenContract = rpcService.getTokenContract();
 
