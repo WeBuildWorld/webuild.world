@@ -197,6 +197,8 @@ export const addBrick = async (brick: IBrick): Promise<any> => {
 
   if (brick.currency !== 'ETH') {
     options.value = '0';
+  } else {
+    options.value = brick.value as string;
   }
 
   const value = rpcService.rpc.toWei(1, 'ether');
