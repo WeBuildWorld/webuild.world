@@ -24,6 +24,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         string title;
         string url;
         string description;
+        string symbol;
         bool token;
         bytes32[] tags;
         address owner;
@@ -54,7 +55,6 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         _;
     }
 
-
     function () public payable {
         revert();
     }    
@@ -75,6 +75,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         uint _brickId, 
         string _title, 
         string _url, 
+        string _symbol,
         uint _expired, 
         string _description, 
         bytes32[] _tags, 
@@ -90,6 +91,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
             title: _title,
             url: _url,
             description: _description,
+            symbol: _symbol,
             token: _token,
             tags: _tags,
             // solhint-disable-next-line
@@ -140,7 +142,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         bool included = false;
         for (uint i = 0; i < _winners.length; i++) {
             // solhint-disable-next-line
-            require(_winners[i] != tx.origin, "Owner should not win this himself");
+            require(_winners[i] != tx.origin, "Owner should win itself");
             for (uint j =0; j < bricks[_brickId].numBuilders; j++) {
                 if (bricks[_brickId].builders[j].addr == _winners[i]) {
                     included = true;
@@ -275,6 +277,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
     function getBrick(uint _brickId) external view returns (
         string title,
         string url,
+        string symbol,
         address owner,
         uint value,
         uint dateCreated,
@@ -286,6 +289,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         return (
             brick.title,
             brick.url,
+            brick.symbol,
             brick.owner,
             brick.value,
             brick.dateCreated,

@@ -16,7 +16,7 @@ contract WeBuildWorld is Extendable {
     mapping(uint=>ERC20Extended) tokenContracts; 
 
     // TODO whitelist;
-    mapping(address => boolean) public allowedTokens;
+    mapping(address => bool) public allowedTokens;
 
     modifier onlyBrickOwner(uint _brickId) {
         require(getProvider(_brickId).isBrickOwner(_brickId, msg.sender));
@@ -39,7 +39,7 @@ contract WeBuildWorld is Extendable {
     }
 
     function setAllowedTokens(address _tokenAddress, bool _allowed) public onlyOwner returns (bool) {
-        allowedTokens[_tokenAddresses] = allowed;
+        allowedTokens[_tokenAddress] = _allowed;
         return true;
     }
 
@@ -145,8 +145,9 @@ contract WeBuildWorld is Extendable {
     {
         id = getId();
         bool token = (_tokenContract != 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
-       
+        string memory symbol = "ETH";
         if(token){
+            symbol = "DAI";
             require(msg.value == 0 && _value >= 10 ** 16, "Invalid amount");
             tokenContracts[id] = ERC20Extended(_tokenContract);
             require(tokenContracts[id].balanceOf(msg.sender) >= _value, "Insufficent balance.");
@@ -158,6 +159,7 @@ contract WeBuildWorld is Extendable {
             id,
             _title,
             _url,
+            symbol,
             _expired,
             _description,
             _tags,
@@ -219,7 +221,7 @@ contract WeBuildWorld is Extendable {
 
         msg.sender.transfer(value);  
         emit BrickCancelled(_brickId);
-        return true;      
+        return true;
     }    
 
     function startWork(uint _brickId, bytes32 _builderId, bytes32 _nickName) 
@@ -232,6 +234,7 @@ contract WeBuildWorld is Extendable {
     function getBrick(uint _brickId) public view returns (
         string title,
         string url,
+        string symbol,
         address owner,
         uint value,
         uint dateCreated,

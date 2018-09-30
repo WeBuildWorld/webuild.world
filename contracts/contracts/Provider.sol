@@ -1,14 +1,15 @@
 pragma solidity 0.4.24;
 
-
 interface Provider {
     function isBrickOwner(uint _brickId, address _address) external view returns (bool success);
     function addBrick(
         uint _brickId,
-        string _title, string _url, 
-        uint _expired, 
+        string _title, 
+        string _url, 
+        string _symbol,
+        uint _expired,
         string _description, 
-        bytes32[] _tags, 
+        bytes32[] _tags,
         uint _value, 
         bool _token)
         external returns (bool success);
@@ -27,6 +28,7 @@ interface Provider {
     function getBrick(uint _brickId) external view returns(
         string title,
         string url, 
+        string symbol,
         address owner,
         uint value,
         uint dateCreated,
@@ -58,7 +60,6 @@ interface Provider {
         ) external view returns (
       bool
     );
-
 
     function participated( 
         uint _brickId,
