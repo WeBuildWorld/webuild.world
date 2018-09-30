@@ -1,9 +1,9 @@
- // solhint-disable-next-line compiler-fixed, compiler-gt-0_4
+// solhint-disable-next-line compiler-fixed, compiler-gt-0_4
 pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "solidity-utils/contracts/lib/Dictionary.sol";
+import "./libs/Dictionary.sol";
 import "./Provider.sol";
 
 
@@ -24,14 +24,13 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         string title;
         string url;
         string description;
-        string symbol;
-        bool token;
         bytes32[] tags;
+        address tokenAddress;
         address owner;
         uint value;
-        uint dateCreated;
-        uint dateCompleted;
-        uint expired;
+        uint32 dateCreated;
+        uint32 dateCompleted;
+        uint32 expired;
         uint32 numBuilders;
         BrickStatus status;
         address[] winners;
@@ -66,47 +65,45 @@ contract WeBuildWorldImplementation is Ownable, Provider {
     // only add when it's new
     function _storeBrick(uint _brickId, Brick brick) private {
         if (bricks[_brickId].owner == 0x0) {
-            brickIds.insertBeginning(_brickId, "");
+            brickIds.insertBeginning(_brickId, 0);
         }
         bricks[_brickId] = brick;
-    } 
+    }  
 
     function addBrick(
-        uint _brickId, 
-        string _title, 
-        string _url, 
-        string _symbol,
-        uint _expired, 
-        string _description, 
-        bytes32[] _tags, 
-        uint _value, 
-        bool _token)
+        uint _brickId,
+        string _title,
+        string _url,
+        uint _expired,
+        string _description,
+        bytes32[] _tags,
+        address _tokenAddress,
+        uint _value) 
         external onlyMain onlyNewBrick(_brickId)
         returns (bool success)
     {
         // greater than 0.01 eth
         require(_value >= 10 ** 16);
-  
+        // solhint-disable-next-line
+ 
         Brick memory brick = Brick({
             title: _title,
             url: _url,
             description: _description,
-            symbol: _symbol,
-            token: _token,
             tags: _tags,
-            // solhint-disable-next-line
+            tokenAddress: _tokenAddress,
             owner: tx.origin,
             status: BrickStatus.Active,
             value: _value,
-            // solhint-disable-next-line 
-            dateCreated: now,
+            dateCreated: uint32(now),
             dateCompleted: 0,
-            expired:_expired,
+            expired: uint32(_expired),
             numBuilders: 0,
             winners: new address[](0)
         });
 
         _storeBrick(_brickId, brick);
+
         return true;
     }
 
@@ -142,7 +139,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         bool included = false;
         for (uint i = 0; i < _winners.length; i++) {
             // solhint-disable-next-line
-            require(_winners[i] != tx.origin, "Owner should win itself");
+            require(_winners[i] != tx.origin, "Owner should not win this himself");
             for (uint j =0; j < bricks[_brickId].numBuilders; j++) {
                 if (bricks[_brickId].builders[j].addr == _winners[i]) {
                     included = true;
@@ -158,7 +155,7 @@ contract WeBuildWorldImplementation is Ownable, Provider {
         bricks[_brickId].status = BrickStatus.Completed;
         bricks[_brickId].winners = _winners;
         // solhint-disable-next-line
-        bricks[_brickId].dateCompleted = now;
+        bricks[_brickId].dateCompleted = uint32(now);
 
         if (_value > 0) {
             bricks[_brickId].value = bricks[_brickId].value.add(_value);
@@ -277,25 +274,25 @@ contract WeBuildWorldImplementation is Ownable, Provider {
     function getBrick(uint _brickId) external view returns (
         string title,
         string url,
-        string symbol,
         address owner,
+        address tokenAddress,
         uint value,
-        uint dateCreated,
-        uint dateCompleted,
-        uint expired,
-        uint32 status
+        uint32 dateCreated,
+        uint32 dateCompleted,
+        uint32 expired,
+        uint status
     ) {
         Brick memory brick = bricks[_brickId];
         return (
             brick.title,
             brick.url,
-            brick.symbol,
             brick.owner,
+            brick.tokenAddress,
             brick.value,
             brick.dateCreated,
             brick.dateCompleted,
             brick.expired,
-            uint32(brick.status)
+            uint(brick.status)
         );
     }
     

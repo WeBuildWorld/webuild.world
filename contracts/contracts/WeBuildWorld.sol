@@ -4,7 +4,6 @@ pragma solidity ^0.4.23;
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./libs/Extendable.sol";
 import "./Provider.sol";
-import "./libs/ERC20Extended.sol";
 
 
 contract WeBuildWorld is Extendable {
@@ -13,9 +12,7 @@ contract WeBuildWorld is Extendable {
     string public constant VERSION = "0.1";
     uint public constant DENOMINATOR = 10000;
     enum AddressRole { Owner, Builder }
-    mapping(uint=>ERC20Extended) tokenContracts; 
 
-    // TODO whitelist;
     mapping(address => bool) public allowedTokens;
 
     modifier onlyBrickOwner(uint _brickId) {
@@ -24,7 +21,7 @@ contract WeBuildWorld is Extendable {
     }
 
     modifier isTokenAllowed(address _tokenAddress) {
-        require(allowedTokens[_tokenAddress], "Token is not allowed");
+        // require(allowedTokens[_tokenAddress], "Token is not allowed");
         _;
     }
 
@@ -132,40 +129,32 @@ contract WeBuildWorld is Extendable {
     }
 
     function addBrick(
-        string _title, 
-        string _url, 
-        uint _expired, 
-        string _description, 
+        string _title,
+        string _url,
+        uint _expired,
+        string _description,
         bytes32[] _tags,
-        address _tokenContract,
-        uint _value) 
+        address _tokenAddress,
+        uint _value
+        ) 
         public payable
-        isTokenAllowed(_tokenContract)
+        isTokenAllowed(_tokenAddress)
         returns (uint id)
     {
         id = getId();
-        bool token = (_tokenContract != 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
-        string memory symbol = "ETH";
-        if(token){
-            symbol = "DAI";
-            require(msg.value == 0 && _value >= 10 ** 16, "Invalid amount");
-            tokenContracts[id] = ERC20Extended(_tokenContract);
-            require(tokenContracts[id].balanceOf(msg.sender) >= _value, "Insufficent balance.");
-            require(tokenContracts[id].transferFrom(msg.sender, address(this), _value), "Transfer failed");
-        }
+        bool token = (_tokenAddress != 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
 
         require(
             getProvider(id).addBrick(
-            id,
+            id, 
             _title,
             _url,
-            symbol,
             _expired,
-            _description,
-            _tags,
-            token?_value:msg.value,
-            token), 
-            "Failed to create a brick");
+            _description, 
+            _tags, 
+            _tokenAddress,
+            token?_value: msg.value
+            ));
 
         emit BrickAdded(id);
     }
@@ -181,32 +170,16 @@ contract WeBuildWorld is Extendable {
     }
 
     // msg.value is tip.
-    function accept(
-        uint _brickId, 
-        address[] _winners, 
-        uint[] _weights,
-        bool _token, 
-        address _tokenContract,
-        uint _value
-        ) 
+    function accept(uint _brickId, address[] _winners, uint[] _weights) 
         public onlyBrickOwner(_brickId) 
         payable
         returns (bool success) 
     {
-        if(_token){
-            require(ERC20Extended(_tokenContract).transferFrom(msg.sender, this , _value));
-        }
-
-        uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, _token? _value: msg.value);
+        uint total = getProvider(_brickId).accept(_brickId, _winners, _weights, msg.value);
         require(total > 0);
         for (uint i=0; i < _winners.length; i++) {
-
-            if(_token){
-                require(tokenContracts[_brickId].transfer(_winners[i], total.mul(_weights[i]).div(DENOMINATOR)));
-            }else{
-                _winners[i].transfer(total.mul(_weights[i]).div(DENOMINATOR));    
-            }
-        }
+            _winners[i].transfer(total.mul(_weights[i]).div(DENOMINATOR));    
+        }     
 
         emit WorkAccepted(_brickId, _winners);
         return true;   
@@ -221,7 +194,7 @@ contract WeBuildWorld is Extendable {
 
         msg.sender.transfer(value);  
         emit BrickCancelled(_brickId);
-        return true;
+        return true;      
     }    
 
     function startWork(uint _brickId, bytes32 _builderId, bytes32 _nickName) 
@@ -234,13 +207,13 @@ contract WeBuildWorld is Extendable {
     function getBrick(uint _brickId) public view returns (
         string title,
         string url,
-        string symbol,
         address owner,
+        address tokenAddress,
         uint value,
         uint dateCreated,
         uint dateCompleted,
         uint expired,
-        uint32 status
+        uint status
     ) {
         return getProvider(_brickId).getBrick(_brickId);
     }
