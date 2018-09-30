@@ -21,7 +21,7 @@ contract WeBuildWorld is Extendable {
     }
 
     modifier isTokenAllowed(address _tokenAddress) {
-        // require(allowedTokens[_tokenAddress], "Token is not allowed");
+        require(_isETHToken(_tokenAddress) || allowedTokens[_tokenAddress], "Token is not allowed");
         _;
     }
 
@@ -46,6 +46,12 @@ contract WeBuildWorld is Extendable {
 
     function getBrickIdsByBuilder(address _builder) public view returns(uint[] brickIds) {
         return _getBrickIdsByAddress(_builder, AddressRole.Builder);
+    }
+
+    event LogToken(address token, bool result);
+
+    function _isETHToken(address _tokenAddress) public pure returns(bool) {
+        return _tokenAddress == 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee;
     }
  
     function _getBrickIdsByAddress(
@@ -138,12 +144,11 @@ contract WeBuildWorld is Extendable {
         uint _value
         ) 
         public payable
-        isTokenAllowed(_tokenAddress)
+        // isTokenAllowed(_tokenAddress)
         returns (uint id)
     {
         id = getId();
-        bool token = (_tokenAddress != 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
-
+        emit LogToken(_tokenAddress, _tokenAddress == 0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee );
         require(
             getProvider(id).addBrick(
             id, 
@@ -153,7 +158,7 @@ contract WeBuildWorld is Extendable {
             _description, 
             _tags, 
             _tokenAddress,
-            token?_value: msg.value
+            _isETHToken(_tokenAddress)?msg.value:_value
             ));
 
         emit BrickAdded(id);
